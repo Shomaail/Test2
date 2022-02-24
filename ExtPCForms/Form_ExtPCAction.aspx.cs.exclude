@@ -1,0 +1,45 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class ExtPCForms_Form_ExtPCAction : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetDataByAutoNumberPK(int.Parse(Session["pcID"].ToString()));
+        Instruction1.Text = Master.CurrentFormInstruction;
+        if (table[0].DigitalSignature == true)
+        {
+            ButtonDigitalSignature.Enabled = false;
+        }
+
+    }
+    protected void ButtonDigitalSignature_Click(object sender, EventArgs e)
+    {
+        ViewsTableAdapters.vw_PCChairReportTableAdapter vPCChrRptAdapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();
+        Views.vw_PCChairReportDataTable vPCChrRptTable = vPCChrRptAdapter.GetDataByAppID(Master.ApplicationID);
+        if (vPCChrRptTable.Count == 0)
+        {
+            LabelDS.Text = "There is no Promotion Report uploaded.";
+            LabelDS.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetDataByAutoNumberPK(int.Parse(Session["pcID"].ToString()));
+
+
+        adapter.UpdateDS(true, DateTime.Now, int.Parse(Session["pcID"].ToString()));
+        ButtonDigitalSignature.Enabled = false;
+        LabelDS.Text = "You have successfully signed the promotion report";
+        LabelDS.ForeColor = System.Drawing.Color.Blue;
+
+    }
+}

@@ -1,0 +1,399 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.IO;
+
+public partial class Controls_FilesUpload : System.Web.UI.UserControl
+{
+    private string dataPath = null;    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        dataPath = Server.MapPath("~\\App_LocalResources") + "\\";
+        if (IsPostBack) return;
+        if (ApplicationID == -1) return;
+        PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicant  = adapter.GetApplication(ApplicationID)[0];
+
+        if (applicant.HardCopy == true)
+        {
+            cbHardCopy.Checked = true;
+        }
+    }
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Request.Cookies["langCookie"].Value == "ar")
+            {
+                lblFileUploadHeading.Text = "الملفات المرفقة بالطلب";
+            }
+            else
+            {
+                lblFileUploadHeading.Text = "Files Attached to the Application";
+
+            }
+        }
+        catch (Exception)
+        {
+            
+            lblFileUploadHeading.Text = "Files Attached to the Application";
+        }
+
+        //if (Profile.Language == "")
+        //    Profile.Language = "en";
+        //if ((string)Profile.Language == "en")
+        //{
+        //    lblFileUploadHeading.Text = "Files Attached to the Application";
+
+        //}
+        //else
+        //{
+        //    lblFileUploadHeading.Text = "الملفات المرفقة بالطلب";
+        //}
+    }
+    public void LoadFiles(int applicationID, int roleID, bool enableEditing, bool viewAll)
+    {
+        LoadFiles(applicationID, roleID, -1, enableEditing, viewAll);
+    }
+    public void LoadFiles(int applicationID, int roleID, int otherRoleID, bool enableEditing, bool viewAll)
+    {
+        ApplicationID = applicationID;
+        RoleID = roleID;
+        OtherRoleID = otherRoleID;
+        ViewAll = viewAll;
+
+
+        if (roleID == 0)
+        {
+            BindFiles(roleID);
+        }
+        else
+        {
+            BindFiles();
+        }
+
+        grdFiles.Columns[6].Visible = enableEditing;
+        pnlUpload.Visible = enableEditing;
+        if (RoleID == 1)
+        {
+            //btnHardCopy.Visible = true;
+            cbHardCopy.Enabled = true;
+        }
+        else
+        {
+           // btnHardCopy.Visible = false;
+            cbHardCopy.Enabled = false;
+        }
+    }
+    protected void btnUpload_Click(object sender, EventArgs e)
+    {
+        if (ApplicationID != -1)
+        {
+            if (FileUploader.HasFile)
+            {
+                if(FileUploader.FileName.Contains(","))
+                {
+
+                    labelProgrammaticPopup3.Text = "File name must not contain ','.";
+                    this.programmaticModalPopup3.Show();                    
+                    lblMessage.Text = "File name must not contain ','.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                if (FileUploader.PostedFile.ContentType == "application/pdf" && FileUploader.PostedFile.ContentLength < 4000000)
+                {
+                    PromotionTableAdapters.FileTableAdapter fadapter = new PromotionTableAdapters.FileTableAdapter();
+                    PromotionTableAdapters.Form_AttachmentTableAdapter Aadapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+
+
+                    int fileID = -1;
+                    int attachmentID = -1;
+                    try
+                    {
+
+                        fileID = int.Parse(fadapter.InsertFile(FileUploader.FileName).ToString());
+                        if (RoleID == 1 || RoleID == 6) // Either the Applicant or the VRGSSR
+                        {
+                            attachmentID = int.Parse(Aadapter.InsertAttachment(int.Parse(DropDownList1.SelectedValue.ToString()), ApplicationID, fileID, RoleID, txtDescription.Text).ToString());
+                            Aadapter.UpdateSelForExtRev(false, fileID);
+                        }
+                        else
+                        {
+                            attachmentID = int.Parse(Aadapter.InsertAttachment(int.Parse(DropDownList1.SelectedValue.ToString()), ApplicationID, fileID, RoleID, txtDescription.Text).ToString());
+                        }
+                        
+
+                        //fileID = int.Parse(adapter.InsertFile(ApplicationID, FileUploader.FileName, txtDescription.Text, RoleID).ToString());
+
+                        FileUploader.SaveAs(dataPath + fileID + ".pdf");
+                        
+                        BindFiles();
+
+                        txtDescription.Text = "";
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        lblMessage.Text = "Error Occured! " + ex.ToString();
+                        fadapter.DeleteByFileID(fileID);
+                        Aadapter.DeleteByFileID(fileID);
+                        //adapter.Delete(fileID);
+                    }
+                }
+                else
+                {
+                    labelProgrammaticPopup3.Text = "You can only upload valid PDF files of size less than 4 MB.";
+                    this.programmaticModalPopup3.Show();
+                   // Alert1.Message("You can only upload valid PDF files of size less than 4 MB.");
+                    lblMessage.Text = "You can only upload valid PDF files of size less than 4 MB.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+
+                }
+            }
+            else
+            {
+//                Alert1.Message("No PDF File is selected. Please Browse a PDF file to upload.");
+                labelProgrammaticPopup3.Text = "No pdf File is selected. Please Browse a pdf file to upload.";
+                this.programmaticModalPopup3.Show();
+                lblMessage.Text = "No pdf File is selected. Please Browse a pdf file to upload.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+
+            }
+        }
+    }
+    private void BindFiles()
+    {
+        /*PromotionTableAdapters.FilesTableAdapter adapter = new PromotionTableAdapters.FilesTableAdapter();
+        Promotion.FilesDataTable table = adapter.GetDataByApplication(ApplicationID, (ViewAll? (byte)0 : (byte)RoleID), (byte)OtherRoleID);
+        
+        grdFiles.DataSource = table;
+        grdFiles.DataBind();*/
+        PromotionTableAdapters.vw_ApplicationFilesTableAdapter adapter = new PromotionTableAdapters.vw_ApplicationFilesTableAdapter();
+        Promotion.vw_ApplicationFilesDataTable table = adapter.GetDataByApplication(ApplicationID, (ViewAll ? (byte)0 : (byte)RoleID));
+        grdFiles.DataSource = table;
+        grdFiles.DataBind();
+    }
+    private void BindFiles(int roleID)
+    {
+        /*PromotionTableAdapters.FilesTableAdapter adapter = new PromotionTableAdapters.FilesTableAdapter();
+        Promotion.FilesDataTable table = adapter.GetDataByApplication(ApplicationID, (ViewAll? (byte)0 : (byte)RoleID), (byte)OtherRoleID);
+        
+        grdFiles.DataSource = table;
+        grdFiles.DataBind();*/
+        PromotionTableAdapters.vw_ApplicationFilesTableAdapter adapter = new PromotionTableAdapters.vw_ApplicationFilesTableAdapter();
+        if (Session["refree"] != null)
+        {
+
+            grdFiles.DataSource = adapter.GetSelectedFiles(ApplicationID, roleID);
+            grdFiles.Columns[7].Visible = false; //Selected files for Ext Reviewer column
+            grdFiles.DataBind();
+
+            return;
+        }
+
+        Promotion.vw_ApplicationFilesDataTable table = adapter.GetDataByApplication(ApplicationID, 1);
+
+        grdFiles.DataSource = table;
+        grdFiles.DataBind();
+    }
+    protected void grdFiles_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        /*PromotionTableAdapters.FilesTableAdapter adapter = new PromotionTableAdapters.FilesTableAdapter();
+        Promotion.FilesDataTable table = adapter.GetDataByFileID(int.Parse(grdFiles.SelectedDataKey.Value.ToString()));*/
+        PromotionTableAdapters.FileTableAdapter adapter = new PromotionTableAdapters.FileTableAdapter();
+        Promotion.FileDataTable table = adapter.GetDataByFileID(int.Parse(grdFiles.SelectedDataKey.Value.ToString()));
+        if (table.Count == 0) return;
+
+        Promotion.FileRow fileRow = table[0];
+        string filePath = dataPath + fileRow.FileID + ".pdf";
+
+        if (!File.Exists(filePath))
+            return;
+
+        FileStream stream = File.OpenRead(filePath);
+        long length = stream.Length;
+        stream.Close();
+
+        Response.Clear();
+        try
+        {
+            Response.Charset = "UTF-8";
+            Response.AddHeader("Content-Disposition", "attachment; filename= " + fileRow.FileName);
+            Response.AddHeader("Content-Length", "" + length);
+            Response.WriteFile(dataPath + fileRow.FileID + ".pdf");
+            Response.Flush();
+            Response.Close();
+        }
+        catch
+        {
+        }
+    }
+    protected void grdFiles_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        /*PromotionTableAdapters.FilesTableAdapter adapter = new PromotionTableAdapters.FilesTableAdapter();
+        int fileID = int.Parse(grdFiles.DataKeys[e.RowIndex].Value.ToString());
+        */
+        PromotionTableAdapters.FileTableAdapter adapter = new PromotionTableAdapters.FileTableAdapter();
+        PromotionTableAdapters.Form_AttachmentTableAdapter Aadapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+        int fileID = int.Parse(grdFiles.DataKeys[e.RowIndex].Value.ToString());
+        try
+        {
+
+            //adapter.Delete(fileID);
+            
+            Aadapter.DeleteByFileID(fileID);
+            adapter.DeleteByFileID(fileID);
+            File.Delete(dataPath + fileID + ".pdf");
+        }
+        catch 
+        { 
+
+        }
+        BindFiles();
+    }
+
+    public int ApplicationID
+    {
+        get
+        {
+            if (hdnApplicationID.Value.Length == 0)
+                return -1;
+            return int.Parse(hdnApplicationID.Value);
+        }
+        set
+        {
+            hdnApplicationID.Value = value.ToString();
+        }
+    }
+
+
+    public int RoleID
+    {
+        get
+        {
+            if (hdnRoleID.Value.Length == 0)
+                return -1;
+            return int.Parse(hdnRoleID.Value);
+        }
+        set
+        {
+            hdnRoleID.Value = value.ToString();
+        }
+    }
+
+    public int OtherRoleID
+    {
+        get
+        {
+            if (hdnOtherRoleID.Value.Length == 0)
+                return -1;
+            return int.Parse(hdnOtherRoleID.Value);
+        }
+        set
+        {
+            hdnOtherRoleID.Value = value.ToString();
+        }
+    }
+
+
+    public bool ViewAll
+    {
+        get
+        {
+            if (hdnViewAll.Value.Length == 0)
+                return false;
+            return bool.Parse(hdnViewAll.Value);
+        }
+        set
+        {
+            hdnViewAll.Value = value.ToString();
+        }
+    }
+    protected void btnHardCopy_Click(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();   
+        adapter.UpdateApplicationHardCopy(bool.Parse(cbHardCopy.Checked.ToString()), ApplicationID);
+//        btnHardCopy.Enabled = false;
+    }
+
+    protected void CheckBoxSel4ExtRev_CheckedChanged(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.Form_AttachmentTableAdapter frmAttAdapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+
+        foreach (GridViewRow row in grdFiles.Rows)
+        {
+            CheckBox CheckBoxSel4ExtRev = row.FindControl("CheckBoxSel4ExtRev") as CheckBox;
+            frmAttAdapter.UpdateSelForExtRev(CheckBoxSel4ExtRev.Checked, Int32.Parse(grdFiles.DataKeys[row.RowIndex].Values[0].ToString()));
+
+        }
+    }
+    protected void ButtonSaveSel4ExtRev_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in grdFiles.Rows)
+        {
+            CheckBox CheckBoxSel4ExtRev = row.FindControl("CheckBoxSel4ExtRev") as CheckBox;
+            try
+            {
+                PromotionTableAdapters.Form_AttachmentTableAdapter frmAttAdapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+                frmAttAdapter.UpdateSelForExtRev(CheckBoxSel4ExtRev.Checked, Int32.Parse(grdFiles.DataKeys[row.RowIndex].Values[0].ToString()));
+
+            }
+            catch (Exception exc)
+            {
+                Response.Write(exc.Message);
+
+            }
+        }
+    }
+
+    protected void cbHardCopy_CheckedChanged(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        adapter.UpdateApplicationHardCopy(bool.Parse(cbHardCopy.Checked.ToString()), ApplicationID);
+    }
+    public bool GetVisibleStatus(string AttachmentID)
+    {
+        PromotionTableAdapters.Form_AttachmentTableAdapter frmAttAdapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+        Promotion.Form_AttachmentRow frmAttRow = frmAttAdapter.GetDataByAttachmentID(Int32.Parse(AttachmentID))[0];
+        return frmAttRow.IsSelectionForExtRevNull()? false: true;
+    }
+    public bool GetCheckStatus(string AttachmentID)
+    {
+        PromotionTableAdapters.Form_AttachmentTableAdapter frmAttAdapter = new PromotionTableAdapters.Form_AttachmentTableAdapter();
+        Promotion.Form_AttachmentRow frmAttRow = frmAttAdapter.GetDataByAttachmentID(Int32.Parse(AttachmentID))[0];
+        return frmAttRow.IsSelectionForExtRevNull() ? false : frmAttRow.SelectionForExtRev;
+    }
+
+    protected void grdFiles_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        grdFiles.PageIndex = e.NewPageIndex; 
+        if (RoleID == 0)
+        {
+            BindFiles(RoleID);
+        }
+        else
+        {
+            BindFiles();
+        }
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+    protected void hideModalPopupViaServer3_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup3.Hide();
+    }
+}

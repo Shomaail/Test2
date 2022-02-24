@@ -1,0 +1,78 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Microsoft.Reporting.WebForms;
+using System.Collections.Generic;
+
+public partial class Forms_Report : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            Instruction1.Text = Master.CurrentFormInstruction;
+            if (IsPostBack) return;
+            
+            /* promotion server login */
+            string user = ConfigurationManager.AppSettings["ReportServer.User"];
+            string pass = ConfigurationManager.AppSettings["ReportServer.Password"];
+            string domain = ConfigurationManager.AppSettings["ReportServer.Domain"];
+
+            ReportViewer1.ServerReport.ReportServerCredentials = new ReportServerCredentials(user, pass, domain);
+            //ReportViewer2.ServerReport.ReportServerCredentials = new ReportServerCredentials(user, pass, domain);
+            
+            PromotionTableAdapters.ReportParametersTableAdapter adapter;
+            Promotion.ReportParametersDataTable table;
+            adapter = new PromotionTableAdapters.ReportParametersTableAdapter();
+
+            //report 1
+            table = adapter.GetDataByRole(Master.RoleID, 1);
+            List<ReportParameter> parameters = new List<ReportParameter>();
+            foreach (Promotion.ReportParametersRow row in table)
+            {
+                parameters.Add(new ReportParameter(row.Parameter, row.Value));
+            }
+            //parameters.Add(new ReportParameter("ApplicationID", "90"));
+            parameters.Add(new ReportParameter("ApplicationID", Master.ApplicationID.ToString()));
+            parameters.Add(new ReportParameter("RoleID", Master.RoleID.ToString()));
+
+            ReportViewer1.ServerReport.SetParameters(parameters);
+
+            ////Report 2
+            //ReportViewer2.Enabled = IsPointsAllowed();
+            //ReportViewer2.Visible = IsPointsAllowed();
+            //pnlPoints.Visible = IsPointsAllowed();
+
+            //table = adapter.GetDataByRole(Master.RoleID, 2);
+            //parameters = new List<ReportParameter>();
+            //foreach (Promotion.ReportParametersRow row in table)
+            //{
+            //    parameters.Add(new ReportParameter(row.Parameter, row.Value));
+            //}
+            ////parameters.Add(new ReportParameter("ApplicationID", "80"));
+            //parameters.Add(new ReportParameter("ApplicationID", Master.ApplicationID.ToString()));
+            //ReportViewer2.ServerReport.SetParameters(parameters);
+
+        }
+        catch (Exception)
+        {
+
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+
+
+    }
+
+    bool IsPointsAllowed()
+    {
+        return Master.RoleID != 8;
+    }
+}

@@ -1,0 +1,49 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms_ShowWillingnessPC : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            int pcID = Int32.Parse(Request.Params["pcID"].ToString());
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();
+            PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+
+            Promotion.PromotionCommitteeTempRow finalPCRow = adapter.GetDataByAutoNumberPK(pcID)[0];
+            Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(finalPCRow.ApplicationID)[0];
+            Label LabelPosition = ShowWillingnessPC1.FindControl("LabelPosition") as Label;
+            Label LabelApplicantName = ShowWillingnessPC1.FindControl("LabelApplicantName") as Label;
+            HR.EmployeeRow employeeRow = empAdapter.GetApplicant(finalPCRow.ApplicationID)[0];
+            LabelApplicantName.Text = employeeRow.Name;
+            if (finalPCRow.Position == 10)
+            {
+                LabelPosition.Text = "Chairman";
+            }
+            else
+            {
+                LabelPosition.Text = "Member";
+            }
+        }
+        catch (Exception)
+        {
+            LabelWebageUnavailable.Text = "The webpage requested is unavailable. Please check the URL";
+            LabelWebageUnavailable.Visible = true;
+            ShowWillingnessPC1.Visible = false;
+            return;
+           
+            
+        }
+        
+    }
+}

@@ -1,0 +1,135 @@
+<%@ Page Language="C#" MasterPageFile="~/Admin/Admin.master" AutoEventWireup="true" CodeFile="ActionMessage.aspx.cs" Inherits="Admin_ActionMessage" Title="Faculty Promotion System" MaintainScrollPositionOnPostback= "true" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<h3>Tasks</h3>
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
+        DataKeyNames="TaskID" DataSourceID="TasksDataSource" ForeColor="Black" BorderColor="#3062AF" AllowSorting="True">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <Columns>
+                    <asp:TemplateField>
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>
+            <asp:CommandField ShowEditButton="True" />
+            <asp:BoundField DataField="TaskID" HeaderText="TaskID" InsertVisible="False" ReadOnly="True"
+                SortExpression="TaskID" Visible="False" />
+            <asp:BoundField DataField="PhaseID" HeaderText="PhaseID" ReadOnly="True" SortExpression="PhaseID"
+                Visible="False" />
+            <asp:BoundField DataField="RoleID" HeaderText="RoleID" ReadOnly="True" SortExpression="RoleID"
+                Visible="False" />
+            <asp:BoundField DataField="Role" HeaderText="Role" ReadOnly="True" SortExpression="Role" />
+            <asp:BoundField DataField="Title" HeaderText="Task" SortExpression="Title" />
+            <asp:BoundField DataField="RemindAfter" HeaderText="RemindAfter" SortExpression="RemindAfter" />
+        </Columns>
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <EditRowStyle BackColor="#999999" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" HorizontalAlign="Center" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    </asp:GridView>
+    <asp:ObjectDataSource ID="TasksDataSource" runat="server" OldValuesParameterFormatString="original_{0}"
+        SelectMethod="GetData" TypeName="PromAdminTableAdapters.TaskTableAdapter" UpdateMethod="UpdateQuery">
+        <UpdateParameters>
+            <asp:Parameter Name="Title" Type="String" />
+            <asp:Parameter Name="RemindAfter" Type="Int32" />
+            <asp:Parameter Name="Original_TaskID" Type="Int32" />
+        </UpdateParameters>
+    </asp:ObjectDataSource>
+<h3>Actions</h3>
+    <asp:GridView ID="GridView2" runat="server" AllowSorting="True" AutoGenerateColumns="False"
+        CellPadding="4" DataKeyNames="ActionID" DataSourceID="ActionDataSource" ForeColor="Black">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <Columns>
+                    <asp:TemplateField>
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>
+            <asp:CommandField ShowEditButton="True" />
+            <asp:BoundField DataField="ActionID" HeaderText="ActionID" InsertVisible="False"
+                ReadOnly="True" SortExpression="ActionID" Visible="False" />
+            <asp:BoundField DataField="TaskID" HeaderText="TaskID" ReadOnly="True" SortExpression="TaskID"
+                Visible="False" />
+            <asp:BoundField DataField="NextPhaseID" HeaderText="NextPhaseID" ReadOnly="True"
+                SortExpression="NextPhaseID" Visible="False" />
+            <asp:BoundField DataField="NextTaskID" HeaderText="NextTaskID" ReadOnly="True" SortExpression="NextTaskID"
+                Visible="False" />
+            <asp:BoundField DataField="Type" HeaderText="Type" ReadOnly="True" SortExpression="Type"
+                Visible="False" />
+            <asp:BoundField DataField="Role" HeaderText="Role" ReadOnly="True" SortExpression="Role" />
+            <asp:BoundField DataField="Task" HeaderText="Task" ReadOnly="True" SortExpression="Task" />
+            <asp:TemplateField HeaderText="Action" SortExpression="Title">
+                <EditItemTemplate>
+                    <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Title") %>' Width="294px" TextMode="MultiLine"></asp:TextBox>
+                </EditItemTemplate>
+                <ItemTemplate>
+                    <asp:Label ID="Label1" runat="server" Text='<%# Bind("Title") %>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <EditRowStyle BackColor="#999999" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+    <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    </asp:GridView>
+    <asp:ObjectDataSource ID="ActionDataSource" runat="server" OldValuesParameterFormatString="original_{0}"
+        SelectMethod="GetData" TypeName="PromAdminTableAdapters.ActionTableAdapter" UpdateMethod="UpdateQuery">
+        <UpdateParameters>
+            <asp:Parameter Name="Title" Type="String" />
+            <asp:Parameter Name="Original_ActionID" Type="Int32" />
+        </UpdateParameters>
+    </asp:ObjectDataSource>
+<h3>Action Messages</h3>
+    <asp:GridView ID="GridView3" runat="server" AllowSorting="True" AutoGenerateColumns="False"
+        CellPadding="4" DataKeyNames="ActionID,NextTaskID" DataSourceID="ActionMessage"
+        ForeColor="Black" BorderColor="#3062AF">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <Columns>
+                    <asp:TemplateField>
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>
+            <asp:CommandField ShowEditButton="True" />
+            <asp:BoundField DataField="ActionID" HeaderText="ActionID" ReadOnly="True" SortExpression="ActionID"
+                Visible="False" />
+            <asp:BoundField DataField="NextTaskID" HeaderText="NextTaskID" ReadOnly="True" SortExpression="NextTaskID"
+                Visible="False" />
+            <asp:BoundField DataField="Role" HeaderText="Role" ReadOnly="True" SortExpression="Role" >
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Task" HeaderText="Task" ReadOnly="True" SortExpression="Task" >
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Action" HeaderText="Action" ReadOnly="True" SortExpression="Action" >
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:BoundField>
+            <asp:TemplateField HeaderText="Message" SortExpression="Message">
+                <EditItemTemplate>
+                    <asp:TextBox ID="TextBox1" runat="server" Height="211px" Text='<%# Bind("Message") %>'
+                        TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,2000);"  onPaste="return limitClipBoard(this,2000);"  Width="633px"></asp:TextBox>
+                </EditItemTemplate>
+                <ItemTemplate>
+                    &nbsp;<asp:TextBox ID="TextBox2" runat="server" Height="183px" ReadOnly="True" Text='<%# Bind("Message") %>'
+                        TextMode="MultiLine" Width="626px"></asp:TextBox>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:BoundField DataField="NextTask" HeaderText="NextTask" ReadOnly="True" SortExpression="NextTask" >
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:BoundField>
+        </Columns>
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <EditRowStyle BackColor="#999999" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+    <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    </asp:GridView>
+    <asp:ObjectDataSource ID="ActionMessage" runat="server" OldValuesParameterFormatString="original_{0}"
+        SelectMethod="GetData" TypeName="PromAdminTableAdapters.ActionMessagesTableAdapter"
+        UpdateMethod="UpdateQuery">
+        <UpdateParameters>
+            <asp:Parameter Name="Message" Type="String" />
+            <asp:Parameter Name="original_ActionID" Type="Int32" />
+            <asp:Parameter Name="original_NextTaskID" Type="Int32" />
+        </UpdateParameters>
+    </asp:ObjectDataSource>
+</asp:Content>
+

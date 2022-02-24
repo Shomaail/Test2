@@ -1,0 +1,120 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ExtReviewerList.ascx.cs" Inherits="Controls_ExtReviewerList" %>
+<%@ Register Src="~/Controls/ExtReviewers/ReviewerForm.ascx" TagName="ReviewerForm" TagPrefix="uc1" %>
+
+<h3>External Reviewers List</h3>
+<asp:GridView ID="GridViewFinalExtReviewersList" runat="server" CssClass="table-condensed"
+    AutoGenerateColumns="False" DataKeyNames="RefreeID"
+    DataSourceID="ObjectDataSourceFinalExtReviewers" CellPadding="4" 
+    ForeColor="#0099CC" GridLines="Vertical" 
+    OnSelectedIndexChanged="GridViewFinalExtReviewersList_SelectedIndexChanged" 
+    OnRowCommand="GridViewFinalExtReviewersList_RowCommand" 
+    OnRowUpdated="GridViewFinalExtReviewersList_RowUpdated" 
+    EmptyDataText="Click Detail in the table above to see the Detail View." >
+    <Columns>
+        <asp:TemplateField HeaderText="Serial #">
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField ShowHeader="False">
+            <EditItemTemplate>
+                <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="True" CommandName="Update"
+                    Text="Update"></asp:LinkButton>
+                <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False" CommandName="Cancel"
+                    Text="Cancel"></asp:LinkButton>
+            </EditItemTemplate>
+            <ItemTemplate>
+                <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Edit"
+                    Text="Edit Comments" Visible='<%# Eval("PCCommentsSubmit") %>' 
+                    ForeColor="#CC00FF"></asp:LinkButton><br />
+                <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="False" CommandName="Select"
+                    Text="Detail" ForeColor="#3366CC"></asp:LinkButton>
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:BoundField DataField="Serial" HeaderText="Ranking by VRGSSR" SortExpression="Serial" ReadOnly="True" >
+            <ItemStyle HorizontalAlign="Center" />
+        </asp:BoundField>
+        <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" ReadOnly="True" />
+        <asp:TemplateField HeaderText="Promotion Committee Comments" SortExpression="PCComments">
+            <EditItemTemplate>
+                <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("PCComments") %>' TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"  onPaste="return limitClipBoard(this,500);" ></asp:TextBox>
+            </EditItemTemplate>
+            <ItemTemplate>
+                &nbsp;<asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("PCComments") %>'
+                    TextMode="MultiLine" Enabled='False'></asp:TextBox>
+            </ItemTemplate>
+            <ItemStyle HorizontalAlign="Center" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Evaluation Status" SortExpression="EvaluationRecieved">
+            <EditItemTemplate>
+                &nbsp;<asp:Label ID="LabelEvaluationRecievedStatus" runat="server" Text="<%# GetStatusEvaluationRecievedStatus() %>"></asp:Label>
+            </EditItemTemplate>
+            <ItemTemplate>
+                <asp:Label ID="LabelEvaluationRecievedStatus" runat="server" Text="<%# GetStatusEvaluationRecievedStatus() %>"></asp:Label>
+            </ItemTemplate>
+            <ItemStyle HorizontalAlign="Center" />
+        </asp:TemplateField>
+        <asp:ButtonField CommandName="ShowForm" HeaderText="Reviewers Form" Text="Open">
+            <ItemStyle HorizontalAlign="Center" ForeColor="#CC9900" />
+        </asp:ButtonField>
+    </Columns>
+    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+    <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+    <EditRowStyle BackColor="#999999" />
+    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+<HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    <EmptyDataTemplate>
+        No External Reviewers has been selected.
+    </EmptyDataTemplate>
+</asp:GridView>
+<asp:ObjectDataSource ID="ObjectDataSourceFinalExtReviewers" runat="server" DeleteMethod="Delete" SelectMethod="GetDataForPC"
+    TypeName="FormTableAdapters.Form_FinalRefreeTableAdapter" UpdateMethod="UpdatePCComments" >
+    <DeleteParameters>
+        <asp:Parameter Name="Original_RefreeID" Type="Int32" />
+    </DeleteParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="PCComments" Type="String" />
+        <asp:Parameter Name="RefreeID" Type="Int32" />
+    </UpdateParameters>
+    <SelectParameters>
+        <asp:SessionParameter DefaultValue="1" Name="ApplicationID" SessionField="ApplicationIDGlobal"
+            Type="Int32" />
+    </SelectParameters>
+</asp:ObjectDataSource>
+<br />
+<h3>Detail View</h3>
+<asp:DetailsView ID="DetailsViewFinalExtReviewersList" runat="server" AutoGenerateRows="False" DataKeyNames="RefreeID" CssClass="table-condensed"
+    DataSourceID="ObjectDataSourceFinalExtReviewers" Height="50px" Width="283px" CellPadding="4" ForeColor="#333333" GridLines="None" EmptyDataText="Click Detail in the table above to see the Detail View.">
+    <Fields>
+        <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+        <asp:BoundField DataField="MailingAddress" HeaderText="Mailing Address" SortExpression="MailingAddress" />
+        <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+        <asp:BoundField DataField="Major" HeaderText="Major" SortExpression="Major" />
+        <asp:BoundField DataField="Speciality" HeaderText="Speciality" SortExpression="Speciality" />
+        <asp:BoundField DataField="PhoneAndFax" HeaderText="Phone And Fax" SortExpression="PhoneAndFax" />
+        <asp:BoundField DataField="ActiveAreaOfResearch" HeaderText="Active Area Of Research"
+            SortExpression="ActiveAreaOfResearch" />
+        <asp:BoundField DataField="PrevAreaOfResearch" HeaderText="Previous Area Of Research" SortExpression="PrevAreaOfResearch" />
+        <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+        <asp:BoundField DataField="Webpage" HeaderText="Webpage" ReadOnly="True" SortExpression="Webpage" />
+        <asp:BoundField DataField="Comments" HeaderText="Comments" ReadOnly="True" SortExpression="Comments" />
+        <asp:BoundField DataField="TotalPublications" HeaderText="Total Publications" ReadOnly="True" SortExpression="TotalPublications" />
+        <asp:BoundField DataField="NoOfJournals" HeaderText="No Of Journals" ReadOnly="True" SortExpression="NoOfJournals" />
+        <asp:BoundField DataField="HIndex" HeaderText="H-Index" ReadOnly="True" SortExpression="HIndex" />
+        <asp:BoundField DataField="Citations" HeaderText="Citations" ReadOnly="True" SortExpression="Citations" />
+    </Fields>
+    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+    <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+    <EditRowStyle BackColor="#999999" />
+    <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+    <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+<HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+</asp:DetailsView>
+<br />
+<asp:Label ID="LabelReviewerForm" runat="server" Style="left: 0px;"></asp:Label>
+<br />
+<br />
+<uc1:ReviewerForm ID="ReviewerForm1" runat="server" Visible="false" />
+<uc10:Alert ID="Alert1" runat="server" />

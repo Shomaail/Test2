@@ -1,0 +1,78 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>Faculty Promotion System</title>
+</head>
+<body dir="ltr" style="margin:0px; background-image: url(images/logo.gif); background-repeat: no-repeat">
+    <div style="border: 0px solid; margin-left: 0px; margin-top: 78px;"></div>
+    <form id="form2" runat="server">
+        <h1>
+            Faculty Promotion System</h1>
+    <div style="padding-left:15px">
+        
+        <h3 style="text-align: left">
+            The online service is currently not available due to some urgent maintenance work on 
+            the website for 2 hours today on Sunday Jan 16 2011 from 12:00 PM to 
+			2:00 PM. The website will resume just after this interval InshAllah.&nbsp;&nbsp;&nbsp; </h3>
+        <h3 style="text-align: left">
+            Sorry for inconvenience.</h3>
+        <h3 style="text-align: left">
+            Thanks
+        </h3>
+        <h3 style="text-align: left">
+            Administration Online Faculty Promotion System.
+            </h3>
+        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Login.aspx">www.kfupm.edu.sa/FacultyPromotionSystem</asp:HyperLink><br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        
+        </div>
+        <table width="100%" style="border-top:1px solid #3062af ">
+            <tr>
+            <td align ="center" style="width: 100%">
+                <span style="font-size: 9pt">
+                    Faculty Promotion System <br />
+                    Copyright © 2008 King Fahd University of Petroleum & Minerals | Dhahran, 31261 | Saudi Arabia | +966 (3) 860 0000.<br />
+                    
+                  </span>
+                 </td>
+                </tr>
+          </table>
+
+    </form>
+</body>
+</html>
+

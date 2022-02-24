@@ -1,0 +1,172 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="FormFinalExtRevOld.aspx.cs" Inherits="Forms_FormFinalExtRev" MaintainScrollPositionOnPostback="true" %>
+
+<%@ Register TagPrefix="anthem" Namespace="Anthem" Assembly="Anthem" %>
+<%@ Register Assembly="eWorld.UI" Namespace="eWorld.UI" TagPrefix="ew" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxtoolkit" %>
+<%@ Register Src="../Controls/ExternalReviewer.ascx" TagName="ExternalReviewer" TagPrefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+
+<%@ Register src="../Controls/ExtReviewers/ReviewerForm.ascx" tagname="ReviewerForm" tagprefix="uc3" %>
+
+<%@ Register src="../Controls/ComposeEmail.ascx" tagname="ComposeEmail" tagprefix="uc4" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+
+    <div id="divFormFinalExtRev" runat="server" visible='<%#FormMode == "View" %>' style='overflow: auto; width: 1000px;'>
+        <asp:HiddenField ID="hfExtRevID" runat="server" />
+        <h3>Final External Reviewers </h3>
+        <asp:GridView ID="gvFinalExtRev" runat="server" AutoGenerateColumns="False" DataSourceID="odsFormFinalExtRev" EnableModelValidation="True" CellPadding="4"
+            CssClass="table-condensed" DataKeyNames="ApplicationID,ExternalReviewerID" OnRowCommand="gvFinalExtRev_RowCommand" OnRowDataBound="gvFinalExtRev_RowDataBound"
+            ForeColor="#333333" GridLines="None" EmptyDataText="No Final External Reviewer present">
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            <Columns>
+                <asp:TemplateField ShowHeader="False">
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnDetails" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ExternalReviewerID") %>' CommandName="SelectDetail" Text="Details"></asp:LinkButton>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:BoundField DataField="ExternalReviewerID" HeaderText="ExternalReviewerID" SortExpression="ExternalReviewerID" Visible="false" />
+                <asp:TemplateField HeaderText="Name">
+                    <ItemTemplate>
+                        <asp:Label ID="lblName" runat="server" ForeColor='<%# GetColor(Eval("WLStatus").ToString())%>' Text='<%# Bind("Name") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Willingness Letter">
+                    <ItemTemplate>
+                        <div style="align-content: center; text-align: center;">
+                            <div>
+                                <asp:Button ID="btnWillingnessLetter" runat="server" Text='<%# Eval("WLStatus").ToString() == "not send" ? "Send Email" : "EmailSent" %>' 
+                                    Enabled='<%# Eval("WLStatus").ToString() == "not send" ? true : false %>' class="btn btn-primary btn-md"  
+                                    CommandName="SendWL" CommandArgument='<%# Eval("ExternalReviewerID") %>' 
+                                    ></asp:Button>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Willingness Letter Status">
+                    <ItemTemplate>
+                        <asp:Label ID="lblWLStatus" runat="server" ForeColor='<%# GetColor(Eval("WLStatus").ToString()) %>' Text='<%# Bind("WLStatus") %>'></asp:Label>
+                        <asp:Label ID="lblDateWL" runat="server" Text='<%# Eval("WLDate") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Comments with Willingness Letter" SortExpression="CommentsWithWL">
+                    <ItemTemplate>
+                        <div style='overflow: auto; height: 75px;'>
+                            <asp:Label ID="lblCommentsWithWL" runat="server" Text='<%# Bind("CommentsWithWL") %>'></asp:Label>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Material Sent Status">
+                    <ItemTemplate>
+                        <div style='overflow: auto; height: 75px;'>
+                            <asp:Label ID="lblMaterialSentStatus" runat="server" Text='<%# Bind("MaterialSentStatus") %>' ForeColor='<%# GetColor(Eval("MaterialSentStatus").ToString())%>'></asp:Label>
+                            <asp:Label ID="lblMaterialSentDate" runat="server" Text='<%# Bind("MaterialSentDate") %>'></asp:Label>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Evaluation Status">
+                    <ItemTemplate>
+                        <div style='overflow: auto; height: 75px;'>
+                            <asp:Label ID="lblEvaluationStatus" runat="server" Text='<%# Bind("EvaluationStatus") %>' ForeColor='<%# GetColor(Eval("EvaluationStatus").ToString())%>'></asp:Label>
+                            <asp:Label ID="lblEvaluationDate" runat="server" Text='<%# Bind("EvaluationDate") %>'></asp:Label>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                 <asp:TemplateField HeaderText="Reviewers Form">
+                    <ItemTemplate>
+                        <div style="align-content: center; text-align: center;">
+                            <div>
+                                <asp:Button ID="btnShowForm" runat="server" Text="Show Form" class="btn btn-primary btn-md"  
+                                    Enabled='<%# Eval("EvaluationStatus").ToString() == "Recieved" ? true : false %>'
+                                    CommandName="ShowForm" CommandArgument='<%# Eval("ExternalReviewerID") %>' ></asp:Button>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Comments">
+                    <ItemTemplate>
+                        <asp:Label ID="lblCommentsWithEval" runat="server" Text='<%# Bind("CommentsWithEval") %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Columns>
+            <EditRowStyle BackColor="#999999" />
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor="#007d40" Font-Bold="True" ForeColor="White" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        </asp:GridView>
+        <asp:ObjectDataSource ID="odsFormFinalExtRev" runat="server"  InsertMethod="InsertFormFinalExtRev" SelectMethod="GetForm_FinalExtRev" TypeName="ExtRevBAL" DeleteMethod="DeleteFormFinalExtRev">
+            <DeleteParameters>
+                <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" QueryStringField="applicationID" Type="Int32" />
+                <asp:Parameter Name="ExternalReviewerID" Type="Int32" />
+            </DeleteParameters>
+            <SelectParameters>
+                <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" QueryStringField="applicationID" Type="Int32" />
+            </SelectParameters>
+        </asp:ObjectDataSource>
+
+    </div>
+    <div id="divViewDetail" runat="server" visible='<%#FormMode == "ExtRevDetail"%>'>
+        <asp:DetailsView ID="dvExtReviewers" runat="server" Height="50px" Width="125px" CellPadding="4" class="table-condensed"
+            DataSourceID="odsFormExtRevDet" EnableModelValidation="True" GridLines="None" AutoGenerateRows="False">
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+            <EditRowStyle BackColor="#999999" />
+            <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+            <Fields>
+                <asp:BoundField DataField="ExternalReviewerID" HeaderText="ExternalReviewerID" SortExpression="ExternalReviewerID" Visible="false" />
+                <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+                <asp:BoundField DataField="MailingAddress" HeaderText="MailingAddress" SortExpression="MailingAddress" />
+                <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                <asp:BoundField DataField="Major" HeaderText="Major" SortExpression="Major" />
+                <asp:BoundField DataField="Speciality" HeaderText="Speciality" SortExpression="Speciality" />
+                <asp:BoundField DataField="PhoneAndFax" HeaderText="PhoneAndFax" SortExpression="PhoneAndFax" />
+                <asp:BoundField DataField="ActiveAreaOfResearch" HeaderText="ActiveAreaOfResearch" SortExpression="ActiveAreaOfResearch" />
+                <asp:BoundField DataField="PrevAreaOfResearch" HeaderText="PrevAreaOfResearch" SortExpression="PrevAreaOfResearch" />
+                <asp:BoundField DataField="Webpage" HeaderText="Webpage" SortExpression="Webpage" />
+                <asp:BoundField DataField="Comments" HeaderText="Comments" SortExpression="Comments" />
+                <asp:BoundField DataField="TotalPublications" HeaderText="TotalPublications" SortExpression="TotalPublications" />
+                <asp:BoundField DataField="NoOfJournals" HeaderText="NoOfJournals" SortExpression="NoOfJournals" />
+                <asp:BoundField DataField="HIndex" HeaderText="HIndex" SortExpression="HIndex" />
+                <asp:BoundField DataField="Citations" HeaderText="Citations" SortExpression="Citations" />
+                <asp:BoundField DataField="SWIFTCode" HeaderText="SWIFTCode" SortExpression="SWIFTCode" />
+                <asp:BoundField DataField="IBAN" HeaderText="IBAN" SortExpression="IBAN" />
+            </Fields>
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        </asp:DetailsView>
+        <asp:ObjectDataSource ID="odsFormExtRevDet" runat="server" SelectMethod="GetExtRevByID" TypeName="ExtRevBAL" OldValuesParameterFormatString="original_{0}">
+            <SelectParameters>
+                 <asp:Parameter Name="ExternalReviewerID" Type="Int32" />
+            </SelectParameters>
+        </asp:ObjectDataSource>
+        <asp:Button ID="btnHideDetail" runat="server" Text="Return to List" OnClick="btnHideDetail_Click" CssClass="btn btn-primary btn-md" />
+    </div>
+    <div id="divSendWL" runat="server" visible='<%#FormMode == "SendWL"%>'>
+        <uc4:ComposeEmail ID="ComposeEmail1" runat="server"  OnEmailNotSent="ComposeEmail_OnEmailNotSent"  OnEmailSent="ComposeEmail_OnEmailSent"/>
+    </div>
+    <br />
+    <asp:Button runat="server" ID="hiddenTargetControlForModalPopup0" Style="display: none" class="btn btn-primary btn-md" />
+    <ajaxtoolkit:ModalPopupExtender runat="server" ID="programmaticModalPopup0" BehaviorID="programmaticModalPopupBehavior0"
+        TargetControlID="hiddenTargetControlForModalPopup0" PopupControlID="programmaticPopup0"
+        BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle0"
+        RepositionMode="RepositionOnWindowScroll">
+    </ajaxtoolkit:ModalPopupExtender>
+    <asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup0" Style="display: none; width: 300px; padding: 10px">
+        <asp:Panel runat="Server" ID="programmaticPopupDragHandle0" Style="cursor: move; color: Black; font-weight: 700; text-align: left;">
+            Message:
+        </asp:Panel>
+        <asp:Label ID="labelProgrammaticPopup0" runat="server"></asp:Label>
+        <br />
+        <div align="center">
+            <br />
+            <asp:Button runat="server" ValidationGroup="OKBtn" ID="hideModalPopupViaServer0" Text="OK" OnClick="hideModalPopupViaServer0_Click" CssClass="btn btn-primary btn-sm" />
+        </div>
+    </asp:Panel>
+    <uc3:ReviewerForm ID="ReviewerForm1" runat="server" />
+</asp:Content>
+

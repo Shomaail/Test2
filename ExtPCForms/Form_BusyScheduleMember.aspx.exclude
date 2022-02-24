@@ -1,0 +1,12 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtPCForms/ExtPCForm.master" AutoEventWireup="true" CodeFile="Form_BusyScheduleMember.aspx.cs" Inherits="ExtPCForms_Form_BusyScheduleMember" Title="KFUPM Online Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ mastertype virtualpath="ExtPCForm.master" %>
+<%@ Register Src="../Controls/BusyScheduleMember.ascx" TagName="BusyScheduleMember"
+    TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <uc1:BusyScheduleMember ID="BusyScheduleMember1" runat="server" />
+</asp:Content>
+

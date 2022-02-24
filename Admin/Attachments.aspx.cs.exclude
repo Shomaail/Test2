@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+
+public partial class Admin_Attachements : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        ObjectDataSource1.SelectParameters["EmployeeID"].DefaultValue = "2000298";
+        //FilesUpload1.LoadFiles(Convert.ToInt32(DropDownList1.SelectedValue), 6, false, true);
+        FilesUpload1.Visible = false;
+    }
+    protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FilesUpload1.Visible = true;
+        FilesUpload1.LoadFiles(Convert.ToInt32(DropDownList1.SelectedValue), 6, false, true);
+    }
+}

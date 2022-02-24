@@ -1,0 +1,9 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtForms/ExtForm.master" AutoEventWireup="true" CodeFile="ExtMain.aspx.cs" Inherits="ExtMain" Title="KFUPM Online Faculty Promotion System" MaintainScrollPositionOnPostback="true"%>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <h3><asp:Label ID="lblPageHeading" runat="server" Text=""></asp:Label></h3>
+    <asp:TextBox ID="TextBoxMessage" runat="server" Height="408px" TextMode="MultiLine"
+        Width="100%"></asp:TextBox>
+</asp:Content>
+

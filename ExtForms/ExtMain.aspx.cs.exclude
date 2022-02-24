@@ -1,0 +1,64 @@
+﻿using System;
+
+public partial class ExtMain : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        if (Session != null)
+        {
+            if (Session["login"] == null)
+            {
+                Response.Redirect("~/ExtLogin.aspx");
+            }
+        }
+        PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter adapter = new PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter();
+        Promotion.vw_ExternalApplicationRefreeRow myRow = adapter.GetDataByRefreeId(int.Parse(Session["applicationID"].ToString()), int.Parse(Session["refreeID"].ToString()))[0];
+
+        BAL bal = new BAL();
+        bal.InsertActionLog(myRow.Refree_Name + " Case of Dr. " + myRow.Name, DateTime.Now);
+    }
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter adapter = new PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter();
+        Promotion.vw_ExternalApplicationRefreeRow myRow = adapter.GetDataByRefreeId(int.Parse(Session["applicationID"].ToString()), int.Parse(Session["refreeID"].ToString()))[0];
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicant = appAdapter.GetApplication(myRow.ApplicationID)[0];
+        Response.Cookies["langCookie"].Value = "en";
+
+
+        if (Request.Cookies["langCookie"].Value.ToString() == "ar")
+        {
+            TextBoxMessage.Text = @"سعادة الدكتور ،
+
+            مرحبا بكم في جامعة الملك فهد للبترول والمعادن 
+
+            شكرا
+
+            الدكتور ناصر العقيلي،
+            وكيل الجامعة للدراسات العليا والبحث العلمي،
+            جامعة الملك فهد للبترول والمعادن
+            ";
+        }
+        else
+        {
+            TextBoxMessage.Text = @"
+        Dear Dr. " + myRow.Refree_Name + @"
+
+        Welcome to the KFUPM Online Faculty Promotion System. You have been selected as an external reviewer to examine the promotion request of Dr. " + myRow.Name + @" for the rank of " + applicant.ForRank + @" in the Department of " + myRow.Department + @". 
+
+        In this regard, you are requested to go through the application documents of the candidate which include CV and selected publications of the applicant and finally provide your comments in the Reviewer form.
+
+        Thanks 
+
+        Dr. Nasser Al-Aqeeli 
+        Vice Rector for Graduate Studies & Scientific Research,
+        King Fahd University of Petroleum and Minerals
+
+        ";
+
+        }
+
+
+    }
+}

@@ -1,0 +1,42 @@
+/*!
+ * Start Bootstrap - 3 Col Portfolio HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+body {
+	background:url(../images/footer.png) no-repeat bottom;
+}
+
+.portfolio-item {
+    margin-bottom: 25px;
+}
+
+footer {
+    margin: 50px 0;
+}
+
+.container{
+	width:940px;
+}
+
+.btn-primary.active, .btn-primary.focus, .btn-primary:active, .btn-primary:focus, .btn-primary:hover, .open > .dropdown-toggle.btn-primary
+{
+	background:#007d40;
+}
+
+.black-stripe{
+	background:#333;
+	padding:8px;
+}
+
+.black-stripe a{
+	color:#ccc;
+}
+
+.btn-primary {
+    background-color: #007d40;
+    border-color: #007d40;
+    color: #fff;
+}
+

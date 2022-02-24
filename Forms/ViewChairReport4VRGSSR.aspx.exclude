@@ -1,0 +1,17 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="ViewChairReport4VRGSSR.aspx.cs" Inherits="Forms_ViewChairReport4VRGSSR" Title="Faculty Promotion System" MaintainScrollPositionOnPostback="true"%>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Src="../Controls/ViewPCChairReport.ascx" TagName="ViewPCChairReport"
+    TagPrefix="uc1" %>
+<%@ Register src="../Controls/DigitalSignature.ascx" tagname="DigitalSignature" tagprefix="uc2" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <asp:Label ID="lblMessage" runat="server"></asp:Label><br />
+    <uc2:DigitalSignature ID="DigitalSignature1" runat="server" />
+    <br />
+    <uc1:viewpcchairreport id="ViewPCChairReport1" runat="server" >
+    </uc1:viewpcchairreport>
+    <br />
+    <asp:Button ID="ButtonSave" runat="server" Text="Save" OnClick="ButtonSave_Click" /><br />
+    <br />
+    <br />
+</asp:Content>
+

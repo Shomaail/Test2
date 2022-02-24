@@ -1,0 +1,71 @@
+﻿using System;
+using System.Web.Security;
+using System.Web.UI;
+using System.Globalization;
+using System.Xml;
+using System.Data;
+using System.Threading;
+using BL.Data;
+public partial class ExtForms_ExtRevProfile :Page
+{
+    ExtRevBAL erBAL = new ExtRevBAL();
+    protected override void InitializeCulture()
+    {
+        if (Request.Form["__EVENTTARGET"] != null && Request.Form["__EVENTTARGET"].Contains("ddlLang"))
+        {
+            UICulture = Request.Form[Request.Form["__EVENTTARGET"]];
+            Culture = Request.Form[Request.Form["__EVENTTARGET"]];
+
+            Thread.CurrentThread.CurrentCulture =
+                CultureInfo.CreateSpecificCulture(Request.Form[Request.Form["__EVENTTARGET"]]);
+            Thread.CurrentThread.CurrentUICulture = new
+                CultureInfo(Request.Form[Request.Form["__EVENTTARGET"]]);
+        } base.InitializeCulture();
+        //else
+        //{
+        //    UICulture = Master.Language;
+        //    Culture = Master.Language;
+        //    Thread.CurrentThread.CurrentCulture =  CultureInfo.CreateSpecificCulture(Master.Language);
+        //    Thread.CurrentThread.CurrentUICulture = new CultureInfo(Master.Language);
+
+        //}
+    }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        //Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(Master.Language);
+    //    Thread.CurrentThread.CurrentUICulture = new CultureInfo(Master.Language);
+
+        if (IsPostBack)
+        {
+            return;
+        }
+        
+       
+        ExternalReviewer er = erBAL.GetExtRevByID(Master.ExtReviewerID)[0];
+        taName.Value = er.NameString ;
+        taRank.Value = er.Rank;
+        taAddress.Value = er.MailingAddress;
+        taEmail.Value = er.Email;
+        taMajor.Value = er.Major;
+        taSpecialty.Value = er.Specialty;
+        taPhoneNFax.Value = er.PhoneAndFax;
+        taActiveAreaOfResearch.Value = er.ActiveAreaOfResearch;
+        taPreviousAreaOfResearch.Value = er.PrevAreaOfResearch;
+        taWebsite.Value = er.Webpage;
+        taTotalPublications.Value = er.TotalPublications.ToString();
+        taNoOfJournals.Value = er.NoOfJournals.ToString();
+        taHIndex.Value = er.HIndex.ToString();
+        taCitations.Value = er.Citations.ToString();
+        taPassportNo.Value = er.PassportNo;
+        taBank.Value = er.IBAN;
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        ExternalReviewer er = erBAL.GetExtRevByID(Master.ExtReviewerID)[0];
+        erBAL.UpdateExtRev(er.ExternalReviewerID,taName.Value
+            , taRank.Value, taAddress.Value, taEmail.Value, taMajor.Value, taSpecialty.Value, taPhoneNFax.Value, taActiveAreaOfResearch.Value
+            , taPreviousAreaOfResearch.Value , taWebsite.Value, er.Comments, int.Parse(taTotalPublications.Value), int.Parse(taNoOfJournals.Value)
+            , int.Parse(taHIndex.Value) , int.Parse(taCitations.Value),er.Status,er.Password,er.IBAN,er.PassportNo, taName.Value,"");
+    }
+}

@@ -1,0 +1,42 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="BusyScheduleChair.ascx.cs" Inherits="Controls_BusyScheduleChair" %>
+<%@ Register Src="ComposeEmailOld.ascx" TagName="ComposeEmail" TagPrefix="uc2" %>
+<%@ Register Src="Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<asp:Label ID="Label4" runat="server" ></asp:Label>
+<br />
+<br />
+<asp:Button ID="btnCancel" runat="server" OnClick="btnCancel_Click" Text="Cancel Current Schedule" class="btn btn-primary btn-md" /><br />
+<br />
+&nbsp; &nbsp;
+<asp:Calendar ID="Calendar2" runat="server" FirstDayOfWeek="Sunday"
+SelectionMode="DayWeek"
+SelectWeekText="Select Week"
+OnSelectionChanged = "Calendar2_SelectionChanged"
+NextPrevFormat="ShortMonth"
+ TodayDayStyle-BackColor ="Green" Width="100%" BackColor="White" 
+    BorderColor="Black" Font-Names="Verdana" Font-Size="9pt" 
+    ForeColor="Black" Height="262px" BorderStyle="Solid" CellSpacing="1">
+     <OtherMonthDayStyle ForeColor="#999999" />
+     <DayStyle BackColor="#CCCCCC" />
+    <NextPrevStyle Font-Bold="True" Font-Size="8pt" ForeColor="White" />
+
+     <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" 
+         Height="8pt" />
+     <SelectedDayStyle BackColor="#333399" ForeColor="White" />
+    <TitleStyle BackColor="#007d40" Font-Bold="True" Font-Size="12pt"
+        ForeColor="White" BorderStyle="Solid" Height="12pt" />
+    <TodayDayStyle BackColor="#999999" ForeColor="White" />
+ </asp:Calendar>
+<br /><br />
+<asp:Label ID="Label3" runat="server" Text="Selected Busy Week: " ForeColor="Blue"></asp:Label>&nbsp;&nbsp;&nbsp;
+<asp:Label ID="lblWeekNo" runat="server" Width="631px" ></asp:Label>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br />
+<br />
+<asp:Button ID="ButtonLaunchBW" runat="server" 
+    Text="Launch Selected Busy Week" class="btn btn-primary btn-md"  OnClick="ButtonLaunchBW_Click" ToolTip="Click on this button to Launch the Busy Week Schedule. Emails will be sent automatically to all the members in the promotion committee." />
+<br />
+<br />
+<uc2:ComposeEmail ID="ComposeEmail1" runat="server" Visible="false" OnEmailSent="ComposeEmail_EmailSent" OnEmailNotSent="ComposeEmail_EmailNotSent"/>
+<br />
+<asp:Label ID="LabelAfterLauchButton" runat="server" ForeColor="Red"></asp:Label>
+<uc10:Alert ID="Alert1" runat="server" />

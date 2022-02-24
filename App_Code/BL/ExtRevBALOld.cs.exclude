@@ -1,0 +1,787 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
+using BL.Data;
+
+/// <summary>
+/// Summary description for ExtRevBAL
+/// </summary>
+public class ExtRevBAL
+{
+	public ExtRevBAL()
+	{
+		//
+		// TODO: Add constructor logic here
+		//
+	}
+    #region search Ext Rev
+    public List<ExternalReviewer1> SearchExternalReviewer(string MainSearchString)
+    {
+        string[] srchStrArr = new string[5];
+        char[] separator = new char[2];
+        string srchStr;
+        List<ExternalReviewer1> extRevList = GetAllExtRev();
+        List<ExternalReviewer1> searchResultList = new List<ExternalReviewer1>();
+        if (MainSearchString == null || MainSearchString == "")
+            return searchResultList;
+        bool isDuplicateRow = false;
+        foreach (ExternalReviewer1 extRev in extRevList)
+        {
+            try
+            {
+                if (extRev.Name.ToLower().Contains(MainSearchString.ToLower())
+                    || extRev.Email.ToLower().Equals(MainSearchString.ToLower())
+                    )
+
+                {
+                    foreach (ExternalReviewer1 extRevOld in searchResultList)
+                    {
+                        if (isDuplicateRow = extRev.ExternalReviewerID == extRevOld.ExternalReviewerID) break;
+                    }
+                    if (!isDuplicateRow)
+                        searchResultList.Add(extRev);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        srchStrArr = MainSearchString.Split(separator);
+        for (int i = 0; i < srchStrArr.Length; i++)
+        {
+            srchStr = srchStrArr[i];
+            foreach (ExternalReviewer1 extRev in extRevList)
+            {
+                try
+                {
+                    if (extRev.Name.ToLower().Contains(srchStr.ToLower()))
+                    {
+
+                        foreach (ExternalReviewer1 extRevOld in searchResultList)
+                        {
+                            if (isDuplicateRow = extRev.ExternalReviewerID == extRevOld.ExternalReviewerID) break;
+                        }
+                        if (!isDuplicateRow)
+                            searchResultList.Add(extRev);
+
+
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+        return searchResultList;
+    }
+    #endregion 
+    #region ExternalReviewer
+    public List<ExternalReviewer1> GetAllExtRev()
+    {
+        var context = new DataClassesDataContext();
+        var data = (from er in context.ExternalReviewers
+
+                    select new ExternalReviewer1
+                    {
+                        ExternalReviewerID          = er.ExternalReviewerID, 
+                    Name                             = er.Name                 ,
+                    Rank                             = er.Rank                 ,
+                    MailingAddress                   = er.MailingAddress       ,
+                    Email                            = er.Email                ,
+                    Major                            = er.Major                ,
+                    Speciality                       = er.Speciality           ,
+                    PhoneAndFax                      = er.PhoneAndFax          ,
+                    ActiveAreaOfResearch             = er.ActiveAreaOfResearch ,
+                    PrevAreaOfResearch               = er.PrevAreaOfResearch   ,
+                    Webpage                          = er.Webpage              ,
+                    Comments                         = er.Comments             ,
+                    TotalPublications                = er.TotalPublications    ,
+                    NoOfJournals                     = er.NoOfJournals         ,
+                    HIndex                           = er.HIndex               ,
+                    Citations                        = er.Citations            ,
+                    //SWIFTCode                        = er.SWIFTCode            ,
+                    IBAN                             = er.IBAN
+
+                    }).ToList<ExternalReviewer1>();
+        return data;
+    }
+    public List<ExternalReviewer1> GetExtRevByID(int ExternalReviewerID)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from er in context.ExternalReviewers
+                    where er.ExternalReviewerID == ExternalReviewerID
+                    select new ExternalReviewer1
+                    {
+                        ExternalReviewerID = er.ExternalReviewerID,
+                        Name = er.Name,
+                        Rank = er.Rank,
+                        MailingAddress = er.MailingAddress,
+                        Email = er.Email,
+                        Major = er.Major,
+                        Speciality = er.Speciality,
+                        PhoneAndFax = er.PhoneAndFax,
+                        ActiveAreaOfResearch = er.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = er.PrevAreaOfResearch,
+                        Webpage = er.Webpage,
+                        Comments = er.Comments,
+                        TotalPublications = er.TotalPublications,
+                        NoOfJournals = er.NoOfJournals,
+                        HIndex = er.HIndex,
+                        Citations = er.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        IBAN = er.IBAN
+                    }).ToList<ExternalReviewer1>();
+        return data;
+       
+                  
+                  
+    }
+    public List<Form_Refree> GetForm_RefreeByPK(int AppID, byte Type, byte Serial)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from er in context.Form_Refrees
+                    where er.ApplicationID  == AppID && er.Type == Type && er.Serial == Serial
+                    select new Form_Refree
+                    {
+                        ApplicationID = AppID,
+                        Type = Type, Serial = Serial,
+                        Name = er.Name,
+                        Rank = er.Rank,
+                        MailingAddress = er.MailingAddress,
+                        Email = er.Email,
+                        Major = er.Major,
+                        Speciality = er.Speciality,
+                        PhoneAndFax = er.PhoneAndFax,
+                        ActiveAreaOfResearch = er.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = er.PrevAreaOfResearch,
+                        Webpage = er.Webpage,
+                        Comments = er.Comments,
+                        TotalPublications = er.TotalPublications,
+                        NoOfJournals = er.NoOfJournals,
+                        HIndex = er.HIndex,
+                        Citations = er.Citations,
+
+                    }).ToList<Form_Refree>();
+        return data;
+    }
+    public List<ExternalReviewer1> GetExtRevByEmail(string Email)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from er in context.ExternalReviewers
+                    where er.Email== Email
+                    select new ExternalReviewer1
+                    {
+                        ExternalReviewerID = er.ExternalReviewerID,
+                        Name = er.Name,
+                        Rank = er.Rank,
+                        MailingAddress = er.MailingAddress,
+                        Email = er.Email,
+                        Major = er.Major,
+                        Speciality = er.Speciality,
+                        PhoneAndFax = er.PhoneAndFax,
+                        ActiveAreaOfResearch = er.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = er.PrevAreaOfResearch,
+                        Webpage = er.Webpage,
+                        Comments = er.Comments,
+                        TotalPublications = er.TotalPublications,
+                        NoOfJournals = er.NoOfJournals,
+                        HIndex = er.HIndex,
+                        Citations = er.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        IBAN = er.IBAN
+                    }).ToList<ExternalReviewer1>();
+        return data;
+    }
+    public void UpdateExtRev(int ExternalReviewerID,string Name, string Rank, string MailingAddress, string Email, string Major, string Speciality, string PhoneAndFax, string ActiveAreaOfResearch,
+        string PrevAreaOfResearch, string Webpage, string Comments, int? TotalPublications, int? NoOfJournals, int? HIndex, int? Citations, string SWIFTCode, string IBAN)
+    {
+        var context = new DataClassesDataContext();
+        var query = from er in context.ExternalReviewers
+                    where
+                    er.ExternalReviewerID == ExternalReviewerID
+                    select er;
+        foreach (var row in query)
+        {
+            row.Name = Name;
+            row.Rank = Rank;
+            row.MailingAddress = MailingAddress;
+            row.Email = Email;
+            row.Major = Major;
+            row.Speciality = Speciality;
+            row.PhoneAndFax = PhoneAndFax;
+            row.ActiveAreaOfResearch = ActiveAreaOfResearch;
+            row.PrevAreaOfResearch = PrevAreaOfResearch;
+            row.Webpage = Webpage;
+            row.Comments = Comments;
+            row.TotalPublications = TotalPublications;
+            row.NoOfJournals = NoOfJournals;
+            row.HIndex = HIndex;
+            row.Citations = Citations;
+            row.SWIFTCode = SWIFTCode;
+            row.IBAN = IBAN;
+            
+        }
+        context.SubmitChanges();
+    }
+    public int InsertExtRev(string Name,string Rank,string MailingAddress,string Email,string Major,string Speciality,string PhoneAndFax,string ActiveAreaOfResearch,
+        string PrevAreaOfResearch,string Webpage,string Comments,int? TotalPublications,int? NoOfJournals,int? HIndex,int? Citations,string SWIFTCode,string IBAN)
+    {
+        var context = new DataClassesDataContext();
+        Name = Regex.Replace(Name, "<[^>]*(>|$)", string.Empty);
+        ExternalReviewer er = new ExternalReviewer
+        {
+            Name = Name,
+            Rank = Rank,
+            MailingAddress = MailingAddress,
+            Email = Email,
+            Major = Major,
+            Speciality = Speciality,
+            PhoneAndFax = PhoneAndFax,
+            ActiveAreaOfResearch = ActiveAreaOfResearch,
+            PrevAreaOfResearch = PrevAreaOfResearch,
+            Webpage = Webpage,
+            Comments = Comments,
+            TotalPublications = TotalPublications,
+            NoOfJournals = NoOfJournals,
+            HIndex = HIndex,
+            Citations = Citations,
+            SWIFTCode = SWIFTCode,
+            IBAN = IBAN
+        };
+        context.ExternalReviewers.InsertOnSubmit(er);
+        context.SubmitChanges();
+        return er.ExternalReviewerID;
+    }
+    public void DeleteExtRev(int ExternalReviewerID)
+    {
+        var context = new DataClassesDataContext();
+        var query = from er in context.ExternalReviewers
+                    where er.ExternalReviewerID == ExternalReviewerID
+                    select er;
+        foreach (var row in query)
+        {
+            context.ExternalReviewers.DeleteOnSubmit(row);
+        }
+        context.SubmitChanges();
+
+    }
+    #endregion
+    #region Form_ExtRev
+    public List<Form_ExtRev1> GetFormExtRevByAppID(int ApplicationID)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_ExtRevs
+
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID
+
+                    )
+                    select new Form_ExtRev1
+                    {
+                        ApplicationID = ApplicationID,
+                        ExternalReviewerID = fer.ExternalReviewerID,
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.ExternalReviewer.Name,
+                        Rank = fer.ExternalReviewer.Rank,
+                        MailingAddress = fer.ExternalReviewer.MailingAddress,
+                        Email = fer.ExternalReviewer.Email,
+                        Major = fer.ExternalReviewer.Major,
+                        Speciality = fer.ExternalReviewer.Speciality,
+                        PhoneAndFax = fer.ExternalReviewer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ExternalReviewer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.ExternalReviewer.PrevAreaOfResearch,
+                        Webpage = fer.ExternalReviewer.Webpage,
+                        Comments = fer.ExternalReviewer.Comments,
+                        TotalPublications = fer.ExternalReviewer.TotalPublications,
+                        NoOfJournals = fer.ExternalReviewer.NoOfJournals,
+                        HIndex = fer.ExternalReviewer.HIndex,
+                        Citations = fer.ExternalReviewer.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    public List<Form_Refree1> GetFormExtRevByAppIDOld(int ApplicationID)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_Refrees
+                   
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID
+
+                    )
+                    select new Form_Refree1
+                    {
+                        ApplicationID = ApplicationID,
+                        
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.Name,
+                        Rank = fer.Rank,
+                        MailingAddress = fer.MailingAddress,
+                        Email = fer.Email,
+                        Major = fer.Major,
+                        Speciality = fer.Speciality,
+                        PhoneAndFax = fer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.PrevAreaOfResearch,
+                        Webpage = fer.Webpage,
+                        Comments = fer.Comments,
+                        TotalPublications = fer.TotalPublications,
+                        NoOfJournals = fer.NoOfJournals,
+                        HIndex = fer.HIndex,
+                        Citations = fer.Citations,                       
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    public List<Form_ExtRev1> GetFormExtRevByAppIDType(int ApplicationID, int Type)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_ExtRevs
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type
+                    )
+                    select new Form_ExtRev1
+                    {
+                        ApplicationID = ApplicationID,
+                        ExternalReviewerID = fer.ExternalReviewerID,
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.ExternalReviewer.Name,
+                        Rank = fer.ExternalReviewer.Rank,
+                        MailingAddress = fer.ExternalReviewer.MailingAddress,
+                        Email = fer.ExternalReviewer.Email,
+                        Major = fer.ExternalReviewer.Major,
+                        Speciality = fer.ExternalReviewer.Speciality,
+                        PhoneAndFax = fer.ExternalReviewer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ExternalReviewer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.ExternalReviewer.PrevAreaOfResearch,
+                        Webpage = fer.ExternalReviewer.Webpage,
+                        Comments = fer.ExternalReviewer.Comments,
+                        TotalPublications = fer.ExternalReviewer.TotalPublications,
+                        NoOfJournals = fer.ExternalReviewer.NoOfJournals,
+                        HIndex = fer.ExternalReviewer.HIndex,
+                        Citations = fer.ExternalReviewer.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    public List<Form_Refree1> GetFormExtRevByAppIDTypeOld(int ApplicationID, byte Type)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_Refrees                   
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type
+                    )
+                    select new Form_Refree1
+                    {
+                        ApplicationID = ApplicationID,
+
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.Name,
+                        Rank = fer.Rank,
+                        MailingAddress = fer.MailingAddress,
+                        Email = fer.Email,
+                        Major = fer.Major,
+                        Speciality = fer.Speciality,
+                        PhoneAndFax = fer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.PrevAreaOfResearch,
+                        Webpage = fer.Webpage,
+                        Comments = fer.Comments,
+                        TotalPublications = fer.TotalPublications,
+                        NoOfJournals = fer.NoOfJournals,
+                        HIndex = fer.HIndex,
+                        Citations = fer.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    public List<Form_ExtRev1> GetFormExtRevByPK(int ApplicationID, int Type, int Serial)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_ExtRevs
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type &&
+                    fer.Serial == Serial
+                    )
+                    select new Form_ExtRev1
+                    {
+                        ApplicationID = ApplicationID,
+                        ExternalReviewerID = fer.ExternalReviewerID,
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.ExternalReviewer.Name,
+                        Rank = fer.ExternalReviewer.Rank,
+                        MailingAddress = fer.ExternalReviewer.MailingAddress,
+                        Email = fer.ExternalReviewer.Email,
+                        Major = fer.ExternalReviewer.Major,
+                        Speciality = fer.ExternalReviewer.Speciality,
+                        PhoneAndFax = fer.ExternalReviewer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ExternalReviewer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.ExternalReviewer.PrevAreaOfResearch,
+                        Webpage = fer.ExternalReviewer.Webpage,
+                        Comments = fer.ExternalReviewer.Comments,
+                        TotalPublications = fer.ExternalReviewer.TotalPublications,
+                        NoOfJournals = fer.ExternalReviewer.NoOfJournals,
+                        HIndex = fer.ExternalReviewer.HIndex,
+                        Citations = fer.ExternalReviewer.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    public List<Form_Refree1> GetFormExtRevByPKOld(int ApplicationID, byte Type, byte Serial)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from fer in context.Form_Refrees
+                    where
+                    (
+                    fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type &&
+                    fer.Serial == Serial
+                    )
+                    select new Form_Refree1
+                    {
+                        ApplicationID = ApplicationID,
+
+                        Serial = fer.Serial,
+                        Type = fer.Type,
+                        Name = fer.Name,
+                        Rank = fer.Rank,
+                        MailingAddress = fer.MailingAddress,
+                        Email = fer.Email,
+                        Major = fer.Major,
+                        Speciality = fer.Speciality,
+                        PhoneAndFax = fer.PhoneAndFax,
+                        ActiveAreaOfResearch = fer.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = fer.PrevAreaOfResearch,
+                        Webpage = fer.Webpage,
+                        Comments = fer.Comments,
+                        TotalPublications = fer.TotalPublications,
+                        NoOfJournals = fer.NoOfJournals,
+                        HIndex = fer.HIndex,
+                        Citations = fer.Citations,
+                        //SWIFTCode = er.SWIFTCode,
+                        //IBAN = fer.IBAN
+                    }).ToList();
+        return data;
+    }
+    //public void UpdateFormExtRev(int ApplicationID, int Type, int Serial, int NewApplicationID, int NewType, int NewSerial, int ExternalReviewerID)
+    //{
+    //    var context = new DataClassesDataContext();
+    //    var query = from fer in context.Form_ExtRevs
+    //                where
+    //                fer.ApplicationID == ApplicationID &&
+    //                fer.Type == Type &&
+    //                fer.Serial== Serial
+    //                select fer;
+    //    foreach (var row in query)
+    //    {
+    //        row.ApplicationID = NewApplicationID;
+    //        row.Type = NewType;
+    //        row.Serial = NewSerial;
+    //        row.ExternalReviewerID = ExternalReviewerID;
+    //    }
+    //    context.SubmitChanges();
+    //}
+    public void InsertFormExtRev(int ApplicationID, int Type, int Serial, int ExternalReviewrID)
+    {
+        var context = new DataClassesDataContext();
+        context.Form_ExtRevs.InsertOnSubmit(new Form_ExtRev
+        {
+            ApplicationID = ApplicationID,
+            Serial = Serial,
+            Type = Type,
+            ExternalReviewerID = ExternalReviewrID            
+        });
+        context.SubmitChanges();
+    }
+
+    public void InsertFormExtRevOld(int ApplicationID , byte Type, byte Serial,       string  Name ,       string  Rank,       string  MailingAddress,       string  Email,
+       string  Major,       string  Speciality ,       string  PhoneAndFax,       string ActiveAreaOfResearch,        string  PrevAreaOfResearch,
+       string  Webpage ,       string  Comments ,       int?  TotalPublications,       int? NoOfJournals ,       int? HIndex ,       int? Citations)
+    {
+        var context = new DataClassesDataContext();
+        context.Form_Refrees.InsertOnSubmit(new Form_Refree
+        {
+            ApplicationID = ApplicationID,            
+            Serial = Serial,
+            Type = Type,
+            Name = Name,
+            Rank = Rank,
+            MailingAddress = MailingAddress,
+            Email = Email,
+            Major = Major,
+            Speciality = Speciality,
+            PhoneAndFax = PhoneAndFax,
+            ActiveAreaOfResearch = ActiveAreaOfResearch,
+            PrevAreaOfResearch = PrevAreaOfResearch,
+            Webpage = Webpage,
+            Comments = Comments,
+            TotalPublications = TotalPublications,
+            NoOfJournals = NoOfJournals,
+            HIndex = HIndex,
+            Citations = Citations
+        });
+        context.SubmitChanges();
+    }
+    public void DeleteFormExtRev(int ApplicationID, int Type, int Serial)
+    {
+        var context = new DataClassesDataContext();
+        var query = from fer in context.Form_ExtRevs
+                    where fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type &&
+                    fer.Serial == Serial
+                    select fer;
+        foreach (var row in query)
+        {
+            context.Form_ExtRevs.DeleteOnSubmit(row);
+        }
+        context.SubmitChanges();
+
+    }
+    public void DeleteFormExtRevOld(int ApplicationID, int Type, int Serial)
+    {
+        var context = new DataClassesDataContext();
+        var query = from fer in context.Form_Refrees
+                    where fer.ApplicationID == ApplicationID &&
+                    fer.Type == Type &&
+                    fer.Serial == Serial
+                    select fer;
+        foreach (var row in query)
+        {
+            context.Form_Refrees.DeleteOnSubmit(row);
+        }
+        context.SubmitChanges();
+
+    }
+    #endregion
+    #region Form_FinalExtRev
+    public List<Form_FinalExtRev1> GetFormFinalExtRevByAppID(int ApplicationID)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from ffer in context.Form_FinalExtRevs
+                    join er in context.ExternalReviewers on ffer.ExternalReviewerID equals er.ExternalReviewerID
+                    where
+                    (
+                         ffer.ApplicationID == ApplicationID
+                    )
+                    select new Form_FinalExtRev1
+                    {
+                        ApplicationID = ffer.ApplicationID,
+                        ExternalReviewerID = ffer.ExternalReviewerID,
+                        Serial = ffer.Serial,
+                        WLStatus = ffer.WLStatus,
+                        WLDate = ffer.WLDate,
+                        CommentsWithWL = ffer.CommentsWithWL,
+                        MaterialSentStatus = ffer.MaterialSentStatus,
+                        MaterialSentDate = ffer.MaterialSentDate,
+                        EvaluationStatus = ffer.EvaluationStatus,
+                        EvaluationDate = ffer.EvaluationDate,
+                        CommentsWithEval = ffer.CommentsWithEval,
+                        ShowExtRev2PC = ffer.ShowExtRev2PC,
+                        ShowEval2PC = ffer.ShowEval2PC,
+                        UserName = ffer.UserName,
+                        Password = ffer.Password,
+                        Source = ffer.Source,
+                        EvaluationID = ffer.EvaluationID,
+                        Name = er.Name,
+                        Rank = er.Rank,
+                        MailingAddress = er.MailingAddress,
+                        Email = er.Email,
+                        Major = er.Major,
+                        Speciality = er.Speciality,
+                        PhoneAndFax = er.PhoneAndFax,
+                        ActiveAreaOfResearch = er.ActiveAreaOfResearch,
+                        PrevAreaOfResearch = er.PrevAreaOfResearch,
+                        Webpage = er.Webpage,
+                        Comments = er.Comments,
+                        TotalPublications = er.TotalPublications,
+                        NoOfJournals = er.NoOfJournals,
+                        HIndex = er.HIndex,
+                        Citations = er.Citations,
+
+                        IBAN = er.IBAN
+                    }).OrderBy(n => n.Serial).ToList<Form_FinalExtRev1>();
+        return data;
+    }
+    public List<Form_FinalExtRev1> GetFormFinalExtRevByPK(int ApplicationID, int ExternalReviewerID)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from ffer in context.Form_FinalExtRevs
+                    where
+                    (
+                    ffer.ApplicationID == ApplicationID &&
+                    ffer.ExternalReviewerID == ExternalReviewerID
+                    )
+                    select new Form_FinalExtRev1
+                    {
+                        ApplicationID = ffer.ApplicationID,
+                        ExternalReviewerID = ffer.ExternalReviewerID,
+                        Serial = ffer.Serial,
+                        WLStatus = ffer.WLStatus,
+                        WLDate = ffer.WLDate,
+                        CommentsWithWL = ffer.CommentsWithWL,
+                        MaterialSentStatus = ffer.MaterialSentStatus,
+                        MaterialSentDate = ffer.MaterialSentDate,
+                        EvaluationStatus = ffer.EvaluationStatus,
+                        EvaluationDate = ffer.EvaluationDate,
+                        CommentsWithEval = ffer.CommentsWithEval,
+                        ShowExtRev2PC = ffer.ShowExtRev2PC,
+                        ShowEval2PC = ffer.ShowEval2PC,
+                        UserName = ffer.UserName,
+                        Password = ffer.Password,
+                        Source = ffer.Source,
+                        EvaluationID = ffer.EvaluationID
+                    }).ToList<Form_FinalExtRev1>();
+        return data;
+    }
+    public List<Form_FinalExtRev1> GetFormFinalExtRevByAppIDSer(int ApplicationID, int Serial)
+    {
+        var context = new DataClassesDataContext();
+        var data = (from ffer in context.Form_FinalExtRevs
+                    where
+                    (
+                    ffer.ApplicationID == ApplicationID &&
+                    ffer.Serial == Serial
+                    )
+                    select new Form_FinalExtRev1
+                    {
+                        ApplicationID = ffer.ApplicationID,
+                        ExternalReviewerID = ffer.ExternalReviewerID,
+                        Serial = ffer.Serial,
+                        WLStatus = ffer.WLStatus,
+                        WLDate = ffer.WLDate,
+                        CommentsWithWL = ffer.CommentsWithWL,
+                        MaterialSentStatus = ffer.MaterialSentStatus,
+                        MaterialSentDate = ffer.MaterialSentDate,
+                        EvaluationStatus = ffer.EvaluationStatus,
+                        EvaluationDate = ffer.EvaluationDate,
+                        CommentsWithEval = ffer.CommentsWithEval,
+                        ShowExtRev2PC = ffer.ShowExtRev2PC,
+                        ShowEval2PC = ffer.ShowEval2PC,
+                        UserName = ffer.UserName,
+                        Password = ffer.Password,
+                        Source = ffer.Source,
+                        EvaluationID = ffer.EvaluationID
+                    }).ToList<Form_FinalExtRev1>();
+        return data;
+    }
+    public void UpdateFormFinalExtRev(int ApplicationID, int ExternalReviewerID, int? Serial, string WLStatus, DateTime? WLDate, string CommentsWithWL,
+        string MaterialSentStatus, DateTime? MaterialSentDate, string EvaluationStatus, DateTime? EvaluationDate, string CommentsWithEval,
+        bool? ShowExtRev2PC, bool? ShowEval2PC, string UserName, string Password, string Source, int? EvaluationID)
+    {
+        var context = new DataClassesDataContext();
+        var query = from ffer in context.Form_FinalExtRevs
+                    where
+                    ffer.ApplicationID == ApplicationID &&
+                    ffer.ExternalReviewerID == ExternalReviewerID
+                    select ffer;
+        foreach (var row in query)
+        {
+            row.ApplicationID = ApplicationID;
+            row.ExternalReviewerID = ExternalReviewerID;
+            row.Serial = Serial;
+            row.WLStatus = WLStatus;
+            row.WLDate = WLDate;
+            row.CommentsWithWL = CommentsWithWL;
+            row.MaterialSentStatus = MaterialSentStatus;
+            row.MaterialSentDate = MaterialSentDate;
+            row.EvaluationStatus = EvaluationStatus;
+            row.EvaluationDate = EvaluationDate;
+            row.CommentsWithEval = CommentsWithEval;
+            row.ShowExtRev2PC = ShowExtRev2PC;
+            row.ShowEval2PC = ShowEval2PC;
+            row.UserName = UserName;
+            row.Password = Password;
+            row.Source = Source;
+            row.EvaluationID = EvaluationID;
+        }
+        context.SubmitChanges();
+    }
+    public void InsertFormFinalExtRev(int ApplicationID, int ExternalReviewerID, int? Serial, string WLStatus, DateTime? WLDate, string CommentsWithWL,
+        string MaterialSentStatus, DateTime? MaterialSentDate, string EvaluationStatus, DateTime? EvaluationDate, string CommentsWithEval,
+        bool? ShowExtRev2PC, bool? ShowEval2PC, string UserName, string Password, string Source, int? EvaluationID)
+    {
+        var context = new DataClassesDataContext();
+        context.Form_FinalExtRevs.InsertOnSubmit(new Form_FinalExtRev
+        {
+            ApplicationID = ApplicationID,
+            ExternalReviewerID = ExternalReviewerID,
+            Serial = Serial,
+            WLStatus = WLStatus,
+            WLDate = WLDate,
+            CommentsWithWL = CommentsWithWL,
+            MaterialSentStatus = MaterialSentStatus,
+            MaterialSentDate = MaterialSentDate,
+            EvaluationStatus = EvaluationStatus,
+            EvaluationDate = EvaluationDate,
+            CommentsWithEval = CommentsWithEval,
+            ShowExtRev2PC = ShowExtRev2PC,
+            ShowEval2PC = ShowEval2PC,
+            UserName = UserName,
+            Password = Password,
+            Source = Source,
+            EvaluationID = EvaluationID
+        });
+        context.SubmitChanges();
+    }
+    #endregion
+    public void DeleteFormFinalExtRev(int ApplicationID, int ExternalReviewerID)
+    {
+        var context = new DataClassesDataContext();
+        var query = from ffer in context.Form_FinalExtRevs
+                    where ffer.ApplicationID == ApplicationID &&
+                    ffer.ExternalReviewerID == ExternalReviewerID
+                    select ffer;
+        foreach (var row in query)
+        {
+            context.Form_FinalExtRevs.DeleteOnSubmit(row);
+        }
+        context.SubmitChanges();
+
+    }
+    public string GetSourceForFinalExtRev(int extRevID, int applicationID)
+    {
+        string source = "";
+        List<Form_ExtRev1> lExtRev = GetFormExtRevByAppID(applicationID);
+        foreach (Form_ExtRev1 extRev in lExtRev)
+        {
+            if (extRev.ExternalReviewerID == extRevID)
+                source += GetTypeString(extRev.Type) + (extRev.Serial) + " ";
+        }
+        return source == "" ? "VRR" : source;
+
+    }
+    private string GetTypeString(int p)
+    {
+        switch (p)
+        {
+            case 1: return "A";
+            case 2: return "D";
+            case 3: return "C";
+            case 4: return "VRR";
+            default: return "SCSubCom";
+        }
+    }
+}

@@ -1,0 +1,112 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="WillingnessLetter.master.cs" Inherits="Forms_WillingnessLetter" %>
+
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head id="Head2" runat="server">
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Faculty Promotion System</title>
+
+    <link rel="icon" href="../images/favicon.png">
+    <link rel="SHORTCUT ICON" href="../images/favicon.png" />
+    <!-- Bootstrap Core CSS -->
+    <link href="../App_Themes/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../App_Themes/3-col-portfolio.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body id="bodyMaster" dir="ltr" runat="server">
+
+    <form id="form2" runat="server">
+        <asp:ScriptManager ID="Scriptmanager1" runat="server">
+        </asp:ScriptManager>
+        <div style="border-style: solid; border-color: inherit; border-width: 0px; margin-left: 20px; margin-top: 20px; margin-right: 20px; height: 93px; background-color: #F8F8F8;"
+            id="divTop" runat="server">
+
+            <div style="float: left">
+                <img alt="KFUPM Logo" style="width: 405px; height: 93px;" src="../images/logo.png" />
+            </div>
+            <div style="float: left; padding-left: 20px">
+                <h1>Faculty Promotion System</h1>
+            </div>
+        </div>
+        <h1>
+            Faculty Promotion System - Willingness Decision</h1>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+        </asp:ContentPlaceHolder>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+              
+
+        <!-- Footer -->
+        <footer>
+            <div id="divFooter" runat="server" class="row">
+                <div class="col-lg-12" align="center">
+                    <p>All Rights Reserved Copyright &copy; 2009 </p>
+                    <p>
+                        Faculty Promotion System, Office of the Vice Rector for Research
+                        <br>
+                        King Fahd University of Petroleum &amp; Minerals| Dhahran, 31261 | Saudi Arabia | +966 (3) 860 0000.
+                    </p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+
+    </form>
+</body>
+</html>
+

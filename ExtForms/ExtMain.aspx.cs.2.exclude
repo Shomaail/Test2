@@ -1,0 +1,215 @@
+﻿
+using System;
+using System.Configuration;
+using System.Linq;
+using System.Web.Security;
+using System.Web.UI.WebControls;
+using BL.Data;
+public partial class ExtForms_ExtMain : System.Web.UI.Page
+{
+    BAL bal = new BAL();
+    ExtRevBAL erBAL = new ExtRevBAL();
+    public enum FormModeMain { Applications, MyDetails };
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        //if (Request.QueryString["MyDetails"] == null)
+        //{
+        //    FormMode = FormModeMain.Applications.ToString();
+        //}
+        //else
+        //{
+        //    FormMode = FormModeMain.MyDetails.ToString();
+        //}
+
+        Session["applicationID"] = null;
+
+        if (Session["ExtRevID"] != null)
+        {
+            DatabindControls();
+        }
+        else
+        {
+            FormsAuthentication.SignOut();
+            Session.Clear();
+            Response.Redirect("../Login.aspx");
+        }
+     
+       
+    }
+    public string GetURL()
+    {
+        Session["applicationID"] = int.Parse(Eval("ApplicationID").ToString());
+        return "~/ExtForms/ExtMessage.aspx";
+
+    }
+    #region Properties
+    public string FormMode
+    {
+        set
+        {
+            ViewState["FormMode"] = value;
+        }
+        get
+        {
+            if (ViewState["FormMode"] != null)
+            {
+                return (string)ViewState["FormMode"];
+            }
+            else
+            {
+                return "";
+            }
+
+        }
+    }
+    #endregion
+    public void DatabindControls()
+    {
+        if (Request.QueryString["MyDetails"] == null && !IsPostBack)
+        {
+            FormMode = FormModeMain.Applications.ToString();
+        }
+        else if (Request.QueryString["MyDetails"] != null && !IsPostBack)
+        {
+            FormMode = FormModeMain.MyDetails.ToString();
+        }
+        int extReviewerID = int.Parse(Session["ExtRevID"].ToString());
+        ExternalReviewer er = erBAL.GetExtRevByID(extReviewerID)[0];
+        lblUserName.Text = er.NameString;
+        divMyDetails.DataBind();
+        divApplications.DataBind();
+        if (FormMode == FormModeMain.Applications.ToString())
+        {
+            liApp.Attributes["class"] = "active";
+            liMyDetails.Attributes["class"] = "";
+        }
+        else if (FormMode == FormModeMain.MyDetails.ToString())
+        {
+            liApp.Attributes["class"] = "";
+            liMyDetails.Attributes["class"] = "active";
+        }
+
+
+        rpCurrentEvaluation.DataSource = erBAL.GetForm_FinalExtRev()
+                                                .Where(a => a.ExternalReviewerID ==  extReviewerID
+                                                && a.MaterialSentStatus == SendSelPubStatus.Material_Sent.ToString().Replace("_", " ")
+                                                && a.EvaluationStatus != EvaluationStatus.Submitted.ToString()
+                                                && a.EvaluationStatus != EvaluationStatus.Withdrawn.ToString());
+        rpCurrentEvaluation.DataBind();
+        divCurrentEvalMsg.Visible = rpCurrentEvaluation.Items.Count != 0;
+        divCurrentEvalAbsentMsg.Visible = rpCurrentEvaluation.Items.Count == 0;
+        rpSubmittedEvaluation.DataSource = erBAL.GetForm_FinalExtRev().Where(a =>a.ExternalReviewerID == extReviewerID &&
+                                            a.EvaluationStatus == EvaluationStatus.Submitted.ToString());
+        rpSubmittedEvaluation.DataBind();
+        divSubmittedEvalMsg.Visible = rpSubmittedEvaluation.Items.Count != 0;
+        divSubmittedEvalAbsentMsg.Visible = rpSubmittedEvaluation.Items.Count == 0;
+             rpWithdrawnEvaluations.DataSource = erBAL.GetForm_FinalExtRev().Where(a => a.ExternalReviewerID == extReviewerID 
+                                            && a.EvaluationStatus == EvaluationStatus.Withdrawn.ToString());
+        rpWithdrawnEvaluations.DataBind();
+        divWithdrawnEvalMsg.Visible = rpWithdrawnEvaluations.Items.Count != 0;
+        divWithdrawnEvalAbsentMsg.Visible = rpWithdrawnEvaluations.Items.Count == 0;
+        taName.Value = er.NameString;
+        taRank.Value = er.Rank;
+        taAddress.Value = er.MailingAddress;
+        taEmail.Value = er.Email;
+        taMajor.Value = er.Major;
+        taSpecialty.Value = er.Speciality;
+        taPhoneNFax.Value = er.PhoneAndFax;
+        taActiveAreaOfResearch.Value = er.ActiveAreaOfResearch;
+        taPreviousAreaOfResearch.Value = er.PrevAreaOfResearch;
+        taWebsite.Value = er.Webpage;
+        taTotalPublications.Value = er.TotalPublications.ToString();
+        taNoOfJournals.Value = er.NoOfJournals.ToString();
+        taHIndex.Value = er.HIndex.ToString();
+        taCitations.Value = er.Citations.ToString();
+        taPassportNo.Value = er.PassportNo;
+        taBank.Value = er.IBAN;
+
+    }
+
+    protected void lbtnApplications_Click(object sender, EventArgs e)
+    {
+        FormMode = FormModeMain.Applications.ToString();
+        DatabindControls();
+    }
+
+    protected void lbtnMyDetails_Click(object sender, EventArgs e)
+    {
+        FormMode = FormModeMain.MyDetails.ToString();
+        DatabindControls();
+    }
+
+
+
+    protected void RouteToExtMessage(int appID)
+    {
+        int extReviewerID = int.Parse(Session["ExtRevID"].ToString());
+        Session["applicationID"] = appID;
+
+
+        //bal.InsertActionLog(erBAL.GetExtRevByID(extReviewerID)[0].NameString + " Case of Dr. " + bal.GetApplicant(appID)[0].NameString 
+        //    + Session["userInfo"], DateTime.Now );
+        Response.Redirect("ExtMessage.aspx");
+    }
+    protected void RouteToExtMessage(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
+    {
+        int appID = int.Parse(e.CommandArgument.ToString());
+        int extReviewerID = int.Parse(Session["ExtRevID"].ToString());
+        if (e.CommandName == "Open")
+        {
+            //string userAgent = Request.Headers["User-Agent"];
+
+            //bal.InsertActionLog(erBAL.GetExtRevByID(extReviewerID)[0].NameString + " Case of Dr. " 
+            //    + bal.GetApplicant(appID)[0].NameString
+            //     + Session["userInfo"], DateTime.Now);
+            Response.Redirect("ExtMessage.aspx");
+        }
+    }
+
+
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        int extReviewerID = -1;
+        if (Session["ExtRevID"] != null)
+        {
+            extReviewerID = int.Parse(Session["ExtRevID"].ToString());
+        }
+        else
+        {
+            FormsAuthentication.SignOut();
+            Response.Redirect("../Login.aspx");
+        }
+        ExternalReviewer er = erBAL.GetExtRevByID(extReviewerID)[0];
+        erBAL.UpdateExtRev(er.ExternalReviewerID, taName.Value
+            , taRank.Value, taAddress.Value, taEmail.Value, taMajor.Value, taSpecialty.Value, taPhoneNFax.Value, taActiveAreaOfResearch.Value
+            , taPreviousAreaOfResearch.Value, taWebsite.Value, er.Comments, int.Parse(taTotalPublications.Value), int.Parse(taNoOfJournals.Value)
+            , int.Parse(taHIndex.Value), int.Parse(taCitations.Value), er.Status, er.Password, taBank.Value, taPassportNo.Value, taName.Value,"");
+    }
+
+    protected void lbtn_Click(object sender, EventArgs e)
+    {
+        RepeaterItem rItem = (sender as LinkButton).Parent as RepeaterItem;
+        int appID = int.Parse((rItem.FindControl("lblApplicationID") as Label).Text);
+        RouteToExtMessage(appID);
+
+    }
+
+    //protected void lbtnApplicantDept_Click(object sender, EventArgs e)
+    //{
+    //    RepeaterItem rItem = (sender as LinkButton).Parent as RepeaterItem;
+    //    int appID = int.Parse((rItem.FindControl("lblApplicationID") as Label).Text);
+    //    RouteToExtMessage(appID);
+    //}
+
+    //protected void lbtnApplicationForRank_Click(object sender, EventArgs e)
+    //{
+    //    RepeaterItem rItem = (sender as LinkButton).Parent as RepeaterItem;
+    //    int appID = int.Parse((rItem.FindControl("lblApplicationID") as Label).Text);
+    //    RouteToExtMessage(appID);
+    //}
+}

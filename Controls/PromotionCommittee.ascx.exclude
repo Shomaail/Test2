@@ -1,0 +1,28 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PromotionCommittee.ascx.cs" Inherits="Controls_PromotionCommittee" %>
+<%@ Register Src="EmployeeInput.ascx" TagName="EmployeeInput" TagPrefix="uc1" %>
+
+
+<table cellpadding="3" cellspacing="0" border="1" bordercolor="#3062af" style="border-collapse:collapse;" class="table-condensed">
+<tr>
+<th class="PointsHeader"></th>
+<th class="PointsHeader">
+    KFUPM Email UserID</th>
+<th class="PointsHeader">Name</th>
+<th class="PointsHeader">Rank</th>
+<th class="PointsHeader">Department</th>
+<th class="PointsHeader">Email</th>
+</tr>
+<tr><td colspan="6" style="font-size:10pt; font-weight:bold; background-color:#efefef; font-style:italic">Nominees for Committee Chairman</td></tr>
+<tr><td>1</td><uc1:EmployeeInput ID="EmployeeInput1" runat="server" /></tr>
+<tr><td>2</td><uc1:EmployeeInput ID="EmployeeInput2" runat="server" /></tr>
+<tr><td>3</td><uc1:EmployeeInput ID="EmployeeInput3" runat="server" /></tr>
+<tr><td colspan="6" style="font-size:10pt; font-weight:bold; background-color:#efefef; font-style:italic">Nominees from Speciality Area</td></tr>
+<tr><td>4</td><uc1:EmployeeInput ID="EmployeeInput4" runat="server" /></tr>
+<tr><td>5</td><uc1:EmployeeInput ID="EmployeeInput5" runat="server" /></tr>
+<tr><td>6</td><uc1:EmployeeInput ID="EmployeeInput6" runat="server" /></tr>
+<tr><td>7</td><uc1:EmployeeInput ID="EmployeeInput7" runat="server" /></tr>
+<tr><td colspan="6" style="font-size:10pt; font-weight:bold; background-color:#efefef; font-style:italic">Nominees from Related Areas</td></tr>
+<tr><td>8</td><uc1:EmployeeInput ID="EmployeeInput8" runat="server" /></tr>
+<tr><td>9</td><uc1:EmployeeInput ID="EmployeeInput9" runat="server" /></tr>
+<tr><td>10</td><uc1:EmployeeInput ID="EmployeeInput10" runat="server" /></tr>
+</table>

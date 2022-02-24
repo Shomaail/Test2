@@ -1,0 +1,1094 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Globalization;
+using BL.Data;
+public partial class Controls_BusyScheduleStatusForChair : AbstractUserControl
+{
+    BAL bal = new BAL();
+    const string CRLF = "\r\n";
+    const string TAB = "    ";
+
+    int meetingID = -1;
+    string meetingYear = null;
+    int weekId = -1;
+    DateTime meetingWeekStartDate;
+    string meetingMonth = null;
+    string meetingTime = null;
+    String emailAddresses = null;
+    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        System.Globalization.Calendar myCal = myCI.Calendar;
+
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+        int WeekNumber = myCal.GetWeekOfYear(DateTime.Now, myCWR, myFDW);
+        if (meetingWeekStartDate.Year == 1)
+        {
+            LabelMeetingDT.Text = "";
+            LabelFootnoteDMT.Visible = false;
+        }
+        else 
+        {
+            LabelMeetingDT.Text = meetingDecidedDate.ToLongDateString() + "*";
+            LabelFootnoteDMT.Visible = true;
+        }        
+        btnCancel.Attributes.Add("OnClick", "return confirm_delete();");
+        ComposeEmail1.Visible = false;
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());
+        MeetingsTableAdapters.Form_MeetingsTableAdapter frmMeetingAdapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+
+        Meetings.Form_MeetingsDataTable table = frmMeetingAdapter.GetDataByAppIDMS(appID, true);
+        
+        if (table.Count == 0) return ;
+        meetingID = table[0].MeetingID;
+        if (meetingID != -1)
+        {
+            btnCancel.Enabled = true;
+        }
+        MeetingsTableAdapters.Form_MeetingMembersTableAdapter frmMeetingMemAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+        Meetings.Form_MeetingMembersDataTable mTable = frmMeetingMemAdapter.GetDataByApplicationOnly(appID);
+        int submitted = 0;
+        int waiting = 0;
+        SqlDataSourcePC.SelectParameters["ApplicationID"].DefaultValue = appID.ToString();
+        foreach (Meetings.Form_MeetingMembersRow mRow in mTable)
+        {
+            if (mRow.SchedulePostStatus == false)
+                waiting = waiting + 1;
+            else
+                submitted = submitted + 1;
+        }
+
+        lblSubmitted.Text = "<b>Members Posted Busy Schedule: </b>" + submitted.ToString();
+        lblSubmitted.Visible = true;
+        lblWaiting.Text = "<b>Members Not Posted Busy Schedule: </b>" + waiting.ToString();
+        lblWaiting.Visible = true;
+        Meetings.Form_MeetingsRow row = table[0];
+
+        TextBoxWeekNo.Text = row.IsWeekNoNull() ? "-" : row.WeekNo.ToString();
+        // Calling the getWeekDaysFromWeekNumber to display the Week of the meeting
+        getWeekDaysFromWeekNumber(row.WeekNo, row.Year);
+        meetingYear = row.Year;
+        weekId = row.WeekNo;
+
+        Button1.Text = row.TimeSlot1.ToString();
+        Button1.Enabled = (row.TimeSlot1 > 0) ? false : true;
+        if (Button1.Enabled)
+        {
+            Button1.ForeColor = System.Drawing.Color.Green;
+            Button1.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button1.BorderStyle = BorderStyle.Solid;
+            Button1.Text = "Call for Meeting";
+            Button1.Font.Size= FontUnit.Small;
+        }
+
+        Button2.Text = row.TimeSlot2.ToString();
+        Button2.Enabled = (row.TimeSlot2 > 0) ? false : true;
+        if (Button2.Enabled)
+        {
+            Button2.ForeColor = System.Drawing.Color.Green;
+            Button2.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button2.BorderStyle = BorderStyle.Solid;
+            Button2.Text = "Call for Meeting";
+            Button2.Font.Size = FontUnit.Small;
+
+        }
+
+        Button3.Text = row.TimeSlot3.ToString();
+        Button3.Enabled = (row.TimeSlot3 > 0) ? false : true;
+        if (Button3.Enabled)
+        {
+            Button3.ForeColor = System.Drawing.Color.Green;
+            Button3.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button3.BorderStyle = BorderStyle.Solid;
+            Button3.Text = "Call for Meeting";
+            Button3.Font.Size = FontUnit.Small;
+
+        }
+
+        Button4.Text = row.TimeSlot4.ToString();
+        Button4.Enabled = (row.TimeSlot4 > 0) ? false : true;
+        if (Button4.Enabled)
+        {
+            Button4.ForeColor = System.Drawing.Color.Green;
+            Button4.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button4.BorderStyle = BorderStyle.Solid;
+            Button4.Text = "Call for Meeting";
+            Button4.Font.Size = FontUnit.Small;
+
+        }
+
+        Button5.Text = row.TimeSlot5.ToString();
+        Button5.Enabled = (row.TimeSlot5 > 0) ? false : true;
+        if (Button5.Enabled)
+        {
+            Button5.ForeColor = System.Drawing.Color.Green;
+            Button5.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button5.BorderStyle = BorderStyle.Solid;
+            Button5.Text = "Call for Meeting";
+            Button5.Font.Size = FontUnit.Small;
+
+        }
+
+        Button6.Text = row.TimeSlot6.ToString();
+        Button6.Enabled = (row.TimeSlot6 > 0) ? false : true;
+        if (Button6.Enabled)
+        {
+            Button6.ForeColor = System.Drawing.Color.Green;
+            Button6.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button6.BorderStyle = BorderStyle.Solid;
+            Button6.Text = "Call for Meeting";
+            Button6.Font.Size = FontUnit.Small;
+
+        }
+
+        Button7.Text = row.TimeSlot7.ToString();
+        Button7.Enabled = (row.TimeSlot7 > 0) ? false : true;
+        if (Button7.Enabled)
+        {
+            Button7.ForeColor = System.Drawing.Color.Green;
+            Button7.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button7.BorderStyle = BorderStyle.Solid;
+            Button7.Text = "Call for Meeting";
+            Button7.Font.Size = FontUnit.Small;
+
+        }
+
+        Button8.Text = row.TimeSlot8.ToString();
+        Button8.Enabled = (row.TimeSlot8 > 0) ? false : true;
+        if (Button8.Enabled)
+        {
+            Button8.ForeColor = System.Drawing.Color.Green;
+            Button8.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button8.BorderStyle = BorderStyle.Solid;
+            Button8.Text = "Call for Meeting";
+            Button8.Font.Size = FontUnit.Small;
+
+        }
+
+        Button9.Text = row.TimeSlot9.ToString();
+        Button9.Enabled = (row.TimeSlot9 > 0) ? false : true;
+        if (Button9.Enabled)
+        {
+            Button9.ForeColor = System.Drawing.Color.Green;
+            Button9.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button9.BorderStyle = BorderStyle.Solid;
+            Button9.Text = "Call for Meeting";
+            Button9.Font.Size = FontUnit.Small;
+
+        }
+
+        Button10.Text = row.TimeSlot10.ToString();
+        Button10.Enabled = (row.TimeSlot10 > 0) ? false : true;
+        if (Button10.Enabled)
+        {
+            Button10.ForeColor = System.Drawing.Color.Green;
+            Button10.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button10.BorderStyle = BorderStyle.Solid;
+            Button10.Text = "Call for Meeting";
+            Button10.Font.Size = FontUnit.Small;
+
+        }
+
+        Button11.Text = row.TimeSlot11.ToString();
+        Button11.Enabled = (row.TimeSlot11 > 0) ? false : true;
+        if (Button11.Enabled)
+        {
+            Button11.ForeColor = System.Drawing.Color.Green;
+            Button11.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button11.BorderStyle = BorderStyle.Solid;
+            Button11.Text = "Call for Meeting";
+            Button11.Font.Size = FontUnit.Small;
+
+        }
+
+        Button12.Text = row.TimeSlot12.ToString();
+        Button12.Enabled = (row.TimeSlot12 > 0) ? false : true;
+        if (Button12.Enabled)
+        {
+            Button12.ForeColor = System.Drawing.Color.Green;
+            Button12.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button12.BorderStyle = BorderStyle.Solid;
+            Button12.Text = "Call for Meeting";
+            Button12.Font.Size = FontUnit.Small;
+
+        }
+
+        Button13.Text = row.TimeSlot13.ToString();
+        Button13.Enabled = (row.TimeSlot13 > 0) ? false : true;
+        if (Button13.Enabled)
+        {
+            Button13.ForeColor = System.Drawing.Color.Green;
+            Button13.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button13.BorderStyle = BorderStyle.Solid;
+            Button13.Text = "Call for Meeting";
+            Button13.Font.Size = FontUnit.Small;
+
+        }
+
+        Button14.Text = row.TimeSlot14.ToString();
+        Button14.Enabled = (row.TimeSlot14 > 0) ? false : true;
+        if (Button14.Enabled)
+        {
+            Button14.ForeColor = System.Drawing.Color.Green;
+            Button14.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button14.BorderStyle = BorderStyle.Solid;
+            Button14.Text = "Call for Meeting";
+            Button14.Font.Size = FontUnit.Small;
+
+        }
+
+        Button15.Text = row.TimeSlot15.ToString();
+        Button15.Enabled = (row.TimeSlot15 > 0) ? false : true;
+        if (Button15.Enabled)
+        {
+            Button15.ForeColor = System.Drawing.Color.Green;
+            Button15.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button15.BorderStyle = BorderStyle.Solid;
+            Button15.Text = "Call for Meeting";
+            Button15.Font.Size = FontUnit.Small;
+
+        }
+
+        Button16.Text = row.TimeSlot16.ToString();
+        Button16.Enabled = (row.TimeSlot16 > 0) ? false : true;
+        if (Button16.Enabled)
+        {
+            Button16.ForeColor = System.Drawing.Color.Green;
+            Button16.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button16.BorderStyle = BorderStyle.Solid;
+            Button16.Text = "Call for Meeting";
+            Button16.Font.Size = FontUnit.Small;
+
+        }
+
+        Button17.Text = row.TimeSlot17.ToString();
+        Button17.Enabled = (row.TimeSlot17 > 0) ? false : true;
+        if (Button17.Enabled)
+        {
+            Button17.ForeColor = System.Drawing.Color.Green;
+            Button17.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button17.BorderStyle = BorderStyle.Solid;
+            Button17.Text = "Call for Meeting";
+            Button17.Font.Size = FontUnit.Small;
+        }
+        Button18.Text = row.TimeSlot18.ToString();
+        Button18.Enabled = (row.TimeSlot18 > 0) ? false : true;
+        if (Button18.Enabled)
+        {
+            Button18.ForeColor = System.Drawing.Color.Green;
+            Button18.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button18.BorderStyle = BorderStyle.Solid;
+            Button18.Text = "Call for Meeting";
+            Button18.Font.Size = FontUnit.Small;
+        }
+        Button19.Text = row.TimeSlot19.ToString();
+        Button19.Enabled = (row.TimeSlot19 > 0) ? false : true;
+        if (Button19.Enabled)
+        {
+            Button19.ForeColor = System.Drawing.Color.Green;
+            Button19.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button19.BorderStyle = BorderStyle.Solid;
+            Button19.Text = "Call for Meeting";
+            Button19.Font.Size = FontUnit.Small;
+        }
+
+        Button20.Text = row.TimeSlot20.ToString();
+        Button20.Enabled = (row.TimeSlot20 > 0) ? false : true;
+        if (Button20.Enabled)
+        {
+            Button20.ForeColor = System.Drawing.Color.Green;
+            Button20.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button20.BorderStyle = BorderStyle.Solid;
+            Button20.Text = "Call for Meeting";
+            Button20.Font.Size = FontUnit.Small;
+        }
+
+        Button21.Text = row.TimeSlot21.ToString();
+        Button21.Enabled = (row.TimeSlot21 > 0) ? false : true;
+        if (Button21.Enabled)
+        {
+            Button21.ForeColor = System.Drawing.Color.Green;
+            Button21.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button21.BorderStyle = BorderStyle.Solid;
+            Button21.Text = "Call for Meeting";
+            Button21.Font.Size = FontUnit.Small;
+        }
+
+        Button22.Text = row.TimeSlot22.ToString();
+        Button22.Enabled = (row.TimeSlot22 > 0) ? false : true;
+        if (Button22.Enabled)
+        {
+            Button22.ForeColor = System.Drawing.Color.Green;
+            Button22.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button22.BorderStyle = BorderStyle.Solid;
+            Button22.Text = "Call for Meeting";
+            Button22.Font.Size = FontUnit.Small;
+        }
+
+        Button23.Text = row.TimeSlot23.ToString();
+        Button23.Enabled = (row.TimeSlot23 > 0) ? false : true;
+        if (Button23.Enabled)
+        {
+            Button23.ForeColor = System.Drawing.Color.Green;
+            Button23.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button23.BorderStyle = BorderStyle.Solid;
+            Button23.Text = "Call for Meeting";
+            Button23.Font.Size = FontUnit.Small;
+        }
+
+        Button24.Text = row.TimeSlot24.ToString();
+        Button24.Enabled = (row.TimeSlot24 > 0) ? false : true;
+        if (Button24.Enabled)
+        {
+            Button24.ForeColor = System.Drawing.Color.Green;
+            Button24.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button24.BorderStyle = BorderStyle.Solid;
+            Button24.Text = "Call for Meeting";
+            Button24.Font.Size = FontUnit.Small;
+        }
+
+        Button25.Text = row.TimeSlot25.ToString();
+        Button25.Enabled = (row.TimeSlot25 > 0) ? false : true;
+        if (Button25.Enabled)
+        {
+            Button25.ForeColor = System.Drawing.Color.Green;
+            Button25.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button25.BorderStyle = BorderStyle.Solid;
+            Button25.Text = "Call for Meeting";
+            Button25.Font.Size = FontUnit.Small;
+        }
+
+        Button26.Text = row.TimeSlot26.ToString();
+        Button26.Enabled = (row.TimeSlot26 > 0) ? false : true;
+        if (Button26.Enabled)
+        {
+            Button26.ForeColor = System.Drawing.Color.Green;
+            Button26.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button26.BorderStyle = BorderStyle.Solid;
+            Button26.Text = "Call for Meeting";
+            Button26.Font.Size = FontUnit.Small;
+        }
+
+        Button27.Text = row.TimeSlot27.ToString();
+        Button27.Enabled = (row.TimeSlot27 > 0) ? false : true;
+        if (Button27.Enabled)
+        {
+            Button27.ForeColor = System.Drawing.Color.Green;
+            Button27.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button27.BorderStyle = BorderStyle.Solid;
+            Button27.Text = "Call for Meeting";
+            Button27.Font.Size = FontUnit.Small;
+        }
+
+        Button28.Text = row.TimeSlot28.ToString();
+        Button28.Enabled = (row.TimeSlot28 > 0) ? false : true;
+        if (Button28.Enabled)
+        {
+            Button28.ForeColor = System.Drawing.Color.Green;
+            Button28.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button28.BorderStyle = BorderStyle.Solid;
+            Button28.Text = "Call for Meeting";
+            Button28.Font.Size = FontUnit.Small;
+        }
+
+        Button29.Text = row.TimeSlot29.ToString();
+        Button29.Enabled = (row.TimeSlot29 > 0) ? false : true;
+        if (Button29.Enabled)
+        {
+            Button29.ForeColor = System.Drawing.Color.Green;
+            Button29.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button29.BorderStyle = BorderStyle.Solid;
+            Button29.Text = "Call for Meeting";
+            Button29.Font.Size = FontUnit.Small;
+        }
+
+        Button30.Text = row.TimeSlot30.ToString();
+        Button30.Enabled = (row.TimeSlot30 > 0) ? false : true;
+        if (Button30.Enabled)
+        {
+            Button30.ForeColor = System.Drawing.Color.Green;
+            Button30.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button30.BorderStyle = BorderStyle.Solid;
+            Button30.Text = "Call for Meeting";
+            Button30.Font.Size = FontUnit.Small;
+
+        }
+
+        Button31.Text = row.TimeSlot31.ToString();
+        Button31.Enabled = (row.TimeSlot31 > 0) ? false : true;
+        if (Button31.Enabled)
+        {
+            Button31.ForeColor = System.Drawing.Color.Green;
+            Button31.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button31.BorderStyle = BorderStyle.Solid;
+            Button31.Text = "Call for Meeting";
+            Button31.Font.Size = FontUnit.Small;
+
+        }
+
+        Button32.Text = row.TimeSlot32.ToString();
+        Button32.Enabled = (row.TimeSlot32 > 0) ? false : true;
+        if (Button32.Enabled)
+        {
+            Button32.ForeColor = System.Drawing.Color.Green;
+            Button32.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button32.BorderStyle = BorderStyle.Solid;
+            Button32.Text = "Call for Meeting";
+            Button32.Font.Size = FontUnit.Small;
+
+        }
+
+        Button33.Text = row.TimeSlot33.ToString();
+        Button33.Enabled = (row.TimeSlot33 > 0) ? false : true;
+        if (Button33.Enabled)
+        {
+            Button33.ForeColor = System.Drawing.Color.Green;
+            Button33.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button33.BorderStyle = BorderStyle.Solid;
+            Button33.Text = "Call for Meeting";
+            Button33.Font.Size = FontUnit.Small;
+
+        }
+
+        Button34.Text = row.TimeSlot34.ToString();
+        Button34.Enabled = (row.TimeSlot34 > 0) ? false : true;
+        if (Button34.Enabled)
+        {
+            Button34.ForeColor = System.Drawing.Color.Green;
+            Button34.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button34.BorderStyle = BorderStyle.Solid;
+            Button34.Text = "Call for Meeting";
+            Button34.Font.Size = FontUnit.Small;
+
+        }
+
+        Button35.Text = row.TimeSlot35.ToString();
+        Button35.Enabled = (row.TimeSlot35 > 0) ? false : true;
+        if (Button35.Enabled)
+        {
+            Button35.ForeColor = System.Drawing.Color.Green;
+            Button35.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button35.BorderStyle = BorderStyle.Solid;
+            Button35.Text = "Call for Meeting";
+            Button35.Font.Size = FontUnit.Small;
+
+        }
+
+        Button36.Text = row.TimeSlot36.ToString();
+        Button36.Enabled = (row.TimeSlot36 > 0) ? false : true;
+        if (Button36.Enabled)
+        {
+            Button36.ForeColor = System.Drawing.Color.Green;
+            Button36.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button36.BorderStyle = BorderStyle.Solid;
+            Button36.Text = "Call for Meeting";
+            Button36.Font.Size = FontUnit.Small;
+
+        }
+
+        Button37.Text = row.TimeSlot37.ToString();
+        Button37.Enabled = (row.TimeSlot37 > 0) ? false : true;
+        if (Button37.Enabled)
+        {
+            Button37.ForeColor = System.Drawing.Color.Green;
+            Button37.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button37.BorderStyle = BorderStyle.Solid;
+            Button37.Text = "Call for Meeting";
+            Button37.Font.Size = FontUnit.Small;
+
+        }
+
+        Button38.Text = row.TimeSlot38.ToString();
+        Button38.Enabled = (row.TimeSlot38 > 0) ? false : true;
+        if (Button38.Enabled)
+        {
+            Button38.ForeColor = System.Drawing.Color.Green;
+            Button38.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button38.BorderStyle = BorderStyle.Solid;
+            Button38.Text = "Call for Meeting";
+            Button38.Font.Size = FontUnit.Small;
+
+        }
+
+        Button39.Text = row.TimeSlot39.ToString();
+        Button39.Enabled = (row.TimeSlot39 > 0) ? false : true;
+        if (Button39.Enabled)
+        {
+            Button39.ForeColor = System.Drawing.Color.Green;
+            Button39.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button39.BorderStyle = BorderStyle.Solid;
+            Button39.Text = "Call for Meeting";
+            Button39.Font.Size = FontUnit.Small;
+
+        }
+
+        Button40.Text = row.TimeSlot40.ToString();
+        Button40.Enabled = (row.TimeSlot40 > 0) ? false : true;
+        if (Button40.Enabled)
+        {
+            Button40.ForeColor = System.Drawing.Color.Green;
+            Button40.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button40.BorderStyle = BorderStyle.Solid;
+            Button40.Text = "Call for Meeting";
+            Button40.Font.Size = FontUnit.Small;
+
+        }
+        Button41.Text = row.TimeSlot41.ToString();
+        Button41.Enabled = (row.TimeSlot41 > 0) ? false : true;
+        if (Button41.Enabled)
+        {
+            Button41.ForeColor = System.Drawing.Color.Green;
+            Button41.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button41.BorderStyle = BorderStyle.Solid;
+            Button41.Text = "Call for Meeting";
+            Button41.Font.Size = FontUnit.Small;
+
+        }
+
+        Button42.Text = row.TimeSlot42.ToString();
+        Button42.Enabled = (row.TimeSlot42 > 0) ? false : true;
+        if (Button42.Enabled)
+        {
+            Button42.ForeColor = System.Drawing.Color.Green;
+            Button42.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button42.BorderStyle = BorderStyle.Solid;
+            Button42.Text = "Call for Meeting";
+            Button42.Font.Size = FontUnit.Small;
+
+        }
+        Button43.Text = row.TimeSlot43.ToString();
+        Button43.Enabled = (row.TimeSlot43 > 0) ? false : true;
+        if (Button43.Enabled)
+        {
+            Button43.ForeColor = System.Drawing.Color.Green;
+            Button43.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button43.BorderStyle = BorderStyle.Solid;
+            Button43.Text = "Call for Meeting";
+            Button43.Font.Size = FontUnit.Small;
+
+        }
+
+        Button44.Text = row.TimeSlot44.ToString();
+        Button44.Enabled = (row.TimeSlot44 > 0) ? false : true;
+        if (Button44.Enabled)
+        {
+            Button44.ForeColor = System.Drawing.Color.Green;
+            Button44.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button44.BorderStyle = BorderStyle.Solid;
+            Button44.Text = "Call for Meeting";
+            Button44.Font.Size = FontUnit.Small;
+
+        }
+
+        Button45.Text = row.TimeSlot45.ToString();
+        Button45.Enabled = (row.TimeSlot45 > 0) ? false : true;
+        if (Button45.Enabled)
+        {
+            Button45.ForeColor = System.Drawing.Color.Green;
+            Button45.ToolTip = "This represents an empty slot. Press this button to Call for Meeting.";
+            Button45.BorderStyle = BorderStyle.Solid;
+            Button45.Text = "Call for Meeting";
+            Button45.Font.Size = FontUnit.Small;
+
+        }
+        
+    }
+    public void getWeekDaysFromWeekNumber(int WeekNumber, string Year)
+    {
+        DateTime firstDate = DateTime.Parse("1/1/" + Year);
+        int compensation = 0;
+
+        switch (firstDate.DayOfWeek)
+        {
+
+            case DayOfWeek.Sunday:
+                compensation = 0;
+                break;
+            case DayOfWeek.Monday:
+                compensation = 1;
+                break;
+            case DayOfWeek.Tuesday:
+                compensation = 2;
+                break;
+            case DayOfWeek.Wednesday:
+                compensation = 3;
+                break;
+            case DayOfWeek.Thursday:
+                compensation = 4;
+                break;
+            case DayOfWeek.Friday:
+                compensation = 5;
+                break;
+            case DayOfWeek.Saturday:
+                compensation = 6;
+                break;
+        }
+
+        DateTime startDateOfWeek = (firstDate.AddDays((7 * (WeekNumber - 1)) - compensation));
+        meetingWeekStartDate = startDateOfWeek;
+        DateTime endDateOfWeek = startDateOfWeek.AddDays(4);
+        Label1.Text = "<b>Start Date of Week: </b>" + startDateOfWeek.ToString("D") + "<br/><b>End Date of Week:</b> " + endDateOfWeek.ToString("D");
+        Label1.Visible = true;
+
+        
+        
+    }
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString()) ;
+        if (appID > 0)
+        {
+            MeetingsTableAdapters.Form_MeetingsTableAdapter adapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+            adapter.CancelMeetingsByApplicationID(appID);
+            MeetingsTableAdapters.Form_MeetingMembersTableAdapter fAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+            ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter adapterAppTskLgExt = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+            ExternalRemindersTableAdapters.Task_ExtTableAdapter adapterTskExt = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+            adapterAppTskLgExt.UpdateExtTskComplete1(true, appID, adapterTskExt.GetDataByTitle("Post Busy Schedule")[0].TaskID);           
+            Alert1.Message("The Busy Week Schedule is Cancelled.");
+        }
+    }
+    protected void ButtonSendEmail_Click(object sender, EventArgs e)
+    {
+
+
+    }
+    private void CalculateMeetingTime(int p)
+    {
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        System.Globalization.Calendar myCal = myCI.Calendar;
+
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+        int WeekNumber = myCal.GetWeekOfYear(DateTime.Now, myCWR, myFDW);
+   
+        int daysToAdd = (p % 5)-1 ;
+        if (daysToAdd == -1)
+            daysToAdd = 4;
+        double hoursToAdd = Math.Ceiling(p / 5.0) + 6;
+        if (meetingWeekStartDate.Year == 0001)
+            getWeekDaysFromWeekNumber(WeekNumber, DateTime.Today.Year.ToString());
+            //meetingWeekStartDate = DateTime.Today;
+        meetingDecidedDate = meetingWeekStartDate.AddHours(hoursToAdd);
+       // meetingDecidedDate = meetingDecidedDate.Subtract(new TimeSpan(1, 0, 0, 0));
+        meetingDecidedDate = meetingDecidedDate.AddDays(daysToAdd);
+
+        meetingMonth = meetingDecidedDate.ToString("MMMM");
+        meetingTime = meetingDecidedDate.ToShortTimeString();
+        meetingDateTime =  meetingDecidedDate.ToLongDateString();
+        //ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter adapterAppExtTskLg = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        //ExternalRemindersTableAdapters.Task_ExtTableAdapter adapterTskExt = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        string Chairman = null;
+        try
+        {
+               foreach (Form_FinalPC pRow in bal.GetForm_FinalPC(appID))
+                    {
+                        if (pRow.Position == 10)
+                        {
+                            Chairman = pRow.Employee.NameString;
+                        }
+
+
+                        emailAddresses += pRow.Employee.KFUPMUserID+ ",";
+                    }
+                    emailAddresses += "facpromote@kfupm.edu.sa";
+
+                    Email.ComposeEmailDataTable emailDataTable = new Email.ComposeEmailDataTable();
+                    emailDataTable.NewComposeEmailRow();
+                    emailDataTable.AddComposeEmailRow(emailAddresses,"Call for meeting",@"Dear Promotion Committee Member,
+
+This is a call for meeting of the Ad-Hoc Promotion Committee for the application of " + bal.GetApplicant(appID)[0].NameString + @". The meeting time is decided to be " + meetingDateTime + " at " + meetingTime + @" paying respect to the busy schedule you have recently posted. The venue will be conference room No. 6038 building 15 (Research Institute).
+
+Your participation in the meeting will be appreciated.
+
+Thanks
+Dr. " + Chairman + @" Chairman Ad-Hoc Promotion Committee for " + bal.GetApplicant(appID)[0].NameString);
+
+                    ComposeEmail1.LoadData(emailDataTable);
+                    ComposeEmail1.Visible = true;
+                    
+
+        }
+        catch (Exception)
+        {
+            Alert1.Message("No Busy Week Schedule is launched. Please Launch a busy week schedule first and then call for meeting.");
+            lblSendEmail.Text = "No Busy Week Schedule is launched. Please Launch a busy week schedule first and then call for meeting.";
+            lblSendEmail.ForeColor = System.Drawing.Color.Red;
+//            
+            //FormsAuthentication.SignOut();
+            //FormsAuthentication.RedirectToLoginPage();
+            //Session.Clear();
+
+        }
+    }
+    protected void ButtonCancel_Click(object sender, EventArgs e)
+    {
+//        
+        
+    }
+    protected void Button1_Click(object sender, EventArgs e)
+    {        
+        CalculateMeetingTime(1);
+    }
+    protected void Button2_Click(object sender, EventArgs e)
+    {        
+        CalculateMeetingTime(2);
+        
+    }
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        
+        CalculateMeetingTime(3);
+        
+    }
+    protected void Button4_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(4);
+        
+    }
+    protected void Button5_Click(object sender, EventArgs e)
+    {   
+        CalculateMeetingTime(5);
+     
+    }
+    protected void Button6_Click(object sender, EventArgs e)
+    {        
+        CalculateMeetingTime(6);
+
+    }
+    protected void Button7_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(7);
+       
+    }
+    protected void Button8_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(8);
+       
+    }
+    protected void Button9_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(9);
+        
+    }
+    protected void Button10_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(10);
+       
+    }
+    protected void Button11_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(11);
+        
+    }
+    protected void Button12_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(12);
+        
+    }
+    protected void Button13_Click(object sender, EventArgs e)
+    {         CalculateMeetingTime(13);
+       
+    }
+    protected void Button14_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(14);
+        
+    }
+    protected void Button15_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(15);
+       
+    }
+    protected void Button16_Click(object sender, EventArgs e)
+    {  
+        CalculateMeetingTime(16);
+      
+    }
+    protected void Button17_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(17);
+        
+    }
+    protected void Button18_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(18);
+        
+    }
+    protected void Button19_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(19);
+        
+    }
+    protected void Button20_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(20);
+        
+    }
+    protected void Button21_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(21);
+        
+    }
+    protected void Button22_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(22);
+        
+    }
+    protected void Button23_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(23);
+       
+    }
+    protected void Button24_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(24);
+        
+    }
+    protected void Button25_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(25);
+        
+    }
+    protected void Button26_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(26);
+       
+    }
+    protected void Button27_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(27);
+        
+    }
+    protected void Button28_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(28);
+       
+    }
+    protected void Button29_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(29);
+        
+    }
+    protected void Button30_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(30);
+       
+    }
+    protected void Button31_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(31);
+        
+    }
+    protected void Button32_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(32);
+        
+    }
+    protected void Button33_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(33);
+       
+    }
+    protected void Button34_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(34);
+        
+    }
+    protected void Button35_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(35);
+       
+    }
+    protected void Button36_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(36);
+       
+    }
+    protected void Button37_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(37);
+        
+    }
+    protected void Button38_Click(object sender, EventArgs e)
+    { 
+        CalculateMeetingTime(38);
+       
+    }
+    protected void Button39_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(39);
+        
+    }
+    protected void Button40_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(40);
+        
+    }
+    protected void Button41_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(41);
+        
+    }
+    protected void Button42_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(42);
+        
+    }
+    protected void Button43_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(43);
+        
+    }
+    protected void Button44_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(44);
+        
+    }
+    protected void Button45_Click(object sender, EventArgs e)
+    {
+        CalculateMeetingTime(45);
+        
+    }
+    protected void ButtonCallForMeeting_Click(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());
+        PanelBS.Enabled = false;
+        (Parent.FindControl("Instruction1") as UserControl).Visible = false;
+        CallForMeeting1.LoadControl(appID);
+        CallForMeeting1.Visible = true;
+        
+
+        
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+    protected void ComposeEmail_EmailSent(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());        
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        //PromotionTableAdapters.PromotionCommitteeTempTableAdapter finalPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        //Promotion.PromotionCommitteeTempDataTable finalPCTable = finalPCAdapter.GetData(ApplicationID);
+        MeetingsTableAdapters.Form_MeetingsTableAdapter frmMeetingAdapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+        MeetingsTableAdapters.Form_MeetingMembersTableAdapter frmMeetingMemAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+        try
+        {
+            frmMeetingAdapter.UpdateMeetingDateTime(meetingDecidedDate, meetingDateTime, appID, true);
+            frmMeetingAdapter.CancelMeetingsByApplicationID(appID);
+            //finalPCTable.AddPromotionCommitteeTempRow(ApplicationID, "", 13, "", "", "", "", "promotion@kfupm.edu.sa", "", "", true, "", true, 1, false, DateTime.Today, "", "", "","");
+            //finalPCTable.AddPromotionCommitteeTempRow(finalPCTable[0]);
+
+            bal.GetForm_FinalPC(appID)[0].Employee.KFUPMUserID+= ", facpromote@kfupm.edu.sa";
+
+            foreach (Form_FinalPC row in bal.GetForm_FinalPC(appID))
+            {
+           
+                    appTskLgExtAdapter.UpdateExtTskComplete(true
+                    , appID
+                    , tskExtAdapter.GetDataByTitle("Post Busy Schedule")[0].TaskID
+                    , int.Parse(row.EmployeeID));
+                    appTskLgExtAdapter.DeleteBy4(appID
+                        , tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID
+                        , -1
+                        , int.Parse(row.EmployeeID));
+                    if (DateTime.Today.AddDays(1).CompareTo(meetingDecidedDate) < 0)
+                    {
+                            appTskLgExtAdapter.InsertQuery(appID, tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID
+                                , Cryptography.Encrypt(ComposeEmail1.EmailBody)
+                                //                            , @"
+                                //Dear Promotion Committee Members of Dr. " + MeetingApplicant + @",
+                                //
+                                //Please be reminded, that tomorrow " + meetingDecidedDate.ToLongDateString() + " at " + meetingDecidedDate.ToShortTimeString() + @", there will be a meeting chaired by Dr. " + finalPCTable[0].Name + @". The venue of the meeting is Conference Room No. 6038 building 15 (Research Institute). 
+                                // 
+                                //Your participation in the meeting will be appreciated. 
+                                //
+                                //Thanks 
+                                //Adminstration
+                                //Online Faculty Promotion System
+                                //"
+                            , row.Employee.KFUPMUserID, int.Parse(row.EmployeeID));
+                            appTskLgExtAdapter.UpdateSentDate(
+                                meetingDecidedDate.AddHours(-48)
+                                , appTskLgExtAdapter.GetDataByAppIDTskIDID(appID, tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID, int.Parse(row.EmployeeID))[0].TaskLogID);
+
+                  
+                }
+
+            }
+            Alert1.Message("Email has been successfully sent.");            
+        }
+        catch (Exception)
+        {
+
+        }
+        ComposeEmail1.Visible = false;
+    }
+    protected void ComposeEmail_EmailNotSent(object sender, EventArgs e)
+    {
+        ComposeEmail1.Visible = false;
+    }
+    public override void HideCallForMeetingControl()
+    {
+        CallForMeeting1.Visible = false;
+        if(CallForMeeting1.MeetingDecidedDateTime.Equals(DateTime.MinValue))
+        {
+            Alert1.Message("No meeting has been called.");
+            LabelMeetingDT.Text = "";
+
+        }
+        else
+        {
+            LabelMeetingDT.Text = CallForMeeting1.MeetingDecidedDateTime.ToString();
+            Alert1.Message("Meeting has been successfully called. Emails have been successfully sent to all members.");
+
+        }
+        PanelBS.Enabled = true;
+        
+        (Parent.FindControl("Instruction1") as UserControl).Visible = true;
+    }
+
+    public DateTime meetingDecidedDate
+    {
+        get
+        {
+            if (HiddenFieldMeetingDD.Value.Length == 0)
+                return DateTime.MinValue;
+            return DateTime.Parse(HiddenFieldMeetingDD.Value);
+        }
+        set
+        {
+            HiddenFieldMeetingDD.Value = value.ToString();
+        }
+    }
+    public string meetingDateTime
+    {
+        get
+        {
+            if (HiddenFieldMeetingDT.Value.Length == 0)
+                return "";
+            return HiddenFieldMeetingDT.Value;
+        }
+        set
+        {
+            HiddenFieldMeetingDT.Value = value;
+        }
+    }    
+}
+

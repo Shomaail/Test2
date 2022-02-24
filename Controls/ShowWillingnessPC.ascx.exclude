@@ -1,0 +1,44 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ShowWillingnessPC.ascx.cs"
+    Inherits="Controls_ShowWillingnessPC" %>
+    <div align="center">
+Welcome to the online Faculty Promotion System in King Fahd University of Petroleum and
+Minerals.<br />
+    <br />
+We would be pleased, if you kindly express your willingness for working as
+<asp:Label ID="LabelPosition" runat="server"></asp:Label>
+<br />
+in the promotion committee for the promotion of Dr.
+    <asp:Label ID="LabelApplicantName" runat="server" ></asp:Label>
+by selecting one of
+the following options.</div>
+<div align="center">
+    <br />
+
+    <asp:Panel ID="Panel1" runat="server" Height="286px" Width="532px">
+    <div align="left">
+    <asp:RadioButton ID="RadioButtonAccept" runat="server" Checked="True" GroupName="Williingness"
+        Text="Accept" />
+        <br />
+        <asp:RadioButton ID="RadioButtonReject" runat="server" GroupName="Williingness" Height="20px"
+        Text="Decline" Width="68px" />
+        <br />
+        &nbsp;
+        
+            &nbsp;
+        
+            Comments:
+            <asp:TextBox ID="TextBoxComments" runat="server" Height="31px" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"  onPaste="return limitClipBoard(this,500);"  Width="281px"></asp:TextBox>
+        <br />
+                    &nbsp;
+        <asp:Button ID="ButtonSubmit" runat="server" OnClick="ButtonSubmit_Click" Text="Submit" />&nbsp;
+            
+                &nbsp;<asp:Label ID="LabelThanks" runat="server" Height="19px" Width="434px"></asp:Label>
+    &nbsp;&nbsp;
+            
+            &nbsp;
+        
+            &nbsp;
+            </div>
+    </asp:Panel>
+    &nbsp;
+    </div>

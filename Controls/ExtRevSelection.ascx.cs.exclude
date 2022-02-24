@@ -1,0 +1,176 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ExtRevComm : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        LabelFinalExtReviewer.Text = "";
+        
+    }
+    private int applicationID;
+    public int ApplicationID
+    {
+        get { return (int)ViewState["applicationID"]; }
+        set { ViewState["applicationID"] = value; }
+    }
+    private string role;
+    public string Role
+    {
+        get { return (string)ViewState["role"]; }
+        set { ViewState["role"] = value; }
+    }
+    public void Load_ExtReviewers(string role, int appID)
+    {
+        ApplicationID = appID;
+        Role = role;
+    }
+
+
+    public string GetStatus()
+    {
+        string value = Eval("Type").ToString();
+        switch (value)
+        {
+            case "0":
+                return "Candidate";
+            case "1":
+                return "Department";
+            case "2":
+                return "College";
+            case "3":
+                return "VRR";
+            default:
+                return "SCSubCom";
+        }
+    }
+    protected void GridViewFinalExtReviewers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DetailsViewFinalExtReviewers.PageIndex = GridViewFinalExtReviewers.SelectedIndex;
+        DetailsViewFinalExtReviewers.DataBind();
+    }
+    protected void GirdViewExtReviewers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        
+        //if ((sender as Label).ID == "lbtnDetails")
+        //{
+        //    dvExtReviewers.PageIndex = GirdViewExtReviewers.SelectedIndex;
+        //    dvExtReviewers.DataBind();
+        //}
+        
+        Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetData(ApplicationID);
+        GridViewRow row = GirdViewExtReviewers.SelectedRow;
+        
+        for (int rowNo = 0; rowNo < table.Count; rowNo++)
+        {
+            if (table[rowNo].Name.Equals(row.Cells[6].Text))
+            {
+
+                LabelFinalExtReviewer.Text = "This selection is already present in the Final External Reviewers.";
+                LabelFinalExtReviewer.ForeColor = System.Drawing.Color.Red;
+                labelProgrammaticPopup0.Text = "This selection is already present in the Final External Reviewers.";
+                this.programmaticModalPopup0.Show();
+                return;
+            }
+
+        }        
+        //if (table.Count == 10)
+        //{
+        //    LabelFinalExtReviewer.Text = "There cannot be more than ten selections.";
+        //    LabelFinalExtReviewer.ForeColor = System.Drawing.Color.Red;
+        //    labelProgrammaticPopup0.Text = "There cannot be more than ten selections.";
+        //    this.programmaticModalPopup0.Show();
+        //    return;
+        //}
+        BAL bal = new BAL();
+        
+        Adapters.FrmFnlRefAdapter.InsertQuery(bal.GetSourceForFinalRefree(GirdViewExtReviewers.Rows[GirdViewExtReviewers.SelectedIndex].Cells[6].Text, ApplicationID),
+            ApplicationID,
+            Byte.Parse(GirdViewExtReviewers.DataKeys[GirdViewExtReviewers.SelectedIndex].Values[1].ToString()),
+            Byte.Parse(GirdViewExtReviewers.DataKeys[GirdViewExtReviewers.SelectedIndex].Values[2].ToString()));
+        GridViewFinalExtReviewers.DataBind();
+    }
+    protected void GridViewFinalExtReviewers_RowDataBound(object sender, GridViewRowEventArgs e)
+    {    
+
+    }
+    public bool SaveRankedSelection(int applicationID)
+    {
+        try
+        {
+
+
+            Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetData(applicationID);
+            //for (int rowNo = 0; rowNo < table.Count; rowNo++)
+            //{
+            //    Adapters.FrmFnlRefAdapter.UpdateSerialType((byte) (rowNo + 1), table[rowNo].RefreeID);
+            //}
+            if (table.Count >= 0)
+                return true;
+            else
+                return false;
+        }
+        catch { return false; }
+
+    }
+    protected void GirdViewExtReviewers_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "SelectDetails")
+        {
+            int rowIndex = Convert.ToInt32(e.CommandArgument.ToString());
+            dvExtReviewers.PageIndex = rowIndex;         
+            dvExtReviewers.DataBind();
+        }
+    }
+    protected void hideModalPopupViaServer0_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup0.Hide();
+    }
+    protected void btnSelectNew_Click(object sender, EventArgs e)
+    {
+        pnlSelectNewExtRev.Visible = true;
+        btnSelectNew.Visible = false;
+        btnSelectNewHide.Visible = true;
+    }
+    protected void ButtonSelectNew_Click(object sender, EventArgs e)
+    {
+        
+        Adapters.FrmFnlRefAdapter.Insert(
+                    ApplicationID
+                    , Role == "VRGSSR" ? (byte)3 : (byte)4
+                    , (byte)(Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(ApplicationID).Count + 1)
+                    , tbName.Text, tbRank.Text, tbMailingAddress.Text, tbEmail.Text,
+                    tbMajor.Text, tbSpeciality.Text, tbPhoneFax.Text, tbActiveAreaofResearch.Text,
+                    tbPrevAreaOfResearch.Text,"","not send","",true,false,false,false,"","",false,false,
+                    tbWebpageNew.Text, tbCommentsNew.Text,null,
+                    Int32.Parse(tbTotalPublicationsNew.Text), 
+                    Int32.Parse(tbNoOfJournalsNew.Text),
+                    Int32.Parse(tbHIndexNew.Text),"","",
+                    Int32.Parse(tbCitationsNew.Text),
+                    Role == "VRGSSR" ? "VRR": "SCSubCom"
+                 );
+                    tbName.Text= ""; tbRank.Text= ""; tbMailingAddress.Text= ""; tbEmail.Text= "";
+                    tbMajor.Text= ""; tbSpeciality.Text= ""; tbPhoneFax.Text= ""; tbActiveAreaofResearch.Text= "";
+                    tbPrevAreaOfResearch.Text= "";
+                    tbWebpageNew.Text= ""; tbCommentsNew.Text= "";
+                    tbTotalPublicationsNew.Text= "0";
+                    tbNoOfJournalsNew.Text= "0";
+                    tbHIndexNew.Text= "0";
+                    tbCitationsNew.Text = "0";
+        GridViewFinalExtReviewers.DataBind(); 
+    }
+    protected void btnSelectNewHide_Click(object sender, EventArgs e)
+    {
+        pnlSelectNewExtRev.Visible = false;
+        btnSelectNew.Visible = true;
+        btnSelectNewHide.Visible = false;
+    }
+}

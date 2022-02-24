@@ -1,0 +1,294 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="Forms" CodeFile="Forms.master.cs" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head1" runat="server">
+    <title><%= ConfigurationManager.AppSettings["System_Title"] %></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.png">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../Scripts/jquery.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../App_Themes/custom_b.css" rel="stylesheet">
+    <%--    <link href="../App_Themes/3-col-portfolio.css" rel="stylesheet">--%>
+    
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">          
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script> 
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+    <script type="text/javascript">
+        //function myFunction(id) {
+        //    var x = document.getElementById(id);
+        //    if (x.style.display === "none") {
+        //        x.style.display = "block";
+        //    } else {
+        //        x.style.display = "none";
+        //    }
+        //}
+        // When the user scrolls down 20px from the top of the document, show the button
+       window.onscroll = function () { scrollFunction() };
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("bttBtn").style.display = "block";
+            } else {
+                document.getElementById("bttBtn").style.display = "none";
+            }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+           // document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+        </script>
+        <script type="text/javascript">
+       var confirmed = false;
+
+        function ShowConfirm(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete?", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+
+            });
+
+            return false;
+
+        }
+        </script>
+   
+</head>
+
+<body id="bodyMaster" dir="ltr" runat="server">
+
+    <form id="aspnetForm" runat="server">      
+        <asp:ScriptManager ID="scriptmanager1" runat="server" AsyncPostBackTimeout="300">
+        </asp:ScriptManager>
+
+        <%--<asp:ScriptManager ID="ScriptManager1" runat="server" ScriptMode="Release" EnablePartialRendering="true"></asp:ScriptManager>--%>
+        <header id="top">
+            <div id="divWarningEmailStopped" runat="server" style="background-color:#ff6a00;font-family:Calibri;color:white; padding-left:20px"> Warning! Emails are stopped by the administrator. No emails will be sent from the system.</div>
+            <div class="site-nav">
+                <nav class="navbar navbar-inverse navbar-static-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar3">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>' target="_blank">
+                                <img src="../images/org-logo-wide.png" alt='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>' width="190">
+                            </a>
+                        </div>
+                        <div id="navbar3" class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+
+                                <li runat="server" id="liApp">
+<%--                                    <asp:LinkButton runat="server" PostBackUrl="~/Main.aspx" class="nav-link" ID="lbtnApplications">Applications</asp:LinkButton>--%>
+                                <asp:HyperLink runat="server" NavigateUrl="~/Main.aspx" class="nav-link" ID="lbtnApplications">Applications</asp:HyperLink ></li>
+                                <li>
+                                    <asp:HyperLink runat="server" NavigateUrl="~/Admin/Default.aspx" class="nav-link" ID="lbtnAdmin"
+                                         Visible='<%#(Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"]) ||
+                                             (Session["IsCollegeAdmin"] != null) && ((bool)Session["IsCollegeAdmin"]) %>'>Admin</asp:HyperLink></li>
+                                <li>
+                                    <asp:LinkButton runat="server" class="nav-link" ID="lbtnSearchEmp" 
+                                        Visible='<%#(Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"]) ||
+                                             (Session["IsCollegeAdmin"] != null) && ((bool)Session["IsCollegeAdmin"]) %>'>Employee Search</asp:LinkButton></li>
+
+                            </ul>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>
+                                        <asp:Label runat="server" ID="lblUserName"></asp:Label>
+                                        <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li runat="server" id="liMyDetails">
+                                            <asp:LinkButton runat="server" PostBackUrl="~/Main.aspx?MyDetails=1" class="nav-link" ID="lbtnMyDetails">My Details</asp:LinkButton></li>
+                                        <li><a href="../Documents/Guidelines.pdf" class="nav-link" target="_blank">Guidelines</a></li>
+                                        <li><a href="../Documents/Announcements.pdf" class="nav-link" target="_blank">Announcements</a></li>
+                                        <li><a href="../UserManual.html" class="nav-link" target="_blank">User Manual</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="../Logout.aspx"><i class="fa fa-power-off" aria-hidden="true"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--/.nav-collapse -->
+                    </div>
+                    <!--/.container-fluid -->
+                </nav>
+            </div>
+        </header>
+        <div id="divWarningMultiplsApp" runat="server" style="background-color:#f50000;font-family:Calibri;color:white; padding-left:20px"> Warning! There is another promotion application for the same rank found in the system</div>
+        <div class="container-fluid" id="promodetails" runat="server">
+            <ul>
+                <li class="emp-details">
+                    <span class="title">
+                        <asp:Label runat="server" ID="lblApplicantName"></asp:Label></span><br>
+                    <span class="dpt">
+                        <asp:Label runat="server" ID="lblApplicantRank"></asp:Label>
+                        -
+                        <asp:Label runat="server" ID="lblApplicantDept"></asp:Label></span><br>
+                    <span class="dpt">
+                        <asp:Label runat="server" ID="lblApplicantEmail"></asp:Label>
+                    </span>
+                </li>
+                <li class="desig-details">
+                    <span class="appfor">Applied for: <strong>
+                        <asp:Label runat="server" ID="lblForRank"></asp:Label></strong></span><br>
+                    <span class="appdt">Applied on: <strong>
+                        <asp:Label runat="server" ID="lblAppStartDate"></asp:Label></strong></span><br>
+                </li>
+                <li class="status">
+                    <div class="pull-right">
+                    <span class="appdt">Your Role: <strong>
+                        <asp:Label ID="lblDeputy" runat="server" Font-Italic="True" Text="Deputy Of "
+                            Visible='<%# (bool) Session["IsDeputy"] %>'></asp:Label>
+                        <asp:Label ID="lblRole" runat="server"></asp:Label>
+                        <asp:Label ID="lblActingRole" runat="server" 
+                            Visible='<%# IsActing()%>' 
+                            Text="(Acting)"></asp:Label>
+                    </strong></span>
+                    <br>
+                    <span class="appdt">Your Task: <strong>
+                        <asp:Label ID="lblTask" runat="server"></asp:Label>
+                    </strong></span>
+                    <br>
+                    <span class="appdt">Status: <strong><asp:Label runat="server" ID="lblStatus" Text='<%# App.ApplicationClosed ? "Archived" : "Active" %>'></asp:Label>
+
+                    </strong></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-lg-2 col-md-3 col-sm-3 col-xs-12 left-nav">
+                    <div id="sidebarText">
+                        <ul class="nav nav-list" runat="server" id="Menu1"></ul>
+                        <ul class="nav nav-list" runat="server" id="Menu2"></ul>
+                        <ul class="nav nav-list" runat="server" id="Menu3"></ul>
+                    </div>
+                </nav>
+
+                <!-- Middle container -->
+                <div class="col-lg-8 col-md-6 col-sm-6 col-xs-12 middle-content">                    
+                    <a href="#top" id="bttBtn" title="Go to top" style="display: block;">Top</a>
+                <%--    <a href="#top">#back to top</a>--%>
+                    <h1>
+                        <asp:Label runat="server" ID="lblPageTitle"></asp:Label></h1>
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+
+                <!-- Check list content -->
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 check-list">
+                    <div id="application-links">
+                        <ul>
+                            <li class="title">Application Links</li>
+
+                            <li>
+                                <asp:HyperLink runat="server" 
+                                    Visible='<%# PromotionApplication.IsDependentTask(TaskID) %>'
+                                    ID="lbtnAction"
+                                    NavigateUrl='<%# "~/Forms/Checkout.aspx?applicationID="+ApplicationID+"&roleID="+CurRoleID %>'>
+                                    <i class="fa fa-mouse-pointer" aria-hidden="true"></i> Actions</asp:HyperLink></li>
+
+                            <li>
+                                <asp:HyperLink runat="server"
+                                    ID="lbtnMessage"
+                                    NavigateUrl='<%# "~/Forms/Message.aspx?applicationID="+ApplicationID+"&roleID="+CurRoleID %>'>
+                                    <i class="fa fa-envelope-open" aria-hidden="true"></i> Messages</asp:HyperLink></li>
+
+                            <li>
+                                <asp:HyperLink runat="server"
+                                    ID="lbtnPromotionTracking"
+                                    NavigateUrl='<%# "~/Forms/History.aspx?applicationID="+ApplicationID+"&roleID="+CurRoleID %>'>
+                                    <i class="fa fa-line-chart" aria-hidden="true"></i> Application tracking</asp:HyperLink></li>
+                            <li>
+                                <asp:HyperLink runat="server"
+                                    ID="lbtnApplicationRoles"
+                                    NavigateUrl='<%# "~/Forms/ApplicatioRoles.aspx?applicationID="+ApplicationID+"&roleID="+CurRoleID %>'>
+                                    <i class="fa fa-users" aria-hidden="true"></i> Application roles</asp:HyperLink></li>
+                            <li>
+                                <asp:HyperLink runat="server" Visible='<%# Session["IsAdmin"] != null && (bool)Session["IsAdmin"]  %>'
+                                    ID="lbtnCorrespondence"
+                                    NavigateUrl='<%# "~/Forms/Correspondence.aspx?applicationID="+ApplicationID+"&roleID="+CurRoleID %>'>
+                                    <i class="fa fa-comments" aria-hidden="true"></i> Correspondence</asp:HyperLink></li>
+                            <li>
+                                <asp:HyperLink runat="server"
+                                    ID="lbtnActiveTask"
+                                    NavigateUrl='<%# "~/Tasks.aspx?applicationID="+ApplicationID+"&roleID=" + Cryptography.Encrypt(CurRoleID.ToString()) %>'>
+                                    <i class="fa fa-tasks" aria-hidden="true"></i> Active Task (<%# GetNoOfActiveTask(ApplicationID).ToString() %>)</asp:HyperLink></li>
+                             <li>
+                                <asp:HyperLink runat="server" Visible='<%# (CurRoleID == (int)RoleID.Promotion_Committee_Chairman
+                                        || CurRoleID == (int)RoleID.Promotion_Committee_Member_1
+                                        || CurRoleID == (int)RoleID.Promotion_Committee_Member_2
+                                        || CurRoleID == (int)RoleID.Promotion_Committee_Member_3
+                                        || CurRoleID == (int)RoleID.Promotion_Committee_Member_4
+                                        || CurRoleID == (int)RoleID.TopAuthority )&& !App.ApplicationClosed%>'
+                                    ID="lbtnMeeting" target="_blank" 
+                                    NavigateUrl='<%# App.ApplicationClosed ? "":"http://10.15.1.211/Home.aspx?employeeID="+Employee.EmployeeID
+                                        +"&meetingTitle=" + "Promotion_Committee_Meeting_for_the_Promotion_Case_of_" 
+                                        + Applicant.NameString.Replace(" ","_") +"_("+Applicant.Department1.ShortName.Replace(" ","_")+")_applying_for_the_rank_of_"+ App.ForRank.Replace(" ","_")
+                                        +"&meetingMembers=" + PCMembers+"&chairTitle=Chairman_of_Promotion_Committee"%>'>
+                                    <i class="fa fa-meetup" aria-hidden="true"></i> Meeting (Can be accessed from Academic Buildings only)</asp:HyperLink></li>
+
+
+                            <%-- <li><a runat="server" id="aPromotionTracking"  href='<%# Get()%>'<i class="fa fa-line-chart" aria-hidden="true"></i> Promotion tracking</a></li>
+                            <li><a runat="server" id="aApplicationRoles"   href='<%# Get()%>'<i class="fa fa-users" aria-hidden="true"></
+                                i> </a></li>
+                            <li><a runat="server" id="aCorrespondence"     href='<%# Get()%>'<i class="fa fa-comments" aria-hidden="true"></i> Correspondance</a></li>
+                            <li><a runat="server" id="aActiveTask"         href='<%# Get()%>'<i class="fa fa-comments" aria-hidden="true"></i> Active Task (<%# GetNoOfActiveTask(ApplicationID).ToString() %>)</a></li>
+                            --%>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <span class="small"><strong><%= ConfigurationManager.AppSettings["System_Title"] %></strong> © <%= ConfigurationManager.AppSettings["CopyRightYear"] %> <%= ConfigurationManager.AppSettings["OrganizationName"] %> </span>
+            </div>
+        </footer>
+
+    </form>
+</body>
+</html>
+

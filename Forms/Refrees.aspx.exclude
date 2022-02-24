@@ -1,0 +1,37 @@
+<%@ Page Language="C#" MasterPageFile="Forms.master" AutoEventWireup="true" CodeFile="Refrees.aspx.cs" Inherits="Forms_Refrees" MaintainScrollPositionOnPostback="true" ValidateRequest="false"%>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Src="../Controls/Refrees.ascx" TagName="Refrees" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+   <uc2:Instruction ID="Instruction1" runat="server" />
+   <br />
+   
+   <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label>
+   <a title="0"></a>
+   <asp:Panel ID="pnlApplicants" runat="server" Width="100%">
+       <h3>Suggested by Applicant</h3>
+       <uc1:Refrees ID="Refrees1" runat="server" />
+       <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click"  CssClass="btn btn-primary btn-md"  
+           Text="Save Referees" CausesValidation="false"/>
+       <br />
+   </asp:Panel>
+   <a title="1"></a>
+   <asp:Panel ID="pnlDepartments" runat="server" Width="100%" style="margin-top: 20px">
+       <h3>Suggested by Department</h3>
+       <uc1:Refrees ID="Refrees2" runat="server" />
+       <asp:Button ID="btnSaveDept" runat="server" OnClick="btnSaveDept_Click"   CssClass="btn btn-primary btn-md"  
+           Text="Save Referees" CausesValidation="false"/>
+       <br />
+       <br />
+   </asp:Panel>
+   <a title="2"></a>
+   <asp:Panel ID="pnlCollege" runat="server" Width="100%" style="margin-top: 20px">
+       <h3>Suggested by College</h3>
+       <uc1:Refrees ID="Refrees3" runat="server" />
+       <asp:Button ID="btnSaveCollege" runat="server" OnClick="btnSaveCollege_Click" 
+           Text="Save Referees" CausesValidation="false"  CssClass="btn btn-primary btn-md"  />
+       <br />
+       <br />
+   </asp:Panel>
+</asp:Content>

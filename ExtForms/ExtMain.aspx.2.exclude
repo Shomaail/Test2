@@ -1,0 +1,304 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ExtMain.aspx.cs" Inherits="ExtForms_ExtMain" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head id="Head1" runat="server">
+    <title><%=ConfigurationManager.AppSettings["System_Title"] %></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.png">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../Scripts/jquery.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../App_Themes/custom_b.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+<%--    <link href="App_Themes/3-col-portfolio.css" rel="stylesheet">--%>
+</head>
+<body>
+    <form id="form1" runat="server">
+      <header>
+ <div class="complogo">
+   <a href='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>' target="_blank"><img src="../images/logo.png" alt="" width="300" ></a>
+  </div> 
+  <div class="topbar bg-light"><a target="_blank" href='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>'><%= ConfigurationManager.AppSettings["OrganizationURL"] %></a></div>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+         <a class="navbar-brand text-hide"><%= ConfigurationManager.AppSettings["BannerName"] %></a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li runat="server" id="liApp">
+                                 <asp:LinkButton runat="server" OnClick="lbtnApplications_Click" class="nav-link" ID="lbtnApplications">Applications</asp:LinkButton></li>                  
+           </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i> <asp:Label runat="server" ID="lblUserName"></asp:Label> <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li runat="server" id="liMyDetails">
+                                <asp:LinkButton runat="server" OnClick="lbtnMyDetails_Click" class="nav-link" ID="lbtnMyDetails">My Details</asp:LinkButton></li>
+             
+              <li role="separator" class="divider"></li>     
+                <li><a href="../ExtLogout.aspx"><i class="fa fa-power-off" aria-hidden="true"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+
+      </div>
+      <!--/.nav-collapse -->     
+    </div>
+    <!--/.container-fluid -->
+  </nav>
+        </header>
+
+        <div id="divMyDetails" visible='<%# FormMode == FormModeMain.MyDetails.ToString() %>' runat="server" style="padding-left: 15px; padding-top: 5px; padding-right: 20px">
+            <table>
+                <tr>
+                    <td><span><%=Resources.Resource.Name%> </span></td>
+                    <td>
+                        <input runat="server" id="taName" type="text" class="form-control" required="required" style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Address%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taAddress" type="text" class="form-control" required="required" style="width: 600px; height: 200px"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.PassportNo%> </span></td>
+                    <td>
+                        <input runat="server" id="taPassportNo" type="text" class="form-control" style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Bank%> </span></td>
+                    <td>
+                        <input runat="server" id="taBank" type="text"  style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Website%> </span></td>
+                    <td>
+                        <textarea runat="server"  id="taWebsite" class="form-control" type="text" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Email%> </span></td>
+                    <td>
+                        <input runat="server" id="taEmail" type="email" class="form-control" readonly style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Rank%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taRank" type="text" class="form-control" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Major%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taMajor" type="text" class="form-control" required="required" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Specialty%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taSpecialty" type="text" class="form-control" required="required" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.ActiveAreaOfResearch%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taActiveAreaOfResearch" type="text" class="form-control" required="required" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.PreviousAreaOfResearch%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taPreviousAreaOfResearch" type="text" class="form-control" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.PhoneNFax%> </span></td>
+                    <td>
+                        <textarea runat="server" id="taPhoneNFax" type="tel" class="form-control" style="width: 600px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.TotalPublications%></span></td>
+                    <td>
+                        <input runat="server" id="taTotalPublications" class="form-control" type="number" min="0" style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.NoOfJournals%></span></td>
+                    <td>
+                        <input runat="server" id="taNoOfJournals" class="form-control" type="number" min="0" style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.HIndex%></span></td>
+                    <td>
+                        <input runat="server" id="taHIndex" class="form-control" type="number" min="0" style="width: 600px;" /></td>
+                </tr>
+                <tr>
+                    <td><span><%=Resources.Resource.Citations%></span></td>
+                    <td>
+                        <input runat="server" id="taCitations" class="form-control" type="number" min="0" style="width: 600px;" /></td>
+                </tr>
+            </table>
+            <asp:Button ID="btnSave" runat="server"  Text="Save" meta:resourceKey="btnSave" class="btn" OnClick="btnSave_Click" />
+            <%-- 
+                
+                <asp:DetailsView ID="dvExternalReviewer" ItemType="ExternalReviewer" runat="server" 
+            CssClass="table-condensed" 
+            AutoGenerateRows="false">
+            <Fields>
+                <asp:TemplateField HeaderText="Name">
+                    <ItemTemplate>
+                    <%# Item.NameString %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Rank">
+                    <ItemTemplate>
+                    <%# Item.Rank %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Specialty">
+                    <ItemTemplate>
+                    <%# Item.Specialty %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Fields>
+        </asp:DetailsView>--%>
+        </div>
+        <div id="divApplications" runat="server" visible='<%# FormMode == FormModeMain.Applications.ToString() %>'>
+            <div id="divCurrentEvaluations" runat="server" style="padding-left: 15px; padding-top: 5px; padding-right: 20px">
+                <h3>Applications For Promotion Under Review</h3>
+                <div runat="server" id="divCurrentEvalMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>The following lists the applications that you are
+                assigned to evaluate.</em></span>
+                    </p>
+                </div>
+                <div runat="server" id="divCurrentEvalAbsentMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>There are no promotion application(s) you are assigned to evaluate.</em></span>
+                    </p>
+                </div>
+                <asp:Repeater ID="rpCurrentEvaluation" runat="server"
+                    ItemType="BL.Data.Form_FinalExtRev">
+                    <ItemTemplate><asp:Label runat="server" ID="lblApplicationID" Text='<%# Item.ApplicationID %>' Visible="false"></asp:Label>
+                        <asp:LinkButton ID="lbtnCurrentApplicantions" runat="server" OnClick="lbtn_Click">
+                        <div class="bg-open-promo">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-9 col-sm-12">
+                                        <h5 class="mt-0 mb-1">
+                                            <%# Item.Application.Employee.NameString%>
+                                                
+                                            </h5>
+                                        <br />
+                                        <%# Item.Application.Employee.Department%>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12">
+                                        
+                                        Appliying for the Rank: <strong><%# Item.Application.ForRank %></strong><br />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </asp:LinkButton>
+                    </ItemTemplate>                   
+                </asp:Repeater>
+            </div>
+            <div id="divSubmittedEvaluations" runat="server" style="padding-left: 15px; padding-top: 5px; padding-right: 20px">
+                <h3>Submitted Reviews</h3>
+                <div runat="server" id="divSubmittedEvalMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>The following is the list of evaluations that you have submitted.</em></span>
+                    </p>
+                </div>
+                <div runat="server" id="divSubmittedEvalAbsentMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>There are no submitted evalautions.</em></span>
+                    </p>
+                </div>
+                <asp:Repeater ID="rpSubmittedEvaluation" runat="server"
+                    ItemType="BL.Data.Form_FinalExtRev">
+                    <ItemTemplate><asp:Label runat="server" ID="lblApplicationID" Text='<%# Item.ApplicationID %>' Visible="false"></asp:Label>
+                        <asp:LinkButton ID="lbtnSubmittedApp" runat="server" OnClick="lbtn_Click">
+                        <div class="bg-open-promo">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-9 col-sm-12">
+                                        <h5 class="mt-0 mb-1">
+                                             <%# Item.Application.Employee.NameString %>
+                                            </h5>
+                                        <br />
+                                        <%# Item.Application.Employee.Department %>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12">
+                                        
+                                        Appliying for the Rank: <strong><%# Item.Application.ForRank%></strong><br />
+                                        Evaluation Date: <strong><%# Item.EvaluationDate%></strong><br />
+                                       <%-- Promotion Recommendation: <strong><%# Item.PromotionRecom != null? bool.Parse(Item.PromotionRecom.Value.ToString()) ? "Positive" : "Negative" : ""%></strong><br />--%>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </asp:LinkButton>
+                    </ItemTemplate>                   
+                </asp:Repeater>
+
+            </div>
+            <div id="divWithdrawnEvaluations" runat="server" style="padding-left: 15px; padding-top: 5px; padding-right: 20px">
+                <h3>Applications For Promotion Withdrawn</h3>
+                <div runat="server" id="divWithdrawnEvalMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>The following is the list of evaluations that you have withdrawn.</em></span>
+                    </p>
+                </div>
+                <div runat="server" id="divWithdrawnEvalAbsentMsg">
+                    <p>
+                        <span style="font-size: 10pt"><em>There are no withdrawn evaluations.</em></span>
+                    </p>
+                </div>
+                <asp:Repeater ID="rpWithdrawnEvaluations" runat="server"
+                    ItemType="BL.Data.Form_FinalExtRev">
+                    <ItemTemplate><asp:Label runat="server" ID="lblApplicationID" Text='<%# Item.ApplicationID %>' Visible="false"></asp:Label>
+                        <asp:LinkButton ID="lbtnWithdrawnApplicantions" runat="server" OnClick="lbtn_Click">
+                        <div class="bg-open-promo">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-9 col-sm-12">
+                                        <h5 class="mt-0 mb-1">
+                                            <%# Item.Application.Employee.NameString %>
+                                            </h5>
+                                        <br />
+                                        <%# Item.Application.Employee.Department %>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12">
+                                        
+                                        Appliying for the Rank: <strong><%# Item.Application.ForRank%></strong><br />
+                                        Evaluation Date: <strong><%# Item.EvaluationDate%></strong><br />                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </asp:LinkButton>
+                    </ItemTemplate>                   
+                </asp:Repeater>
+     
+            </div>
+        </div>
+<footer class="footer">
+            <div class="container-fluid">
+                <span class="small"><strong><%= ConfigurationManager.AppSettings["System_Title"] %></strong> © <%= ConfigurationManager.AppSettings["CopyRightYear"] %> <%= ConfigurationManager.AppSettings["OrganizationName"] %> </span>
+            </div>
+        </footer>
+    </form>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="Admin_Admin" CodeFile="Admin.master.cs" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head2" runat="server">
+    <title><%= ConfigurationManager.AppSettings["System_Title"] %></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.png">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../Scripts/jquery.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../App_Themes/custom_b.css" rel="stylesheet">
+    <%--    <link href="../App_Themes/3-col-portfolio.css" rel="stylesheet">--%>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+    
+//    $(document).ready(function () {
+//    $('#table_id').DataTable();
+//} );
+        var confirmed = false;
+
+        function ShowConfirm(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete?", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+
+            });
+
+            return false;
+
+        }
+
+        function ShowConfirmDeleteApplication(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete this Promotion Application? The operation will delete all data related to this application including all attachements uploaded, External Reviewers List, Tracking informaiton  etc", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+
+            });
+
+            return false;
+
+        }
+
+        function ShowConfirmDeleteAdmin(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete this Adminsitrator?", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+
+            });
+
+            return false;
+
+        }
+        function ShowConfirmDeleteWorkflowAttribute(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete this attribute?", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+
+            });
+
+            return false;
+
+        }
+    </script>
+
+</head>
+<body dir="ltr">
+                        <form id="form3" runat="server">
+
+        <asp:ScriptManager ID="scriptmanager1" runat="server">
+        </asp:ScriptManager>
+           <header>
+               <div id="divWarningEmailStopped" runat="server" style="background-color:#ff6a00;font-family:Calibri;color:white; padding-left:20px"> Warning! Emails are stopped by the administrator. No emails will be sent from the system.</div>
+            <div class="site-nav">
+                <nav class="navbar navbar-inverse navbar-static-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar3">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>' target="_blank">
+                                <img src="../images/org-logo-wide.png" alt='<%= ConfigurationManager.AppSettings["OrganizationURL"] %>' width="190">
+                            </a>
+                        </div>
+                        <div id="navbar3" class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+
+                                <li runat="server" id="liApp">
+                                    <asp:LinkButton runat="server" PostBackUrl="~/Main.aspx" class="nav-link" ID="lbtnApplications">Applications</asp:LinkButton></li>
+                                <li>
+                                    <asp:LinkButton runat="server" PostBackUrl="~/Admin/Default.aspx" class="nav-link" 
+                                        ID="lbtnAdmin">Admin</asp:LinkButton></li>
+                                <li>
+                                    <asp:LinkButton runat="server" class="nav-link" ID="lbtnSearchEmp">Employee Search</asp:LinkButton></li>
+
+                            </ul>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle" aria-hidden="true"></i>
+                                        <asp:Label runat="server" ID="lblUserName"></asp:Label>
+                                        <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                    <li runat="server" id="liMyDetails">
+                                        <asp:LinkButton runat="server" PostBackUrl="~/Main.aspx?MyDetails=1" class="nav-link" ID="lbtnMyDetails">My Details</asp:LinkButton></li>
+                                        <li><a href="../Documents/Guidelines.pdf" class="nav-link" target="_blank">Guidelines</a></li>
+                                        <li><a href="../Documents/Announcements.pdf" class="nav-link" target="_blank">Announcements</a></li>                                        <li><a href="../UserManual.html" class="nav-link" target="_blank">User Manual</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="../Logout.aspx"><i class="fa fa-power-off" aria-hidden="true"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--/.nav-collapse -->
+                    </div>
+                    <!--/.container-fluid -->
+                </nav>
+            </div>
+        </header>   
+        <div id="divAdmin" runat="server" class="col-lg-2 col-md-12 col-sm-12 navbar-expand-lg" visible='<%#Session["IsAdmin"] != null && (bool)Session["IsAdmin"] %>'>
+            <div class="sidebar-nav" id="sidebarText">
+                <ul class="nav nav-list">
+                     
+                    <li><a href="../Admin/ManageAdmins.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Manage admin</a></li>
+                    <li><a href="../Admin/AllApplications.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> All Applications</a></li>
+                    
+                    <li><a href="../Admin/Task_Ext.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External task </a></li>
+                    <li><a href="../Admin/ExtTaskMessages.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External Action/Task messages</a></li>
+                    
+                    <li><a href="../Admin/Action.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i>  Action </a></li>
+                    <li><a href="../Admin/ActionMessages.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Internal Action messages</a></li>
+                    <li><a href="../Admin/Task.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Tasks</a></li>
+                    <li><a href="../Admin/TaskDependency.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Task Dependencies</a></li>
+                    <li><a href="../Admin/Role.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Roles</a></li>
+                    <li><a href="../Admin/Form.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Form</a></li>
+                    <li><a href="../Admin/TaskForm.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Task Form</a></li>
+                    <li></li>
+                    <li><a href="../Admin/NameExclusion.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Name Exclusion</a></li>
+                    <li><a href="../Admin/PermanentCommittee.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Permanent Committee</a></li>
+                    <li><a href="../Admin/WorkflowAttribute.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Workflow Attribute</a></li>
+                    <li><a href="../Admin/Departments.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Departments</a></li>
+                    <li><a href="../Admin/SentEmails.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Sent Emails</a></li>
+                    <li><a href="../Admin/ActionLog.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Activity log</a></li>
+                    <li><a href="../Admin/Cryption.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Cryption</a></li>
+                    
+                    <li><a href="../Admin/Employee.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Employees</a></li>
+<%--                    <li><a href="../Admin/ExternalEmployee.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External employee</a></li>--%>
+                    <li><a href="../Admin/ExternalReviewer.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External reviewers</a></li>
+                    <li><a href="../Admin/ResourceEditor.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Resource Editor</a></li>
+                    <li><a href="../Admin/WorkflowDiagram.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Workflow Diagram</a></li>
+
+
+                </ul>
+            </div>
+        </div>
+        <div id="divCollegAdmin" runat="server" class="col-lg-2 col-md-12 col-sm-12 navbar-expand-lg" visible='<%#Session["IsCollegeAdmin"] != null && (bool)Session["IsCollegeAdmin"] %>'>
+            <div class="sidebar-nav" >
+                <ul class="nav nav-list">                     
+                    <li><a href="../Admin/Employee.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> Employees</a></li>
+<%--                    <li><a href="../Admin/ExternalEmployee.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External employee</a></li>--%>
+                    <li><a href="../Admin/ExternalReviewer.aspx"><i class="fa fa-angle-right" aria-hidden="true"></i> External reviewers</a></li>
+
+
+                </ul>
+            </div>
+        </div>
+        <%--    <div class="col-lg-10 col-md col-sm-12">
+
+            
+        </div>
+       <div style="padding: 15px; text-align: left; background-color: aliceblue" class="col-xl-1 col-lg-2 col-md-12 col-sm-12 navbar-expand-lg">
+            <ul>
+                <li>
+                    <asp:HyperLink ID="hl0" runat="server" NavigateUrl="~/Admin/ManageAdmins.aspx">Manage Admin</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="hl2" runat="server" NavigateUrl="~/Admin/ActionLog.aspx">Action Log</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="h7" runat="server" NavigateUrl="~/Admin/ExternalEmployee.aspx">External Employee</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="h8" runat="server" NavigateUrl="~/Admin/ExternalReviewer.aspx">ExternalReviewer</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="h4" runat="server" NavigateUrl="~/Admin/ActionMessages.aspx">Action Messages</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="hl21" runat="server" NavigateUrl="~/Admin/ExtTaskMessages.aspx">External Task Messages</asp:HyperLink></li>
+                <li>
+                    <asp:HyperLink ID="h3" runat="server" NavigateUrl="~/Admin/Action.aspx">Action</asp:HyperLink></li>
+                <li>
+                <asp:HyperLink ID="h5" runat="server" NavigateUrl="~/Admin/Departments.aspx">Departments</asp:HyperLink></li>
+                    <%--                      
+                <asp:HyperLink ID="h5" runat="server" NavigateUrl="~/Admin/Departments.aspx">Departments</asp:HyperLink></li><li>
+                <asp:HyperLink ID="h6" runat="server" NavigateUrl="~/Admin/Employee.aspx">Employee</asp:HyperLink></li><li>
+                
+                
+                <asp:HyperLink ID="h9" runat="server" NavigateUrl="~/Admin/ExtFormInstructions.aspx">External Form Instructions</asp:HyperLink></li><li>
+                <asp:HyperLink ID="h10" runat="server" NavigateUrl="~/Admin/Form.aspx">Form</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl11" runat="server" NavigateUrl="~/Admin/NameExclusion.aspx">Name Exclusion</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl12" runat="server" NavigateUrl="~/Admin/Phase.aspx">Phase</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl13" runat="server" NavigateUrl="~/Admin/Role.aspx">Role</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl14" runat="server" NavigateUrl="~/Admin/RolesReplacement.aspx">Roles Replacement</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl15" runat="server" NavigateUrl="~/Admin/ScientificCouncil.aspx">Scientific Council</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl16" runat="server" NavigateUrl="~/Admin/SentEmail.aspx">Sent Email</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl17" runat="server" NavigateUrl="~/Admin/SpecialCase.aspx">Special Case</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl18" runat="server" NavigateUrl="~/Admin/Task.aspx">Task</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl19" runat="server" NavigateUrl="~/Admin/Task_Dependency.aspx">Task Dependency</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl20" runat="server" NavigateUrl="~/Admin/Task_Ext.aspx">Task External</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl21" runat="server" NavigateUrl="~/Admin/Task_ExtMessages.aspx">Task External Messages</asp:HyperLink></li><li>
+                <asp:HyperLink ID="hl22" runat="server" NavigateUrl="~/Admin/TaskForm.aspx">Task Form</asp:HyperLink></li><li>
+
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/Admin/ApplicationFile.aspx">Application Report</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink3" runat="server" NavigateUrl="~/Admin/DepartmentManagers.aspx">Assignments of Department Chairmen and Deans</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl="~/Admin/ActionMessage.aspx">Edit Task Titles and Timing</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink7" runat="server" NavigateUrl="~/Admin/Directions.aspx">Edit Task Directions</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink4" runat="server" NavigateUrl="~/Admin/DepartmentCommittee.aspx">Edit a Departmental Committee</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink5" runat="server" NavigateUrl="~/Admin/PromotionCommitte.aspx">Edit a Promotion Committee</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink8" runat="server" NavigateUrl="~/Admin/SentEmails.aspx">View Sent Emails</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink9" runat="server" NavigateUrl="~/Admin/Attachments.aspx">Attachments</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink10" runat="server" NavigateUrl="~/Admin/Vacation.aspx">Vacation Adjustments</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink11" runat="server" NavigateUrl="~/Admin/ExternalMessages.aspx">External Messages</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink12" runat="server" NavigateUrl="~/Admin/Synchronization.aspx">Synchronization</asp:HyperLink></li><li>
+            <asp:HyperLink ID="HyperLink13" runat="server" NavigateUrl="~/Admin/ERPData.aspx">Data Live from ERP</asp:HyperLink></li>
+            </ul>
+            <br />
+        </div>--%>
+
+        <div class="col-lg-10 col-md col-sm-12">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        <%--<div class="col-xl-11 col-lg-10 col-md col-sm-12" style="float: right; background-color: azure">
+           
+
+        </div>--%>
+ </form>
+</body>
+</html>

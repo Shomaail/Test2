@@ -1,0 +1,82 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PCCommunicate.aspx.cs" Inherits="Forms_Default2" Title="Faculty Promotion System" MaintainScrollPositionOnPostback ="true"%>
+
+<%@ Register Src="../Controls/Search.ascx" TagName="Search" TagPrefix="uc4" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Src="../Controls/CollegeFaculty.ascx" TagName="CollegeFaculty" TagPrefix="uc3" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+
+<%@ Register Src="../Controls/NewSelectionPC.ascx" TagName="NewSelectionPC" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label><br />
+    <uc1:NewSelectionPC ID="NewSelectionPC1" runat="server"  />
+    <br />
+    <asp:HyperLink ID="HyperLinkTOP" runat="server">Go to Top</asp:HyperLink>
+    <br />
+    <br />
+    
+    <br />
+    <br />
+    <asp:LinkButton ID="LinkButtonShowDelPCMem" runat="server" 
+        onclick="LinkButtonShowDelPCMem_Click">Show Deleted Promotion Committee 
+    Members</asp:LinkButton>
+
+    <br />
+
+    <br />
+    
+    
+    <br /><asp:Panel ID="PanelDelPCMem" runat="server">
+    <h3>Deleted Promotion Committee Members</h3>
+        <asp:GridView ID="GridViewDelPCMem" runat="server" AutoGenerateColumns="False" 
+            CellPadding="4" DataSourceID="SqlDataSourceDelPCMem" ForeColor="#333333" 
+            GridLines="None">
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            <Columns>
+        <asp:TemplateField>
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>    
+            
+                <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                <asp:BoundField DataField="WLStatus" HeaderText="Willingness" 
+                    SortExpression="WLStatus" />
+                <asp:BoundField DataField="Comments" HeaderText="Comments" 
+                    SortExpression="Comments" />
+                <asp:BoundField DataField="Department" HeaderText="Department" 
+                    SortExpression="Department" />
+                <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+                <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                <asp:BoundField DataField="MailingAddress" HeaderText="MailingAddress" 
+                    SortExpression="MailingAddress" />
+                <asp:BoundField DataField="Major" HeaderText="Major" SortExpression="Major" />
+                <asp:BoundField DataField="Phone" HeaderText="Phone" SortExpression="Phone" />
+                <asp:BoundField DataField="EmployeeID" HeaderText="EmployeeID" 
+                    SortExpression="EmployeeID" />
+                <asp:CheckBoxField DataField="isKFUPM" HeaderText="isKFUPM" 
+                    SortExpression="isKFUPM" />
+            </Columns>
+            <EmptyDataTemplate> There is no record</EmptyDataTemplate>
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+            <EditRowStyle BackColor="#999999" />
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+        </asp:GridView>
+        <asp:SqlDataSource ID="SqlDataSourceDelPCMem" runat="server" 
+            ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+            
+            SelectCommand="SELECT isKFUPM, EmployeeID, Name, Department, Rank, Email, MailingAddress, Major, Phone, WLStatus, Comments FROM DeletedPromotionCommittee WHERE (ApplicationID = @ApplicationID)">
+            <SelectParameters>
+                <asp:Parameter Name="ApplicationID" Type="Int32" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+    <asp:LinkButton ID="LinkButtonHideDelPCMem" runat="server" 
+        onclick="LinkButtonHideDelPCMem_Click">Hide Deleted Promotion Committee Members</asp:LinkButton>
+
+        </asp:Panel>
+    <br />
+    </asp:Content>
+

@@ -1,0 +1,198 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ShowWillingnessPC : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            int pcID = Int32.Parse(Request.Params["pcID"].ToString());
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            //if (adapter.GetDataByAutoNumberPK(pcID).Count == 0)
+            //{
+            //    return;
+            //}
+            if (adapter.GetDataByAutoNumberPK(pcID)[0].WLStatus != "Accepted"
+                && adapter.GetDataByAutoNumberPK(pcID)[0].WLStatus != "Declined")
+            {
+                RadioButtonAccept.Enabled = true;
+                RadioButtonReject.Enabled = true;
+                TextBoxComments.Enabled = true;
+                ButtonSubmit.Enabled = true;                
+            }
+            else
+            {
+                if (adapter.GetDataByAutoNumberPK(pcID)[0].WLStatus == "Accepted")
+                {
+                    RadioButtonAccept.Checked = true;
+                    RadioButtonReject.Checked = false;
+                }
+                else
+                {
+                    RadioButtonAccept.Checked = false;
+                    RadioButtonReject.Checked = true;
+                }
+                RadioButtonAccept.Enabled = false;
+                RadioButtonReject.Enabled = false;
+                TextBoxComments.Enabled = false;
+                ButtonSubmit.Enabled = false;
+                LabelThanks.Text = "You have already submitted your willingness.";
+            }
+        }
+        catch (Exception)
+        {
+
+//            Response.Redirect("~/ErrorPage.aspx");
+        }
+
+    }
+    protected void ButtonSubmit_Click(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+
+        int pcID = Int32.Parse(Request.Params["pcID"].ToString());
+        Promotion.PromotionCommitteeTempRow pcRow = adapter.GetDataByAutoNumberPK(pcID)[0];
+        string Username, Password;
+        if (RadioButtonAccept.Checked == true)
+        {
+            adapter.UpdateWLStatus("Accepted", TextBoxComments.Text,pcID);
+            if (pcRow.isKFUPM == true)
+            {
+                try
+                {
+                    Emailer.Send(pcRow.Email, @"Login Information",
+                        @"Dear Dr. " + pcRow.Name + @",
+Thanks for showing willingness to work in the Promotion Committee. Your account will be activated as soon as we receive willingness from other members in the promotion committee. An acknowledgement email will be sent to all the members regarding the activation of accounts. You will be able to use your KFUPM email username and password on the URL: www.kfupm.edu.sa/FacultyPromotionSystem to logon to the system.
+
+Thanks 
+
+Dr. Nasser Al-Aqeeli
+Vice Rector for Graduate Studies & Sc. Research
+", "AutoEmailer", pcRow.ApplicationID);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                RadioButtonAccept.Enabled = false;
+                RadioButtonReject.Enabled = false;
+                ButtonSubmit.Enabled = false;
+                LabelThanks.Text = @"Thanks for accepting the request. An email has been sent to your email address containing the login details. 
+
+                Thanks for cooperation.";
+
+            }
+            else
+            {
+                Username = "PCMember" + pcID.ToString();
+                Password = GetPassword();
+                string emailText;
+                emailText = @"Dear Dr. " + pcRow.Name + @",
+Thanks for showing willingness to work as a member in Promotion Committee. You will be able to log on to the online faculty promotion system using the following Login Info on the URL: facultypromotion.kfupm.edu.sa/ExtPCLogin.aspx
+
+                            Username:" + Username + @"
+                            Password:" + Password + @"
+
+Your account will be activated as soon as we receive willingness from other members in the promotion committee. An acknowledgement email will be sent to all the members regarding the activation of accounts.
+
+Thanks 
+
+Dr. Nasser Al-Aqeeli 
+Vice Rector for Graduate Studies & Sc. Research
+";
+                try
+                {
+                    Emailer.Send(pcRow.Email, "Login Information", emailText, "AutoEmailer", pcRow.ApplicationID);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                adapter.UpdateLoginInfo(Username, Password, pcID);
+
+                RadioButtonAccept.Enabled = false;
+                RadioButtonReject.Enabled = false;
+                ButtonSubmit.Enabled = false;
+                LabelThanks.Text = "Thanks for accepting the request. An email has been sent to your email address containing your username and password. Thanks for cooperation.";
+
+                appTskLgExtAdapter.InsertQuery(pcRow.ApplicationID
+                    , tskExtAdapter.GetDataByTitle("Non-KFUPM Promotion Committee Member")[0].TaskID
+                    , emailText
+                    , pcRow.Email
+                    , pcRow.AutoNumberPK);
+                /*
+                 * for Non-KFUPM Promotion Committee Member, the reminders will start as the PC tasks start 
+                 * but not now.
+                 * Refer to Special Case1 in workflow.cs.
+                 * 
+                 * */
+                appTskLgExtAdapter.UpdateExtTskComplete(true
+                , pcRow.ApplicationID
+                , tskExtAdapter.GetDataByTitle("Non-KFUPM Promotion Committee Member")[0].TaskID
+                , pcRow.AutoNumberPK);
+
+
+            }
+        }
+        else
+        {
+            RadioButtonAccept.Enabled = false;
+            RadioButtonReject.Enabled = false;
+            ButtonSubmit.Enabled = false;
+            adapter.UpdateWLStatus("Declined", TextBoxComments.Text, pcID);
+            LabelThanks.Text = "Your willingness has been submitted. Thanks for cooperation.";
+        }
+
+        appTskLgExtAdapter.UpdateExtTskComplete(true
+            , pcRow.ApplicationID            
+            , tskExtAdapter.GetDataByTitle("Willingness Letter for Promotion Committee")[0].TaskID
+            , pcRow.AutoNumberPK);
+
+    }
+    private string RandomString(int size, bool lowerCase)
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        Random random = new Random();
+        char ch;
+        for (int i = 0; i < size; i++)
+        {
+            ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+            builder.Append(ch);
+        }
+        if (lowerCase)
+            return builder.ToString().ToLower();
+        return builder.ToString();
+    }
+
+    private int RandomNumber(int min, int max)
+    {
+        Random random = new Random();
+        return random.Next(min, max);
+    }
+
+    public string GetPassword()
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        builder.Append(RandomString(1, true));
+        builder.Append(RandomNumber(100, 999));
+        builder.Append(RandomString(1, false));
+        return builder.ToString();
+    }
+    public string GetUsername()
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        builder.Append(RandomString(3, true));
+        return builder.ToString();
+    } 
+}

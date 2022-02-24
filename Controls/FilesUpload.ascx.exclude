@@ -1,0 +1,120 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="FilesUpload.ascx.cs" Inherits="Controls_FilesUpload" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<style type="text/css">
+    .style1
+    {
+        color: #FF3300;
+    }
+</style>
+<asp:HiddenField ID="hdnApplicationID" runat="server" />
+<asp:HiddenField ID="hdnRoleID" runat="server" />
+<asp:HiddenField ID="hdnViewAll" runat="server" />
+<asp:HiddenField ID="hdnOtherRoleID" runat="server" />
+<asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label>
+ <asp:Panel ID="pnlUpload" runat="server">
+
+<%--<fieldset style="margin-left: 30px; width:80%;  background-color:#f0f0f0; border:1px solid #007d40; padding:5px">
+    <legend style="font-style:italic; font-weight:bold; background-color:#007d40; color:white"></legend></fieldset>--%>
+        <h3>Upload a File:</h3>
+   
+        <asp:FileUpload ID="FileUploader" runat="server" />        
+        <asp:TextBox ID="txtDescription" runat="server"  Width="60%" ToolTip="Describe the file contents"></asp:TextBox>
+         <asp:TextBoxWatermarkExtender ID="txtDescription_TextBoxWatermarkExtender" runat="server"
+                                    Enabled="True" TargetControlID="txtDescription" WatermarkText="Describe the file contents"
+                                    WatermarkCssClass="watermarked">
+                                </asp:TextBoxWatermarkExtender>
+        File Category: &nbsp;<asp:DropDownList ID="DropDownList1" runat="server" >
+                <asp:ListItem Selected="True" Value="2">CV</asp:ListItem>
+                <asp:ListItem Value="3">Publication</asp:ListItem>
+                <asp:ListItem Value="4">List Of Publications</asp:ListItem>
+                <asp:ListItem Value="5">Other</asp:ListItem>
+            </asp:DropDownList>
+        <asp:Button ID="btnUpload" runat="server" class="btn btn-primary btn-md"  OnClick="btnUpload_Click" Text="Upload" OnClientClick="btnUpload_Click" />
+        <br />
+        Hard Copy of Publications attached with this application?<asp:CheckBox ID="cbHardCopy" runat="server" Checked="false" Text="Yes" AutoPostBack="True" OnCheckedChanged="cbHardCopy_CheckedChanged" />
+     
+     </asp:Panel>
+<h3>
+    <asp:Label ID="lblFileUploadHeading" runat="server" Text=""></asp:Label></h3>
+    
+    <asp:GridView ID="grdFiles" runat="server" AutoGenerateColumns="False" CellPadding="5" class="table"
+        DataKeyNames="FileID" ForeColor="Black" GridLines="Vertical" BorderColor="#3062AF" 
+        OnSelectedIndexChanged="grdFiles_SelectedIndexChanged" OnRowDeleting="grdFiles_RowDeleting" AllowPaging="true" OnPageIndexChanging="grdFiles_PageIndexChanging" PageSize="50">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" 
+            Font-Size="Larger" Font-Strikeout="False" />
+        <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+         <PagerStyle BackColor="#1A1718" ForeColor="White" HorizontalAlign="Center"
+                            Font-Bold="True" Font-Italic="False" Font-Names="Copperplate Gothic Light"
+                            Font-Size="X-Large" />
+                        <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+        <EditRowStyle BackColor="#999999" />
+        <Columns>
+            <asp:TemplateField>
+                <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+            </asp:TemplateField>
+            <asp:BoundField DataField="FileID" HeaderText="FileID" InsertVisible="False" ReadOnly="True" Visible="False" />
+            <asp:BoundField DataField="AttachmentID" HeaderText="AttachmentID" Visible="False" />
+            <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" Visible="False" />                
+            <asp:BoundField DataField="FileName" HeaderText="File Name" SortExpression="FileName" >
+                <ItemStyle Wrap="True" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
+            <asp:BoundField DataField="Title" HeaderText="Title" SortExpression="Title" />
+            <asp:BoundField DataField="RoleName" HeaderText="Uploaded By" />
+            <asp:TemplateField HeaderText="Selection For Ext. Reviewers">
+                <ItemStyle HorizontalAlign="Center" />
+                <FooterStyle HorizontalAlign="Center" />
+                <ItemTemplate>
+                    <asp:CheckBox ID="CheckBoxSel4ExtRev" runat="server" 
+                    Enabled= '<%# RoleID == 1 || RoleID == 6 || RoleID == 10 %>' 
+                    Checked='<%#  GetCheckStatus(Eval("AttachmentID").ToString())%>' 
+                    Visible = '<%# GetVisibleStatus(Eval("AttachmentID").ToString()) %>'
+                    AutoPostBack="True" 
+                    OnCheckedChanged="CheckBoxSel4ExtRev_CheckedChanged"
+                    ToolTip="Check to enable this document to be viewed by External Reviewers" />
+                </ItemTemplate>
+                <FooterTemplate>
+                    <asp:Button ID="ButtonSaveSel4ExtRev" runat="server" OnClick="ButtonSaveSel4ExtRev_Click" class="btn btn-primary btn-md" 
+                        Text="Save" Enabled ='<%# RoleID == 1%>'/>
+                </FooterTemplate>
+            </asp:TemplateField>
+            <asp:ButtonField CommandName="Select" Text="Download" />
+            <asp:TemplateField ShowHeader="False">
+                <ItemTemplate>
+                    <asp:LinkButton ID="lnkDelete" runat="server" CausesValidation="false" CommandName="Delete"
+                        Text="Delete" Visible='<%# (int.Parse(Eval("RoleID").ToString()) == RoleID)|| RoleID == 6 %>'></asp:LinkButton>
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+        <EmptyDataTemplate>
+            [<em>No files were uploaded for this application</em>]
+        </EmptyDataTemplate>
+    </asp:GridView>
+    <span class="style1">Your Adobe Acrobat Reader may be outdated!</span>
+<asp:HyperLink ID="HyperLink1" runat="server" 
+    NavigateUrl="~/Download/Adobe Acrobat 9/AdbeRdr920_en_US.exe">Click here to download Adobe Acrobat Reader 9.2</asp:HyperLink>
+
+    <br />
+   
+<asp:Button runat="server" ID="hiddenTargetControlForModalPopup3" Style="display: none" class="btn btn-primary btn-md"  />
+<asp:ModalPopupExtender runat="server" ID="programmaticModalPopup3" BehaviorID="programmaticModalPopupBehavior3"
+    TargetControlID="hiddenTargetControlForModalPopup3" PopupControlID="programmaticPopup3"
+    BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle3"
+    RepositionMode="RepositionOnWindowScroll">
+    
+</asp:ModalPopupExtender>
+<asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup3" Style="display: none;
+    width: 350px; padding: 10px">
+    <asp:Panel runat="Server" ID="programmaticPopupDragHandle3" Style="cursor: move;
+        background-color: #DDDDDD; border: solid 1px Gray; color: Black; text-align: center;">
+        Message
+    </asp:Panel>
+    <asp:Label ID="labelProgrammaticPopup3" runat="server"></asp:Label>
+    <br />
+    <div align="center">
+        <asp:LinkButton runat="server" ID="hideModalPopupViaServer3" Text="OK" OnClick="hideModalPopupViaServer3_Click" />
+    </div>
+</asp:Panel>
+<%--<uc10:Alert ID="Alert1" runat="server" />--%>

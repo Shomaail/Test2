@@ -1,0 +1,577 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="FormExtRevSel.aspx.cs"
+    Inherits="Forms_FormExtRevSel" MaintainScrollPositionOnPostback="true" ValidateRequest="false" %>
+
+<%@ Register TagPrefix="anthem" Namespace="Anthem" Assembly="Anthem" %>
+<%@ Register Assembly="eWorld.UI" Namespace="eWorld.UI" TagPrefix="ew" %>
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxtoolkit" %>
+
+<%@ MasterType VirtualPath="Forms.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <script type="text/javascript">
+        var confirmed = false;
+
+        function ShowConfirm(controlID) {
+            if (confirmed) { return true; }
+
+            bootbox.confirm("Are you sure you want to delete?", function (result) {
+                if (result) {
+                    if (controlID != null) {
+                        var controlToClick = document.getElementById(controlID);
+                        if (controlToClick != null) {
+                            confirmed = true;
+                            controlToClick.click();
+                            confirmed = false;
+                        }
+                    }
+                }
+            });
+            return false;
+        }
+    </script>
+    <asp:Label ID="lblMessage" runat="server" Text=""></asp:Label>
+   
+    <div id="divFinalExtRev" runat="server" visible='<%#FormMode == "ExtRev" %>' style='overflow: auto; width: 1200px;'>
+        <h3>Final External Reviewers List</h3>
+        <asp:GridView ID="gvFinalExtRev" runat="server" AutoGenerateColumns="False" EnableModelValidation="True" CellPadding="4"
+            CssClass="table-condensed" DataKeyNames="ApplicationID, ExternalReviewerID" OnRowCommand="gvFinalExtRev_RowCommand"
+            OnRowDeleting="gvFinalExtRev_RowDeleting" ItemType="BL.Data.Form_FinalExtRev"
+            OnRowDataBound="gvFinalExtRev_RowDataBound" OnRowEditing="gvFinalExtRev_RowEditing"
+            OnDataBound="gvFinalExtRev_DataBound"
+            ForeColor="#333333" GridLines="None" EmptyDataText="No Final External Reviewer is selected">
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            <Columns>
+                <asp:TemplateField ShowHeader="False">
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnEdit" runat="server" CausesValidation="False" CommandName="Edit" ToolTip="Edit" CssClass="btn btn-default"
+                            Visible='<%# !Master.App.ApplicationClosed %>'
+                            CommandArgument='<%# Item.ExternalReviewerID %>'>
+                         Edit <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 
+                        </asp:LinkButton>
+                        <asp:LinkButton ID="lbtnDelete" runat="server" CausesValidation="false" CommandName="Delete" ToolTip="Delete" CssClass="btn btn-default"
+                            Visible='<%# !Master.App.ApplicationClosed %>'
+                            CommandArgument='<%# Item.ExternalReviewerID %>' OnClientClick="return ShowConfirm(this.id);">
+                        Delete <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </asp:LinkButton>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:BoundField DataField="Source" HeaderText="Source" SortExpression="Source" />
+                <asp:TemplateField HeaderText="Priority" SortExpression="Serial">
+                    <ItemTemplate>
+                        <div style="align-content: center; text-align: center;">
+                            <div>
+                                <asp:ImageButton ID="iBtnArrowUp" ImageUrl="~/images/Actions-arrow-up-icon.png" runat="server"
+                                    Visible='<%# !Master.App.ApplicationClosed %>'
+                                    ToolTip="Click to move the row up"
+                                    CommandName="MoveRowUp" CommandArgument='<%# Item.ExternalReviewerID %>' />
+                            </div>
+                            <div>
+                                <asp:Label ID="lblSerial" runat="server" Text='<%# Item.Serial%>'></asp:Label>
+                            </div>
+                            <div>
+                                <asp:ImageButton ID="iBtnArrowDn" ImageUrl="~/images/Actions-arrow-Down-icon.png" runat="server"
+                                    Visible='<%# !Master.App.ApplicationClosed %>'
+                                    ToolTip="Click to move the row down"
+                                    CommandName="MoveRowDn" CommandArgument='<%# Item.ExternalReviewerID %>' />
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:TemplateField ShowHeader="False">
+
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnDetails" runat="server" CausesValidation="false" CommandName="SelectDetail" ToolTip="Select Detail" CssClass="btn btn-default"
+                            CommandArgument='<%# Item.ExternalReviewerID %>'>
+                        Details <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                        </asp:LinkButton>
+                    </ItemTemplate>
+
+                </asp:TemplateField>
+                <asp:BoundField DataField="ExternalReviewerID" HeaderText="ExternalReviewerID" SortExpression="ExternalReviewerID" Visible="false" />
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <asp:Label ID="lblName" runat="server" Text='<%# Item.ExternalReviewer.NameString%>'></asp:Label>
+                        <br />
+                        <strong>Email:</strong>
+                        <asp:Label ID="lblEmail" runat="server" Text='<%# Item.ExternalReviewer.Email %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Total Publications">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.TotalPublications%>
+                        <br />
+                        No of Journals: <%# Item.ExternalReviewer.NoOfJournals%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="H-Index">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.HIndex%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Citations">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.Citations%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Total journal publications and H-index">
+                                    <ItemTemplate><asp:label runat="server" Text='<%# Item.ExternalReviewer.HIndex.HasValue && Item.ExternalReviewer.NoOfJournals.HasValue 
+                                                          ? (Item.ExternalReviewer.HIndex.Value + Item.ExternalReviewer.NoOfJournals.Value).ToString() :"" %>'></asp:label></ItemTemplate>                                    
+                 </asp:TemplateField>  <asp:TemplateField HeaderText="Affiliation">
+                    <ItemTemplate>
+                        <div style='overflow: auto; width: 100px; height: 90px;'>
+                            <asp:Label ID="lblMailingAddress" runat="server" Text='<%# Item.ExternalReviewer.MailingAddress %>'></asp:Label>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Specialty">
+                    <ItemTemplate>
+                        <div style='overflow: auto; width: 100px; height: 90px;'>
+                            <asp:Label ID="lblSpecialty" runat="server" Text='<%# Item.ExternalReviewer.Speciality %>'></asp:Label>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                
+            </Columns>
+            <EditRowStyle BackColor="#999999" />
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor="#009966" Font-Bold="True" ForeColor="White" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        </asp:GridView>
+        <asp:LinkButton ID="lbtnExtRevList4VR" ValidationGroup="ExtRevSaveBtn" runat="server">External Reviewers List (printable view)</asp:LinkButton>
+
+    </div>
+    <div id="divFormExtRevSuggested" runat="server" visible='<%#FormMode == "ExtRev" %>' style='overflow: auto; width: 1000px;'>
+        <h3>Suggested External Reviewers List</h3>
+        <asp:GridView ID="gvExternalReviewersSugg" runat="server" AutoGenerateColumns="False" DataSourceID="odsFormExtRevSugg" EnableModelValidation="True" CellPadding="4"
+            ItemType="BL.Data.Form_ExtRev"
+            CssClass="table-condensed" DataKeyNames="ApplicationID,Type,Serial" OnRowCommand="gvExternalReviewersSugg_RowCommand"
+            ForeColor="#333333" GridLines="None" EmptyDataText="No External Reviewer is suggested">
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            <Columns>
+
+                <asp:TemplateField HeaderText="Serial" SortExpression="Serial">
+                    <ItemTemplate>
+                        <div style="align-content: center; text-align: center;">
+                            <div>
+                                <asp:Label ID="lblSerial" runat="server" Text='<%# (int.Parse(Item.Serial.ToString()) + 1).ToString() %>'></asp:Label>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField ShowHeader="False">
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnSelect" runat="server" CausesValidation="False" CssClass="btn btn-default" 
+                            Visible='<%# !Master.App.ApplicationClosed %>'
+                            ToolTip="Select"
+                            CommandName="Select" CommandArgument='<%# Item.ExternalReviewerID %>'>Select <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></asp:LinkButton>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField ShowHeader="False">
+                    <ItemTemplate>
+                        <asp:LinkButton ID="lbtnDetails" runat="server" CausesValidation="false" CommandName="SelectDetail" ToolTip="Select Detail" CssClass="btn btn-default"
+                            CommandArgument='<%# Item.ExternalReviewerID %>'>
+                        Details <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                        </asp:LinkButton>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Suggested by" SortExpression="Type">
+                    <ItemTemplate>
+                        <asp:Label ID="LabelSuggestedBy" runat="server" Text='<%# GetStatus() %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:BoundField DataField="ExternalReviewerID" HeaderText="ExternalReviewerID" SortExpression="ExternalReviewerID" Visible="false" />
+                <asp:TemplateField HeaderText="Name" SortExpression="NameString">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.NameString%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Total Publications" SortExpression="TotalPublications">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.TotalPublications%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText=" No Of Journals" SortExpression="NoOfJournals">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.NoOfJournals%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText=" H-Index" SortExpression="HIndex">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.HIndex%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Citations" SortExpression="Citations">
+                    <ItemTemplate>
+                        <%# Item.ExternalReviewer.Citations%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Total journal publications and H-index">
+                                    <ItemTemplate><asp:label runat="server" Text='<%# Item.ExternalReviewer.HIndex.HasValue && Item.ExternalReviewer.NoOfJournals.HasValue 
+                                                          ? (Item.ExternalReviewer.HIndex.Value + Item.ExternalReviewer.NoOfJournals.Value).ToString() :"" %>'></asp:label></ItemTemplate>                                    
+                 </asp:TemplateField>
+            </Columns>
+            <EditRowStyle BackColor="#999999" />
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor="#009966" Font-Bold="True" ForeColor="White" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        </asp:GridView>
+        <asp:ObjectDataSource ID="odsFormExtRevSugg" runat="server" SelectMethod="GetFormExtRevByAppID" TypeName="ExtRevBAL">
+            <SelectParameters>
+                <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" QueryStringField="applicationID" Type="Int32" />
+            </SelectParameters>
+        </asp:ObjectDataSource>
+        <asp:Button ID="btnShowInsertExtRev" runat="server" OnClick="btnShowInsertExtRev_Click" CssClass="btn btn-primary btn-md"
+            Visible='<%# !Master.App.ApplicationClosed %>'            
+            Text="Add External Reviewer" CausesValidation="false" />
+    </div>
+    <div id="divViewDetail" runat="server" visible='<%#FormMode == "ExtRevDetail"%>'>
+        <asp:DetailsView ID="dvExtReviewers" runat="server" Height="50px" Width="125px" CellPadding="4" class="table-condensed"
+            DataSourceID="odsFormExtRevSuggDet" EnableModelValidation="True" GridLines="None" AutoGenerateRows="False">
+            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+            <EditRowStyle BackColor="#999999" />
+            <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+            <Fields>
+                <asp:BoundField DataField="ExternalReviewerID" HeaderText="ExternalReviewerID" SortExpression="ExternalReviewerID" Visible="false" />
+                <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+                <asp:BoundField DataField="Description" HeaderText="Position Description" SortExpression="Description" />
+                <asp:BoundField DataField="MailingAddress" HeaderText="MailingAddress" SortExpression="MailingAddress" />
+                <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                <asp:BoundField DataField="Major" HeaderText="Major Specialty" SortExpression="Major" />
+                <asp:BoundField DataField="Speciality" HeaderText="Sub-Specialty (if applicable)" SortExpression="Speciality" />
+                <asp:BoundField DataField="PhoneAndFax" HeaderText="PhoneAndFax" SortExpression="PhoneAndFax" />
+                <asp:BoundField DataField="ActiveAreaOfResearch" HeaderText="ActiveAreaOfResearch" SortExpression="ActiveAreaOfResearch" />
+                <asp:BoundField DataField="PrevAreaOfResearch" HeaderText="PrevAreaOfResearch" SortExpression="PrevAreaOfResearch" />
+                <asp:BoundField DataField="Webpage" HeaderText="Webpage" SortExpression="Webpage" />
+                <asp:BoundField DataField="Comments" HeaderText="Comments" SortExpression="Comments" />
+                <asp:BoundField DataField="TotalPublications" HeaderText="TotalPublications" SortExpression="TotalPublications" />
+                <asp:BoundField DataField="NoOfJournals" HeaderText="NoOfJournals" SortExpression="NoOfJournals" />
+                <asp:BoundField DataField="HIndex" HeaderText="HIndex" SortExpression="HIndex" />
+                <asp:BoundField DataField="Citations" HeaderText="Citations" SortExpression="Citations" />
+                <asp:BoundField DataField="PassportNo" HeaderText="PassportNo" SortExpression="PassportNo" />
+                <asp:BoundField DataField="IBAN" HeaderText="IBAN" SortExpression="IBAN" />
+            </Fields>
+            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor="#e7f7ff" Font-Bold="True" ForeColor="#3a9fe1" />
+            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        </asp:DetailsView>
+        <asp:ObjectDataSource ID="odsFormExtRevSuggDet" runat="server" SelectMethod="GetExtRevByID" TypeName="ExtRevBAL" OldValuesParameterFormatString="original_{0}">
+            <SelectParameters>
+                <asp:Parameter Name="ExternalReviewerID" Type="Int32" />
+            </SelectParameters>
+        </asp:ObjectDataSource>
+        <asp:Button ID="btnHideDetail" runat="server" Text="Return to List" OnClick="btnHideDetail_Click" CssClass="btn btn-primary btn-md" />
+    </div>
+    <div id="divInsertFormExtRev" runat="server" visible='<%#FormMode == "AddExtRev" || FormMode == "EditExtRev" %>'>
+        <div id="divInsertControls" style="float: left;">
+            <asp:HiddenField ID="hfExtRevID" runat="server" />
+            <asp:HiddenField ID="hfSerial" runat="server" />
+            <asp:HiddenField ID="hfType" runat="server" />
+            <table class="table">
+
+                <tr>
+                    <td colspan="3">
+                         <asp:Button ID="btnShowDivExcel" Text="Click here if you have an Excel file having External Reviewers detail?"
+                                    OnClick="btnShowDivExcel_Click" runat="server"></asp:Button>
+                                <div id="divExcel" visible="false" runat="server" style="width: 537px; background-color: yellowgreen; padding: 10px;">
+                                    In the textbox below paste one row of external reviewer data from Excel with same number, order and headings as in the list of texboxes below then click on the Fill Button to place the data in the Textboxes. Or, you can fill-up the text boxes indivisually
+                                    <br />
+                                    <textarea id="taExtRev" style="width: 517px" runat="server"
+                                        title="Enter Excel Row here"
+                                        placeholder="Enter Excel Row here"></textarea>
+                                    <br />
+                                    <asp:Button ID="btnFillTB" OnClick="btnFillTB_Click" runat="server" Text="Fill" />
+                                    <asp:Button ID="btnHideDivExcel" OnClick="btnHideDivExcel_Click" Text="Hide" runat="server"></asp:Button>
+                                    <asp:Button ID="btnClear" OnClick="btnClear_Click" Text="Clear" runat="server"></asp:Button>
+                                </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Name: </td>
+                    <td>
+                        <div>
+                            <asp:TextBox ID="tbName" runat="server" ValidationGroup="AddFormExternalReviewer"
+                                ToolTip="Enter Title, First Name, Middle Name and Last Name"
+                                OnTextChanged="tbName_TextChanged" AutoPostBack="true"></asp:TextBox>
+                            <asp:Button ID="btnSearch" runat="server" Text="..." OnClick="btnSearch_Click" />
+                        </div>
+                        <div><span style="font-size: xx-small">Enter First Name, Middle Name and Last Name</span></div>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfvtbName"
+                            runat="server" ControlToValidate="tbName" ErrorMessage="*" ToolTip="You must enter a Name"></asp:RequiredFieldValidator>
+                        <ajaxtoolkit:TextBoxWatermarkExtender ID="tbName_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbName"
+                            WatermarkText="Enter Name" WatermarkCssClass="watermarked"></ajaxtoolkit:TextBoxWatermarkExtender>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rank: </td>
+                    <td>
+                        <select id="ddlRank" runat="server" class="form-control"  
+                            multiple="false" 
+                            onchange="if (this.value=='Others'){document.getElementById('divOthers').style.visibility='visible'}else {document.getElementById('divOthers').style.visibility='hidden'};">
+                                            <option selected="selected" value="Professor">Professor</option>
+                                            <option value="Associate Professor">Associate Professor</option>                                            
+                                            <option value="Assistant Professor">Assistant Professor</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                        <div id="divOthers" style="visibility: hidden;">
+                                            <input id="tbOthers" runat="server" class="form-control" type="text" />
+                                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+                  <tr>
+                            <td>Position Description: </td>
+                            <td>
+                                <asp:TextBox class="form-control" ID="tbDescription" runat="server" TextMode="multiLine" Text=""></asp:TextBox>
+                                <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbDescription" 
+                                    runat="server" Enabled="True" TargetControlID="tbDescription"
+                                    WatermarkText="Position Description" WatermarkCssClass="watermarked"></ajaxtoolkit:TextBoxWatermarkExtender>
+                            </td>
+                            <td></td>
+                        </tr>
+                <tr>
+                    <td>Mailing Address: </td>
+                    <td>
+                        <div>
+                            <textarea id="tbMailingAddress" clientidmode="static" required="required" runat="server" onchange="validateMailingAddress()" title="Make sure the University/College/Hospital/School name is present in the Mailing Address. Abbreviations are not acceptable"></textarea>
+
+
+
+                            <%-- <asp:TextBox ID="tbMailingAddress" runat="server" ValidationGroup="AddFormExternalReviewer" TextMode="multiLine"
+                                AutoPostBack="true" OnTextChanged="tbMailingAddress_TextChanged" ToolTip="Make sure the University name is present in the Mailing Address"></asp:TextBox>
+                            --%>
+                        </div>
+                        <div>
+                            <span style="font-size: xx-small">Make sure the University/Institute/Hospital name is present</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <%-- <asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbMailingAddress"
+                            runat="server" ControlToValidate="tbMailingAddress" ErrorMessage="*" ToolTip="You must enter a Mailing Address"></asp:RequiredFieldValidator>
+                        <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbMailingAddress" runat="server" Enabled="True" TargetControlID="tbMailingAddress"
+                            WatermarkText="Mailing Address" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Phone and Fax: </td>
+                    <td>
+                        <input runat="server" type="tel" id="tbPhoneAndFax" title="Phone and Fax" placeholder="Phone and Fax" />
+                        <%--                        <asp:TextBox ID="tbPhoneAndFax" runat="server" TextMode="multiLine" Text="Phone and Fax"></asp:TextBox>
+                        <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbPhoneAndFax" runat="server" Enabled="True" TargetControlID="tbPhoneAndFax"
+                            WatermarkText="Phone and Fax" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Email Address: </td>
+                    <td>
+                        <div>
+                            <input runat="server" type="email" id="tbEmail" title="Enter only one email address" placeholder="Email" required="required" />
+                            <%--                            <asp:TextBox ID="tbEmail" runat="server" TextMode="multiLine" ToolTip="Enter only one email address"
+                                ValidationGroup="AddFormExternalReviewer" AutoPostBack="true"
+                                OnTextChanged="tbEmail_TextChanged"></asp:TextBox>--%>
+                        </div>
+                        <div><span style="font-size: xx-small">Enter only one email address</span></div>
+
+                    </td>
+                    <td>
+                        <%--<asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbEmail"
+                            runat="server" ControlToValidate="tbEmail" ErrorMessage="*" ToolTip="You must enter an Email Address"></asp:RequiredFieldValidator>
+
+                        <asp:RegularExpressionValidator ID="regEmailTo" ControlToValidate="tbEmail" Text="(Invalid email)"
+                            ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" runat="server" />
+                        <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbEmail" runat="server" Enabled="True" TargetControlID="tbEmail"
+                            WatermarkText="Email" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Major Specialty: </td>
+                    <td>
+                        <%--<asp:TextBox ID="tbMajor" runat="server" TextMode="multiLine" ValidationGroup="AddFormExternalReviewer" ToolTip="Major"></asp:TextBox>--%>
+                        <textarea runat="server" id="tbMajor" placeholder="Major Specialty" title="Major Specialty" required="required" /></td>
+                    <td>
+                        <%--                        <asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbMajor"
+                            runat="server" ControlToValidate="tbMajor" ErrorMessage="*" ToolTip="You must enter Major"></asp:RequiredFieldValidator>
+                        <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbMajor" runat="server" Enabled="True" TargetControlID="tbMajor"
+                            WatermarkText="Major" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Specialty: </td>
+                    <td>
+                        <textarea runat="server" id="tbSpecialty" placeholder="Specialty" title="Specialty" required="required" />
+                        <%--<asp:TextBox ID="tbSpecialty" runat="server" TextMode="multiLine" ValidationGroup="AddFormExternalReviewer" ToolTip="Specialty"></asp:TextBox></td>--%>
+                    <td>
+                        <%-- <asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbSpecialty"
+                            runat="server" ControlToValidate="tbSpecialty" ErrorMessage="*" ToolTip="You must enter Specialty"></asp:RequiredFieldValidator>
+                        <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbSpecialty" runat="server" Enabled="True" TargetControlID="tbSpecialty"
+                            WatermarkText="Specialty" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Active Area<br />
+                        &nbsp;of Research: </td>
+                    <td>
+                        <textarea runat="server" id="tbActiveAreaOfResearch" placeholder="Active Area of Research" title="Active Area of Research" required="required" />
+                        <%--<asp:TextBox ID="tbActiveAreaOfResearch" runat="server" TextMode="multiLine" ValidationGroup="AddFormExternalReviewer" ToolTip="Active Area of Research"></asp:TextBox></td>--%>
+                    <td>
+                        <%--<asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbActiveAreaOfResearch"
+                            runat="server" ControlToValidate="tbActiveAreaOfResearch" ErrorMessage="*" ToolTip="You must enter Active Area Of Research"></asp:RequiredFieldValidator>
+                        <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbActiveAreaOfResearch" runat="server" Enabled="True" TargetControlID="tbActiveAreaOfResearch"
+                            WatermarkText="Active Area Of Research" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Webpage: </td>
+                    <td>
+                        <input type="url" runat="server" id="tbWebpage" placeholder="Webpage" title="Enter Webpage URL starting with http:// or https:// " />
+                        <%--<asp:TextBox ID="tbWebpage" runat="server" TextMode="multiLine" ToolTip="Webpage"></asp:TextBox></td>--%>
+                    <td><%--<asp:RequiredFieldValidator ValidationGroup="AddFormExternalReviewer" ID="rfv_tbWebpage"
+                        runat="server" ControlToValidate="tbWebpage" ErrorMessage="*" ToolTip="You must enter Webpage"></asp:RequiredFieldValidator>--%>
+                        <%-- <ajaxtoolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender_tbWebpage" runat="server" Enabled="True" TargetControlID="tbWebpage"
+                            WatermarkText="Webpage" WatermarkCssClass="watermarked">
+                        </ajaxtoolkit:TextBoxWatermarkExtender>--%>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>The Following Information should be considered from Scopus only</strong> </td>
+                </tr>
+                <tr>
+                    <td>Total Publications: </td>
+                    <td>
+                        <input type="number" runat="server" id="tbTotPublications" min="0" required="required"
+                            step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            placeholder="Total Publications" title="Total Publications" />
+                        <%--  <ew:NumericBox runat="server" MaxLength="9" PositiveNumber="true" RealNumber="false" ID="tbTotPublications" ToolTip="Total Publications" BorderWidth="1" Width="128px" Style="text-align: </td><td>center">0</ew:NumericBox>--%>
+
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>No of Journals: </td>
+                    <td>
+                        <input type="number" runat="server" id="tbNoOfJournals" min="0" required="required"
+                            step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            placeholder="No of Journals" title="No of Journals" />
+                        <%--<ew:NumericBox runat="server" MaxLength="9" PositiveNumber="true" RealNumber="false" ID="tbNoOfJournals" ToolTip="No of Journals" BorderWidth="1" Width="128px" Style="text-align: </td><td>center">0</ew:NumericBox>--%>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>H-Index: </td>
+                    <td>
+                        <input type="number" runat="server" id="tbHIndex" min="0" required="required"
+                            step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            placeholder="H-Index" title="H-Index" />
+                        <%--<ew:NumericBox runat="server" MaxLength="9" PositiveNumber="true" RealNumber="false" ID="tbHIndex" ToolTip="H-Index" BorderWidth="1" Width="128px" Style="text-align: </td><td>center">0</ew:NumericBox>--%>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Citations: </td>
+                    <td>
+                        <input type="number" runat="server" id="tbCitations" min="0" required="required"
+                            step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            placeholder="Citations" title="Citations" />
+                        <%--<ew:NumericBox runat="server" MaxLength="9" PositiveNumber="true" RealNumber="false" ID="tbCitations" ToolTip="Citations" BorderWidth="1" Width="128px" Style="text-align:center" </td></ew:NumericBox>--%>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <asp:Button ID="btnAddExtRev" runat="server" ValidationGroup="AddFormExternalReviewer" CausesValidation="true"
+                Text='<%# FormMode == "EditExtRev" ? "Update":"Add to Final External Reviewers List"%>' OnClick="btnAddExtRev_Click" CssClass="btn btn-primary btn-md" />
+            <%--<asp:Button ID="btnHideInsertExtRev" runat="server" Text="Return" OnClick="btnHideInsertExtRev_Click" CssClass="btn btn-primary btn-md" />--%>
+            <input type="button" id="btnHideInsertExtRev" onserverclick="btnHideInsertExtRev_Click" runat="server" value="Return" class="btn btn-primary btn-md">
+            <%--<asp:Button ID="btnClearForm" runat="server" ClientIDMode="Static" Text="Clear Form" OnClick="btnClearForm_Click" CssClass="btn btn-primary btn-md" />--%>
+            <input type="button" id="btnClearForm" onserverclick="btnClearForm_Click" runat="server" value="Clear Form" class="btn btn-primary btn-md">
+        </div>
+        <div id="divExtRevSearch" style="float: right" runat="server" visible="false">
+            <asp:GridView ID="gvExtRevSearchResult" runat="server" DataSourceID="odsExtRevSearch"
+                EnableModelValidation="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" DataKeyNames="ExternalReviewerID"
+                OnSelectedIndexChanged="gvExtRevSearchResult_SelectedIndexChanged" CssClass="table-condensed" EmptyDataText="No search result found. ">
+                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                <EditRowStyle BackColor="#999999" />
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <HeaderStyle BackColor="#0088ce" Font-Bold="True" ForeColor="White" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                <Columns>
+                    <asp:CommandField ShowSelectButton="True" />
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <%# Container.DataItemIndex +1 %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
+                    <asp:BoundField DataField="Name" HeaderText="Name" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" />
+                    <asp:TemplateField HeaderText="Mailing Address">
+                        <ItemTemplate>
+                            <asp:TextBox ID="TextBox1" runat="server" TextMode="MultiLine" Text='<%# Bind("MailingAddress") %>'></asp:TextBox>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
+                </Columns>
+
+            </asp:GridView>
+            <asp:ObjectDataSource ID="odsExtRevSearch" runat="server" SelectMethod="SearchExternalReviewer" TypeName="ExtRevBAL">
+                <SelectParameters>
+                    <%--<asp:ControlParameter ControlID="tbName" DefaultValue="" Name="MainSearchString" PropertyName="Text" Type="String" />--%>
+                    <asp:Parameter Name="MainSearchString" Type="String" />
+                </SelectParameters>
+            </asp:ObjectDataSource>
+            <asp:Button ID="btnHideSearch" runat="server" Text="Hide Search" OnClick="btnHideSearch_Click" CssClass="btn btn-primary btn-md" />
+        </div>
+    </div>
+
+
+
+    <br />
+    <asp:Button runat="server" ID="hiddenTargetControlForModalPopup0" Style="display: none" class="btn btn-primary btn-md" />
+    <ajaxtoolkit:ModalPopupExtender runat="server" ID="programmaticModalPopup0" BehaviorID="programmaticModalPopupBehavior0"
+        TargetControlID="hiddenTargetControlForModalPopup0" PopupControlID="programmaticPopup0"
+        BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle0"
+        RepositionMode="RepositionOnWindowScroll">
+    </ajaxtoolkit:ModalPopupExtender>
+    <asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup0" Style="background: #0088ce; padding: 10px">
+        <fieldset style="margin: 5px; border: 2px solid #0088ce; height: 90%;">
+            <legend style="font-style: italic; font-weight: bold; background-color: #0088ce; color: white">Message </legend>
+            <br />
+            <div style="justify-content: center">
+                <asp:Label ForeColor="White" ID="labelProgrammaticPopup0" Font-Size="Large" runat="server"></asp:Label>
+            </div>
+            <div align="center">
+                <br />
+                <asp:LinkButton ID="hideModalPopupViaServer0" runat="server" OnClick="hideModalPopupViaServer0_Click" class="btn btn-default"
+                    ToolTip="Press this button to send the email">OK <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></asp:LinkButton>
+            </div>
+        </fieldset>
+    </asp:Panel>
+
+
+</asp:Content>
+

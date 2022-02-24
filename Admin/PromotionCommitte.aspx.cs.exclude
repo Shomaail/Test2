@@ -1,0 +1,57 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Admin_PromotionCommitte : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (this.User.Identity.Name.ToLower().EndsWith("saiban"))
+        {
+            Response.Redirect("..");
+        }
+    }
+    protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DropDownList1.SelectedValue != "")
+        {
+            if (this.PromotionCommittee1.LoadCommittee(int.Parse(DropDownList1.SelectedValue), "C"))
+            {
+                this.PromotionCommittee1.Visible = true;
+                this.btnCancel.Visible = true;
+                this.btnUpdate.Visible = true;
+            }
+            else
+            {
+                lblMsg.Text = "Error: Values are not found";
+                this.PromotionCommittee1.Visible = false;
+                this.btnCancel.Visible = false;
+                this.btnUpdate.Visible = false;
+            }
+        }
+
+
+    }
+    protected void btnUpdate_Click(object sender, EventArgs e)
+    {
+        this.PromotionCommittee1.SaveCommittee(int.Parse(DropDownList1.SelectedValue), "C");
+    }
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        this.PromotionCommittee1.Visible = false;
+        this.btnCancel.Visible = false;
+        this.btnUpdate.Visible = false;
+    }
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+
+        DropDownList1_SelectedIndexChanged(this, null);
+    }
+}

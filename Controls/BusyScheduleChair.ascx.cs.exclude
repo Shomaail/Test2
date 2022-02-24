@@ -1,0 +1,340 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Globalization;
+using BL.Data;
+
+public partial class Controls_BusyScheduleChair : System.Web.UI.UserControl
+{
+    BAL bal = new BAL();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+//        int applID = int.Parse(Session["ApplicationID"].ToString());
+     //   Initialize();      
+    }
+
+    private void Initialize()
+    {
+        int applID = int.Parse(Request.Params.Get("applicationID").ToString());
+        lblWeekNo.Text = "";
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter fnlPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable finalPCTable = fnlPCAdapter.GetMembersAgainstAppID(applID);
+
+        MeetingsTableAdapters.Form_MeetingsTableAdapter adapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+        Meetings.Form_MeetingsDataTable table = adapter.GetActiveMeetingByApplicationID(applID);
+//        Instruction1.Text =
+//@"
+//<p>Launching a new Busy Week schedule:</p>
+//<p>
+//Select a week by pressing any date on the Calendar below. The selected week will be shown beneath the calender. Press the Launch Selected Busy Week button to launch the busy week schedule to every Promotion Committee member.</p>
+//<p>Note: Launching a New Busy schedule will automatically cancel any existing Busy Schedule</p>
+//";
+        if (table.Count > 0)
+        {
+            Meetings.Form_MeetingsRow row = table[0];
+
+            //Label4.Text += " " + row.WeekNo.ToString();
+            Label4.Text = @"<b><i>You have currently One Busy Week Schedule Launched. </b></i><br/><b>The week for the busy schedule is:</b>
+" + getStartEndString(row.WeekNo,row.Year);
+            Label4.Visible = true;
+            btnCancel.Visible = true;
+            ButtonLaunchBW.Enabled = false;
+
+        }
+        else
+        {
+            Label4.Visible = true;
+            Label4.Text = "You have no active Busy Schedule launched";
+            btnCancel.Visible = false;
+            ButtonLaunchBW.Enabled = true;
+            foreach (Promotion.PromotionCommitteeTempRow row in finalPCTable)
+            {
+                appTskLgExtAdapter.UpdateExtTskComplete(true
+                    , applID
+                    , tskExtAdapter.GetDataByTitle("Post Busy Schedule")[0].TaskID
+                    , row.AutoNumberPK);
+
+            }
+        }
+    }
+    //protected void Calendar1_SelectionChanged(object sender, EventArgs e)
+    //{
+
+
+    //    CultureInfo myCI = new CultureInfo("ar-SY");
+    //    System.Globalization.Calendar myCal = myCI.Calendar;
+
+    //    CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+    //    DayOfWeek myFDW = DayOfWeek.Sunday;
+
+    //    int WeekNumber = myCal.GetWeekOfYear(Convert.ToDateTime(Calendar1.SelectedDate), myCWR, myFDW);
+    //    lblWeekNo.Text = WeekNumber.ToString();
+
+
+        
+    //}
+    protected void Calendar2_SelectionChanged(object sender, EventArgs e)
+    {
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        System.Globalization.Calendar myCal = myCI.Calendar;
+
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+
+        int WeekNumber = myCal.GetWeekOfYear(Convert.ToDateTime(Calendar2.SelectedDate), myCWR, myFDW);
+        string Year = Calendar2.SelectedDate.Year.ToString();
+        lblWeekNo.Text = getStartEndString(WeekNumber,Year);
+
+    }
+    protected void ButtonLaunchBW_Click(object sender, EventArgs e)
+    {
+        if(Calendar2.SelectedDate.Year != 1 )
+        {
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        System.Globalization.Calendar myCal = myCI.Calendar;
+
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+        int date = myCal.GetDayOfMonth(Convert.ToDateTime(Calendar2.SelectedDate));
+        int MonthNumber = myCal.GetMonth(Convert.ToDateTime(Calendar2.SelectedDate));
+        
+        int WeekNumber = myCal.GetWeekOfYear(Convert.ToDateTime(Calendar2.SelectedDate), myCWR, myFDW);
+        string Year = Calendar2.SelectedDate.Year.ToString();
+        string emailText;
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());
+            //HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();        
+            //HR.EmployeeRow employeeRow = empAdapter.GetApplicant(appID)[0];
+            
+            Employee employeeRow = bal.GetApplicant(appID)[0];
+
+        if (DateTime.Today.CompareTo(getEndDate(WeekNumber, Year)) >= 0)
+        {
+            LabelAfterLauchButton.Visible = true;
+            Alert1.Message("The Selected Week must be a future week. Busy Schedule is not launched");
+           // LabelAfterLauchButton.Text = "The Selected Week must be a future week. Busy Schedule is not launched";
+           // LabelAfterLauchButton.ForeColor = System.Drawing.Color.Red; 
+            return;
+        }
+        try
+        {
+             //PromotionTableAdapters.PromotionCommitteeTempTableAdapter fnlPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+             //Promotion.PromotionCommitteeTempDataTable finalPCTable = fnlPCAdapter.GetMembersAgainstAppID(appID);
+             
+             if (bal.GetForm_FinalPC(appID).Count > 0)
+             {                    
+                    Email.ComposeEmailDataTable emailDataTable = new Email.ComposeEmailDataTable();
+                    foreach (Form_FinalPC finalPCRow in bal.GetForm_FinalPC(appID))
+                    {
+                        Email.ComposeEmailRow emailRow = emailDataTable.NewComposeEmailRow();
+                        emailRow.To = finalPCRow.Employee.KFUPMUserID;
+                        emailRow.Subject = "Post Busy Schedule";
+                        emailText = @"
+Dear " + finalPCRow.Employee.NameString + @", Promotion Committee Member,
+
+Considering the promotion case of " + employeeRow.NameString + ", " + employeeRow.Rank + " in the Department of " + employeeRow.Department +
+@", please post your Busy Schedule for the week # " + WeekNumber + " of the year " + Year +
+@" (" + getStartEndString(WeekNumber, Year) +
+@")in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of " + employeeRow.NameString +
+@" then its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+" + bal.GetForm_FinalPC(appID)[0].Employee.NameString+ @"
+Chairman Promotion Committee
+";
+
+                        emailRow.Body = emailText;
+                        emailDataTable.AddComposeEmailRow(emailRow);
+                    }
+                    ComposeEmail1.LoadData(emailDataTable);
+                    ComposeEmail1.Visible = true;                    
+            }
+            ButtonLaunchBW.Enabled = false;
+            Label4.Text += " " + WeekNumber;
+            Label4.Visible = true;                
+            
+            
+        }
+        catch (Exception ex) {
+            Label3.Text = ex.ToString();
+            LabelAfterLauchButton.Visible = true;
+        }
+    }
+    else
+    {
+        LabelAfterLauchButton.Visible = true;
+        Alert1.Message("No Week is selected. Busy Schedule is not launched");
+       // LabelAfterLauchButton.Text = "No Week is selected. Busy Schedule is not launched";
+       // LabelAfterLauchButton.ForeColor = System.Drawing.Color.Red;
+        return;
+    }
+}
+    public string getStartEndString(int WeekNumber, string Year)
+    {
+        DateTime firstDate = DateTime.Parse("1/1/" + Year);
+        int compensation = 0;
+
+        switch (firstDate.DayOfWeek)
+        {
+            case DayOfWeek.Sunday:
+                compensation = 0;
+                break;
+            case DayOfWeek.Monday:
+                compensation = 1;
+                break;
+            case DayOfWeek.Tuesday:
+                compensation = 2;
+                break;
+            case DayOfWeek.Wednesday:
+                compensation = 3;
+                break;
+            case DayOfWeek.Thursday:
+                compensation = 4;
+                break;
+            case DayOfWeek.Friday:
+                compensation = 5;
+                break;
+            case DayOfWeek.Saturday:
+                compensation = 6;
+                break;
+
+        } 
+        
+        
+        DateTime startDateOfWeek = (firstDate.AddDays((7 * (WeekNumber - 1)) - compensation));
+        DateTime endDateOfWeek = startDateOfWeek.AddDays(4);
+        return "Starting Date: " + startDateOfWeek.ToString("D")+",     Ending Date: " + endDateOfWeek.ToString("D");
+
+    }
+    public DateTime getEndDate(int WeekNumber, string Year)
+    {
+        DateTime firstDate = DateTime.Parse("1/1/" + Year);
+        int compensation = 0;
+
+        switch (firstDate.DayOfWeek)
+        {
+
+            case DayOfWeek.Sunday:
+                compensation = 0;
+                break;
+            case DayOfWeek.Monday:
+                compensation = 1;
+                break;
+            case DayOfWeek.Tuesday:
+                compensation = 2;
+                break;
+            case DayOfWeek.Wednesday:
+                compensation = 3;
+                break;
+            case DayOfWeek.Thursday:
+                compensation = 4;
+                break;
+            case DayOfWeek.Friday:
+                compensation = 5;
+                break;
+            case DayOfWeek.Saturday:
+                compensation = 6;
+                break;
+
+        }
+
+
+        DateTime startDateOfWeek = (firstDate.AddDays((7 * (WeekNumber - 1)) - compensation));
+        return startDateOfWeek.AddDays(4);
+
+    }
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        if (int.Parse(Request.Params.Get("applicationID").ToString()) > 0)
+        {
+            MeetingsTableAdapters.Form_MeetingsTableAdapter adapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+            adapter.CancelMeetingsByApplicationID(int.Parse(Request.Params.Get("applicationID").ToString()));
+            MeetingsTableAdapters.Form_MeetingMembersTableAdapter fAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+//            fAdapter.UpdateMeetingStatusByApplicationID(int.Parse(Request.Params.Get("applicationID").ToString()));
+            //            Response.Redirect("LaunchBusySchedule.aspx?applicationID=" + meetingApplicationID);
+            Initialize();
+            LabelAfterLauchButton.Text = "";
+            Alert1.Message("The Busy Week Schedule is Cancelled.");
+        }
+
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+    protected void ComposeEmail_EmailSent(object sender, EventArgs e)
+    {
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        System.Globalization.Calendar myCal = myCI.Calendar;
+
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+        int date = myCal.GetDayOfMonth(Convert.ToDateTime(Calendar2.SelectedDate));
+        int MonthNumber = myCal.GetMonth(Convert.ToDateTime(Calendar2.SelectedDate));
+
+        int WeekNumber = myCal.GetWeekOfYear(Convert.ToDateTime(Calendar2.SelectedDate), myCWR, myFDW);
+        string Year = Calendar2.SelectedDate.Year.ToString();
+        int meetingID = -1;
+        string emailText;
+        int appID = int.Parse(Request.Params.Get("applicationID").ToString());
+        MeetingsTableAdapters.Form_MeetingsTableAdapter frmMeetingAdapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+        HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();        
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        Employee employeeRow = bal.GetApplicant(appID)[0];
+        //  HR.EmployeeRow employeeRow = empAdapter.GetApplicant(appID)[0];
+        //   PromotionTableAdapters.PromotionCommitteeTempTableAdapter fnlPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        // Promotion.PromotionCommitteeTempDataTable finalPCTable = fnlPCAdapter.GetMembersAgainstAppID(appID);
+        MeetingsTableAdapters.Form_MeetingMembersTableAdapter mAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+        frmMeetingAdapter.Insert(appID, WeekNumber, Year, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null,true);
+        Meetings.Form_MeetingsDataTable formMeetingTable = frmMeetingAdapter.GetDataByAppIDMS(appID,true);
+        meetingID = formMeetingTable[0].MeetingID;
+        frmMeetingAdapter.UpdatePreviousMeetings(appID, meetingID);
+        Label4.Text = formMeetingTable[0].MeetingID.ToString();
+        foreach (Form_FinalPC finalPCRow in bal.GetForm_FinalPC(appID))
+        {
+            mAdapter.Insert(meetingID, finalPCRow.Employee.EmployeeID, appID, null , bool.Parse("False"));          
+            emailText = @"
+Dear " + finalPCRow.Employee.NameString + @", Promotion Committee Member,
+
+Considering the promotion case of " + employeeRow.NameString + ", " + employeeRow.Rank + " in the Department of " + employeeRow.Department +
+                    @", please post your Busy Schedule for the week # " + WeekNumber + " of the year " + Year +
+                    @" (" + getStartEndString(WeekNumber, Year) +
+                    @")in order to help in arranging the meeting time. Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr." + employeeRow.Name +
+                    @" then its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+" + bal.GetForm_FinalPC(appID)[0].Employee.NameString  + @"
+Chairman Promotion Committee
+";
+            
+            appTskLgExtAdapter.InsertQuery(appID
+                , tskExtAdapter.GetDataByTitle("Post Busy Schedule")[0].TaskID
+                , emailText
+                , finalPCRow.Employee.KFUPMUserID
+                , int.Parse(finalPCRow.Employee.EmployeeID));
+        }
+        Alert1.Message("The Busy schedule is successfully launched. Emails have been send to all members of the Promotion Committee. You can view the Busy Schedule Post Status and Call for Meeting in the View Busy Schedule page. You will be informed through email as soon as all the members have posted their busy schedules");
+        ComposeEmail1.Visible = false;
+        Initialize();
+    }
+    protected void ComposeEmail_EmailNotSent(object sender, EventArgs e)
+    {
+        ComposeEmail1.Visible = false;
+
+    }
+}

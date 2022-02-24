@@ -1,0 +1,343 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using BL.Data;
+
+public partial class Forms_FilesUpload : System.Web.UI.Page
+{
+    BAL bal = new BAL();
+    ExtRevBAL erBAL = new ExtRevBAL();
+    public override string StyleSheetTheme
+    {
+        get
+        {
+            return Utils.IsPrintMode() ? Utils.PrinterStyleSheet : base.StyleSheetTheme;
+        }
+    }
+
+    private enum Mode { InputByRole = 1, ViewRole = 2, ViewAll = 3, ViewAppInputRole = 4, ViewAllInputRole = 5}
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        if (IsPostBack)
+        {
+            return;
+        }
+       // ComposeEmail1.Visible = false;
+        
+        try
+        {
+            //if (Master.CurRoleID == 6)
+            //{
+            //    TableStatus.Visible = true;
+            //    ButtonSendSelPub.Visible = true;
+            //    ApplicationCheckListTableAdapters.Form_MaterialFlagTableAdapter frmMatFlgAdapter = new ApplicationCheckListTableAdapters.Form_MaterialFlagTableAdapter();
+            //    if (frmMatFlgAdapter.GetDataByAppID(Master.ApplicationID).Count > 0
+            //        && frmMatFlgAdapter.GetDataByAppID(Master.ApplicationID)[0].PCMaterialReady4ExtRevFlag == true)
+            //    {
+            //        ImagePCFlagYes.Visible = true;
+            //        ImagePCFlagNo.Visible = false;
+            //    }
+            //    else
+            //    {
+            //        ImagePCFlagYes.Visible = false;
+            //        ImagePCFlagNo.Visible = true;
+
+            //    }
+
+            //}
+        }
+        catch (Exception ex1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+        lblMessage.Text = "";
+        if (Master.CurrentFormLevel == -1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+        SwitchMode((Mode)Master.CurrentFormLevel);
+
+        if (Master.RoleID == 1)
+        {
+            btnSave.Visible = true;
+        }
+        else
+        {
+            btnSave.Visible = false;
+        }
+        //hide buttons when printing
+        if (Utils.IsPrintMode())
+        {
+            Instruction1.Visible = false;
+        }
+
+    }
+    
+    private void SwitchMode(Mode mode)
+    {
+        switch(mode)
+        {
+            case Mode.InputByRole:
+                FilesUpload1.LoadFiles(Master.ApplicationID, Master.RoleID, true, false);
+                break;
+            case Mode.ViewAll:
+                FilesUpload1.LoadFiles(Master.ApplicationID, Master.RoleID, false, true);
+                break;
+            case Mode.ViewRole:
+                FilesUpload1.LoadFiles(Master.ApplicationID, Master.RoleID, false, false);
+                break;
+            case Mode.ViewAppInputRole:
+                FilesUpload1.LoadFiles(Master.ApplicationID, Master.RoleID, 1, true, false);
+                break;
+            case Mode.ViewAllInputRole:
+                FilesUpload1.LoadFiles(Master.ApplicationID, Master.RoleID, true, true);
+                break;
+        }
+    }
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.vw_ApplicationFilesTableAdapter adapter = new PromotionTableAdapters.vw_ApplicationFilesTableAdapter();
+        Promotion.vw_ApplicationFilesDataTable table = adapter.GetDataByApplication(Master.ApplicationID, 1);
+
+
+        bool success = (table.Count != 0);
+        if (success)
+        {
+            ShowMessage("Saved Successfully");
+        }
+        else
+        {
+            ShowError("Please make sure you have uploaded your CV and publications.");
+        }
+    }
+    private void ShowError(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Red;
+        lblMessage.Text = message;
+        Master.ReportFailure(message);
+    }
+
+    private void ShowMessage(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Blue;
+        lblMessage.Text = message;
+        Master.ReportSuccess();
+    }
+
+    protected void ButtonSendSelPub_Click(object sender, EventArgs e)
+    {
+
+        Form.Form_FinalRefreeDataTable frmFnlRfrDT = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(Master.ApplicationID);
+        Email.ComposeEmailDataTable email = new Email.ComposeEmailDataTable();
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(Master.ApplicationID)[0];
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        ApplicationCheckListTableAdapters.Form_MaterialFlagTableAdapter frmMatFlgAdapter = new ApplicationCheckListTableAdapters.Form_MaterialFlagTableAdapter();
+        if (frmMatFlgAdapter.GetDataByAppID(Master.ApplicationID).Count == 0 || frmMatFlgAdapter.GetDataByAppID(Master.ApplicationID)[0].PCMaterialReady4ExtRevFlag == false)
+        {
+            AlertMessage("The Promotion Committee has not yet decided to approve the CV and Publications to be sent to the External Reviewers");
+            return;
+
+        }
+        foreach (Form.Form_FinalRefreeRow row in frmFnlRfrDT)
+        {
+            if (tskExtAdapter.GetDataByTitle("External Evaluation").Count == 0)
+            {
+                AlertMessage("There is some problem in the database contact the Administrator. An email is also sent to the Admin");
+                Emailer.Send("facpromote@kfupm.edu.sa", "Database problem- Task_Ex table changed", "Task_Ex Table with Title: External Evaluation not present", "", Master.ApplicationID);
+                return;
+
+            }
+
+            if (row.WLStatus.Equals("Accepted") && row.EvaluationRecieved == false &&
+                appTskLgExtAdapter.GetDataByAppIDTskIDID(Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, row.RefreeID).Count == 0)
+            {
+                AlertMessage("There is some problem in the database contact the Administrator. An email is also sent to the Admin");
+                Emailer.Send("facpromote@kfupm.edu.sa", "Database problem- Application_TaskLogExt Table", @"Application_TaskLogExt Table 
+    does not have the record for the External Reviewer of refree ID: " + row.RefreeID + @" and TaskID = 5. 
+
+    Solution: 
+    Follow the steps:
+    1-  Go to Form_FinalRefree table and see the WLStatus field against RefreeID: " + row.RefreeID + @"
+    2 - Change the value to waiting
+    3-  Go to Reminders Page
+    4 - Copy the link sent in the willingness letter email", "", Master.ApplicationID);
+                return;
+            }
+
+            if (row.WLStatus.Equals("Accepted") && row.EvaluationRecieved == false &&
+                (appTskLgExtAdapter.GetDataByAppIDTskIDID(Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, row.RefreeID)[0].Completed == true))
+            {
+                EmailBody = @"
+
+    Dear Dr. " + row.Name + @",
+
+    The Online Promotion Application of Dr. " + employeeRow.Name + @" is now ready for External Evaluation. All the Selected publications are now shown to you for evaluation. Kindly logon on to FacultyPromotion.kfupm.edu.sa/ExtLogin.aspx with the following username and password: 
+
+        UserName: " + row.UserName + @"
+
+        Password: " + Cryptography.Decrypt(row.Password) + @"
+
+    After reviewing the publications, please fill out the Evaluation Form and Forward to the Vice Rector for Research using the Action menu item. It will be appreciated if you provide your evaluation of the candidate within four weeks from the date of material sent. It would greatly help the committee in expediting the process.
+
+    Thanks 
+    Dr. Nasser Al-Aqeeli
+    Vice Rector for Graduate Studies & Scientific Research
+    King Fahd University of Petroleum and Minerals
+
+
+    " + row.Name + @"سعادة الدكتور ,
+
+    نفيدكم بأن طلب الترقية الإلكتروني المقدم من سعادة الدكتور 
+    " + employeeRow.Name +
+@" :قد أصبح جاهزا الآن للتقييم الخارجي، وقد أصبح يمكنكم الآن بإمكانكم الاطلاع على جميع الأبحاث المنشورة المختارة من أجل عملية التقييم. فإننا نرجو من سعادتكم التفضل بالدخول إلى الموقع التالي 
+     FacultyPromotion.kfupm.edu.sa/ExtLogin.aspx 
+
+    وذلك باستخدام البيانات التالية :
+
+    اسم المستخدم : " + row.UserName + @"
+    كلمة الســـــر : " + Cryptography.Decrypt(row.Password) + @"
+
+    وبعد الإنتهاء من مراجعة الأبحاث المنشورة، فإننا نرجو من سعادتكم تعبئة نموذج التقييم ثم إرساله إلى سعادة وكيل الجامعة للدراسات العليا والبحث العلمي باستخدام أمر الإرسال الموجود بقائمة الأفعال. وسيكون انتهاء سعادتكم من تعبئة و إرسال نموذج التقييم الخاص بالمرشح خلال أسبوعين من تاريخه محل تقدير كبير منا، حيث أن هذا سيساعد اللجنة كثيرا في سرعة الانتهاء من عملية التقييم. كما نرجو من سعادتكم إرسال عنوانكم البريدي الكامل وكافة بياناتكم المصرفية متضمنة رقم الآيبان أو رقم السويفت، وذلك حتى نتمكن من إرسال الشيك المصرفي المستحق لسعادتكم عقب تسلمنا لنموذج التقييم المعد من قبلكم.
+
+    وتفضلوا بقبول وافر التحية والاحترام،
+
+    الدكتور ناصر العقيلي
+
+    وكيل الجامعة للدراسات العلیا  والبحث العلمي
+    جامعة الملك فهد للبترول والمعادن
+     ";
+
+                email.NewComposeEmailRow();
+                email.AddComposeEmailRow(row.Email, "Login Information - Promotion case from KFUPM", EmailBody);
+                //ListEmails.Add(EmailBody);
+            }
+
+
+        }
+    //    ComposeEmail1.LoadData(email);
+        if (email.Count > 0)
+        {
+      //      ComposeEmail1.Visible = true;
+        }
+        else
+        {
+            AlertMessage("There is no relevant External Reviewer whom the email should be sent.");
+        }
+
+
+    }
+    protected void ComposeEmail_OnEmailSent(object sender, EventArgs e)
+    {
+
+        Form.Form_FinalRefreeDataTable frmFnlRfrDT = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(Master.ApplicationID);
+        //ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        ExternalRemindersTableAdapters.Application_LogExtTableAdapter appLogExtAdaptper = new ExternalRemindersTableAdapters.Application_LogExtTableAdapter();
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(Master.ApplicationID)[0];
+        int Task_ExtID = 0;
+        if (bal.GetTaskExtByTitle(TaskExtID.External_Evaluation.ToString().Replace("_", " ")).Count > 0)
+        {
+            Task_ExtID = bal.GetTaskExtByTitle(TaskExtID.External_Evaluation.ToString().Replace("_", " "))[0].TaskID;
+        }
+
+        string emailText = "";
+        // foreach (Form.Form_FinalRefreeRow row in frmFnlRfrDT)
+        foreach (Form_FinalExtRev row in erBAL.GetForm_FinalExtRev(Master.ApplicationID))
+        {
+            if (row.WLStatus == "Accepted" && row.EvaluationStatus == EvaluationStatus.Submitted.ToString() &&
+                bal.GetAppTaskLogExt(Master.ApplicationID, Task_ExtID, row.ExternalReviewerID)[0].Completed == true)
+            //(appTskLgExtAdapter.GetDataByAppIDTskIDID(Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, row.RefreeID)[0].Completed == true))
+            {
+                Application_TaskLogExt atle = bal.GetAppTaskLogExt(Master.ApplicationID, Task_ExtID, "0", 0)[0];
+                //appTskLgExtAdapter.UpdateExtTskComplete(false, Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, row.RefreeID);
+                emailText = Cryptography.Encrypt(@"
+
+    Dear Dr. " + row.ExternalReviewer.NameString + @",
+
+    The Online Promotion Application of Dr. " + employeeRow.Name + @" is now ready for External Evaluation. All the Selected publications are now shown to you for evaluation. Kindly logon on to FacultyPromotion.kfupm.edu.sa/ExtLogin.aspx with the following username and password: 
+
+        UserName: " + row.UserName + @"
+
+        Password: " + Cryptography.Decrypt(row.Password) + @"
+
+    After reviewing the publications, please fill out the Evaluation Form and Forward to the Vice Rector for Research using the Action menu item. It will be appreciated if you provide your evaluation of the candidate within four weeks from now. It would greatly help the committee in expediting the process.
+
+    Thanks 
+    Dr. Nasser Al-Aqeeli
+    Vice Rector for Graduate Studies & Scientific Research
+    King Fahd University of Petroleum and Minerals");
+                bal.UpdateAppTskLgExt(Master.ApplicationID, Task_ExtID, atle.ActionID, DateTime.Now, false, atle.Reminders, atle.EmailAddress
+                    , atle.ExternalReviewerID.Value, emailText, atle.EmployeeID, atle.ExternalEmployeeID.Value);
+                //appTskLgExtAdapter.Update(Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, -1
+                //    , emailText                     
+                //    , DateTime.Now, false, 0, row.Email, row.RefreeID,
+                //appTskLgExtAdapter.GetDataByAppIDTskIDID(Master.ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, row.RefreeID)[0].TaskLogID);
+                appLogExtAdaptper.Insert(Master.ApplicationID
+                                , "External Evaluation Start"
+                                , DateTime.Now
+                                , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                                , row.ExternalReviewer.NameString
+                                , emailText);
+            }
+
+        }
+        AlertMessage("Email has been successfully send.");
+     //   ComposeEmail1.Visible = false;
+    }
+    protected void ComposeEmail_OnEmailNotSent(object sender, EventArgs e)
+    {
+      //  ComposeEmail1.Visible = false;
+    }
+    public string EmailBody
+    {
+        get
+        {
+            if (hdnEmailBody.Value.Length == 0)
+            {
+                return "";
+            }
+            return hdnEmailBody.Value.ToString();
+        }
+        set
+        {
+            hdnEmailBody.Value = value.ToString();
+        }
+    }
+    public void AlertMessage(string strMessage)
+    {
+        string strScript = "<script language=JavaScript>";
+        strScript += "alert('" + strMessage + "');";
+        strScript += "</script>";
+        if (!Page.IsStartupScriptRegistered("clientScript"))
+        {
+            Page.RegisterStartupScript("clientScript", strScript);
+        }
+    }
+    protected override void OnError(EventArgs e)
+    {
+        ////AlertMessage("You can only upload valid PDF files of size less than 4 MB.");
+        //base.OnError(e);
+        //Exception ex = Server.GetLastError();
+        ////Response.Redirect(Request.Url.AbsolutePath);
+        //Server.Transfer(Request.Url.AbsoluteUri);
+        ////labelProgrammaticPopup3.Text = "You can only upload valid PDF files of size less than 4 MB.";
+        ////this.programmaticModalPopup3.Show();
+    }
+}

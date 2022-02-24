@@ -1,0 +1,98 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PCFinal4PC.aspx.cs" Inherits="Forms_PCFinal4PC" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <asp:GridView ID="GridViewPC" runat="server" AutoGenerateColumns="False" 
+        CellPadding="4" DataKeyNames="ApplicationID,Type,Position,AutoNumberPK" 
+        DataSourceID="ObjectDataSourcePCFinal" ForeColor="#333333" GridLines="None">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <Columns>
+<asp:TemplateField>
+        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+        </asp:TemplateField>    
+                
+            <asp:TemplateField HeaderText="Position" SortExpression="Position">
+                <ItemTemplate>
+                    <asp:Label ID="Label1" runat="server" Text='<%# Eval("Position").ToString().Equals("10") ? "Chairman" : "Member"%>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:BoundField DataField="Name" HeaderText="Name" 
+                SortExpression="Name" />
+            <asp:BoundField DataField="Department" HeaderText="Department" 
+                SortExpression="Department" />
+            <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+            <asp:BoundField DataField="Phone" HeaderText="Phone" 
+                SortExpression="Phone" />
+            <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+        </Columns>
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+    <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+        <EditRowStyle BackColor="#999999" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    </asp:GridView>
+    <asp:ObjectDataSource ID="ObjectDataSourcePCFinal" runat="server" 
+        DeleteMethod="Delete" InsertMethod="Insert" 
+        OldValuesParameterFormatString="original_{0}" SelectMethod="GetDataByAppID" 
+        TypeName="FormsTableAdapters.Form_FinalPromotionCommitteeTableAdapter" 
+        UpdateMethod="Update">
+        <DeleteParameters>
+            <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+            <asp:Parameter Name="Original_Type" Type="String" />
+            <asp:Parameter Name="Original_Position" Type="Byte" />
+            <asp:Parameter Name="Original_AutoNumberPK" Type="Int32" />
+        </DeleteParameters>
+        <UpdateParameters>
+            <asp:Parameter Name="isKFUPM" Type="Boolean" />
+            <asp:Parameter Name="EmployeeID" Type="String" />
+            <asp:Parameter Name="Name" Type="String" />
+            <asp:Parameter Name="Department" Type="String" />
+            <asp:Parameter Name="Rank" Type="String" />
+            <asp:Parameter Name="Email" Type="String" />
+            <asp:Parameter Name="MailingAddress" Type="String" />
+            <asp:Parameter Name="Major" Type="String" />
+            <asp:Parameter Name="WLStatus" Type="String" />
+            <asp:Parameter Name="Comments" Type="String" />
+            <asp:Parameter Name="UserAccess" Type="Boolean" />
+            <asp:Parameter Name="AcknoledgementSend" Type="Int32" />
+            <asp:Parameter Name="DigitalSignature" Type="Boolean" />
+            <asp:Parameter Name="DSDate" Type="DateTime" />
+            <asp:Parameter Name="Username" Type="String" />
+            <asp:Parameter Name="Password" Type="String" />
+            <asp:Parameter Name="Phone" Type="String" />
+            <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+            <asp:Parameter Name="Original_Type" Type="String" />
+            <asp:Parameter Name="Original_Position" Type="Byte" />
+            <asp:Parameter Name="Original_AutoNumberPK" Type="Int32" />
+        </UpdateParameters>
+        <SelectParameters>
+            <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" 
+                QueryStringField="applicationID" Type="Int32" />
+        </SelectParameters>
+        <InsertParameters>
+            <asp:Parameter Name="ApplicationID" Type="Int32" />
+            <asp:Parameter Name="Type" Type="String" />
+            <asp:Parameter Name="Position" Type="Byte" />
+            <asp:Parameter Name="isKFUPM" Type="Boolean" />
+            <asp:Parameter Name="EmployeeID" Type="String" />
+            <asp:Parameter Name="Name" Type="String" />
+            <asp:Parameter Name="Department" Type="String" />
+            <asp:Parameter Name="Rank" Type="String" />
+            <asp:Parameter Name="Email" Type="String" />
+            <asp:Parameter Name="MailingAddress" Type="String" />
+            <asp:Parameter Name="Major" Type="String" />
+            <asp:Parameter Name="WLStatus" Type="String" />
+            <asp:Parameter Name="Comments" Type="String" />
+            <asp:Parameter Name="UserAccess" Type="Boolean" />
+            <asp:Parameter Name="AcknoledgementSend" Type="Int32" />
+            <asp:Parameter Name="DigitalSignature" Type="Boolean" />
+            <asp:Parameter Name="DSDate" Type="DateTime" />
+            <asp:Parameter Name="Username" Type="String" />
+            <asp:Parameter Name="Password" Type="String" />
+            <asp:Parameter Name="Phone" Type="String" />
+        </InsertParameters>
+    </asp:ObjectDataSource>
+    <asp:DetailsView ID="DetailsViewPC" runat="server" Height="50px" Width="125px">
+    </asp:DetailsView>
+</asp:Content>
+

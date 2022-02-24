@@ -1,0 +1,27 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/Admin/Admin.master" AutoEventWireup="true" CodeFile="Attachments.aspx.cs" Inherits="Admin_Attachements" Title="Untitled Page" %>
+
+<%@ Register src="~/Controls/FilesUpload.ascx" tagname="FilesUpload" tagprefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    
+    <br />
+    <uc1:FilesUpload ID="FilesUpload1" runat="server" />
+    <br />
+    <br />
+    Select the Name of the Applicant:
+    <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" 
+        DataSourceID="ObjectDataSource1" DataTextField="Name" 
+        DataValueField="ApplicationID" 
+        onselectedindexchanged="DropDownList1_SelectedIndexChanged">
+    </asp:DropDownList>
+    <br />
+    <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" 
+        OldValuesParameterFormatString="original_{0}" SelectMethod="GetDataByEmployee" 
+        TypeName="PromotionTableAdapters.ApplicationsListTableAdapter">
+        <SelectParameters>
+            <asp:Parameter DefaultValue="2000298" Name="EmployeeID" Type="String" />
+        </SelectParameters>
+    </asp:ObjectDataSource>
+    
+    </asp:Content>
+

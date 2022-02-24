@@ -1,0 +1,1051 @@
+﻿{
+  "FormTitle": "",
+  "Question": [
+    {
+
+      "Title": "",
+      "Text": "Please indicate how familiar you are with applicant's area of specialization:",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Familiarity",
+
+        "optionRB": [
+          {
+            "text": "I am actively engaged in research in the applicant's specific area.",
+            "value": "I am actively engaged in research in the applicant's specific area.",
+            "_checked": "true"
+          },
+          {
+            "text": "I have carried out research in the past in the applicant's specific area.",
+            "value": "I have carried out research in the past in the applicant's specific area.",
+            "_checked": "false"
+          },
+          {
+            "text": "My experience is in the general area but I have not worked in the applicant's specific area.",
+            "value": "My experience is in the general area but I have not worked in the applicant's specific area.",
+            "_checked": "false"
+          },
+          {
+            "text": "Others",
+            "value": "Others",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "Excellent",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "Very Good",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          },
+          {
+            "text": "Cdsdhrome",
+            "value": "Chrsdsdome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "no",
+        "titleTA": "",
+        "watermark": "",
+        "tooltip": "",
+        "maxlength": "4000",
+        "minlength": "1",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "Questions 1 through 8 deal with the candidate attributes concerning his/her research achievements through his publications. For each of these attributes, please provide grading, rating and justification of that rating. ",
+      "Text": "1. How would you grade and rate the productivity of the candidate's work in terms of publication frequency and quantity?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Productivity",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "v1",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Poor",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "2. How would you grade and rate the overall Quality of the Journals in which the applicant has published? ",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Quality of Journals",
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "Excellent",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "Very Good",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "3. How could you rate the overall quality of conferences?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Quality of conferences",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "v1",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "4. How would you rate the originality of the Candidate's publications?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Originality",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "5. How would you  rate the significance of the Candidate's publications?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Significance of the Candidate's publications",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "Excellent",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "Very Good",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "6. How would rate the Candidate's Leadership in research?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Leadership in research",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "text 2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "7- How would you rate the impact of the candidate’s work in his field as evidenced by citations, invitation(s) as keynote speaker, etc.?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Impact",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "8- To what degree you think the applicant has achieved scholarly stature?",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Scholarly stature",
+
+        "optionRB": [
+          {
+            "text": "Excellent",
+            "value": "10",
+            "_checked": "true"
+          },
+          {
+            "text": "Very Good",
+            "value": "8",
+            "_checked": "false"
+          },
+          {
+            "text": "Good",
+            "value": "7",
+            "_checked": "false"
+          },
+          {
+            "text": "Fair",
+            "value": "6",
+            "_checked": "false"
+          },
+          {
+            "text": "Poor",
+            "value": "5",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification:",
+
+        "watermark": "Enter Justification",
+        "tooltip": "Please write one or two sentences",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    },
+    {
+      "Title": "",
+      "Text": "Please indicate your assessment of the promotability of the applicant",
+      "visible": "true",
+      "questionWidth": "200px",
+      "AnswerOnSameLine": "no",
+      "AnswerInstruction": "",
+
+      "Lang": "en-US",
+      "AnswerRadioButton": {
+        "visibleRB": "true",
+        "titleRB": "Promotability",
+
+        "optionRB": [
+          {
+            "text": "Promotable",
+            "value": "Promotable",
+            "_checked": "true"
+          },
+          {
+            "text": "Unpromotable",
+            "value": "Unpromotable",
+            "_checked": "false"
+          }
+        ]
+      },
+      "AnswerCheckBox": {
+        "visibleCB": "false",
+        "titleCB": "Check box Answer Title",
+
+        "optionCB": [
+          {
+            "text": "ch text1",
+            "value": "Excellent",
+            "_checked": "false"
+          },
+          {
+            "text": "tzxcsdcext2",
+            "value": "Very Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text3",
+            "value": "Good",
+            "_checked": "false"
+          },
+          {
+            "text": "text4",
+            "value": "Fair",
+            "_checked": "true"
+          }
+        ]
+      },
+      "AnswerDropDownList": {
+        "visibleDDl": "false",
+        "required": "yes",
+        "titleDDL": "Title of Drop Down List ",
+
+        "optionDDL": [
+          {
+            "text": "Select",
+            "value": ""
+          },
+          {
+            "text": "IE",
+            "value": "IE"
+          },
+          {
+            "text": "Safari",
+            "value": "Safari"
+          },
+          {
+            "text": "Chrome",
+            "value": "Chrome"
+          }
+        ]
+      },
+      "AnswerTA": {
+        "visibleTA": "true",
+        "required": "yes",
+        "titleTA": "Justification",
+
+        "watermark": "",
+        "tooltip": "",
+        "maxlength": "4000",
+        "minlength": "20",
+        "height": "50px",
+        "width": "600px"
+
+      }
+    }
+
+  ]
+
+
+}

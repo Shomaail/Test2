@@ -1,0 +1,64 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms_Default2 : FormSuccessFailure
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            Instruction1.Text = Master.CurrentFormInstruction;
+            int appID = Int32.Parse(Request.Params["ApplicationID"].ToString());
+            Session.Add("ApplicationIDGlobal", Request.Params["ApplicationID"].ToString());
+
+            HyperLinkTOP.NavigateUrl = "~/Forms/PCCommunicate.aspx?applicationID=" + appID + "#";
+            NewSelectionPC1.LoadCommittee();
+
+            PanelDelPCMem.Visible = false;
+            if (Utils.IsPrintMode())
+            {
+                Instruction1.Visible = false;
+            }
+        }
+        catch (Exception ex1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return; 
+        }
+
+    }
+    public override void ShowFailure(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Red;
+        lblMessage.Text = message;
+        Master.ReportFailure(message);
+    }
+
+    public override void ShowSuccess()
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Blue;
+        lblMessage.Text = "Form is completed Succesfully";
+        Master.ReportSuccess();
+    }
+
+
+
+    protected void LinkButtonShowDelPCMem_Click(object sender, EventArgs e)
+    {
+        PanelDelPCMem.Visible = true;
+        SqlDataSourceDelPCMem.SelectParameters["ApplicationID"].DefaultValue = Master.ApplicationID.ToString();
+        GridViewDelPCMem.DataBind();
+    }
+    protected void LinkButtonHideDelPCMem_Click(object sender, EventArgs e)
+    {
+        PanelDelPCMem.Visible = false;
+    }
+}

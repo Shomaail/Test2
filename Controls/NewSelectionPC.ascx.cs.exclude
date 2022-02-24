@@ -1,0 +1,862 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+
+public partial class Controls_NewSelectionPC : System.Web.UI.UserControl
+{
+
+    public FormSuccessFailure formsuccessfailure;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Initialize();
+        EmployeeInputPCComm1.EnableFullDetails = true;
+
+        if (Utils.IsPrintMode())
+        {
+
+
+            //ButtonAcknowledgePC.Visible = false;
+            //ButtonSavePC.Visible = false;
+            //ButtonAcknowledgeRevisedPC.Visible = false;
+            PanelNewSelection.Visible = false;
+            PanelPCByCollege.Visible = false;
+            PanelDetailView.Visible = false;
+        }
+    }
+
+    private void Initialize()
+    {
+
+
+        CheckBox chkKFUPM = EmployeeInputPCComm1.FindControl("chkKFUPM") as CheckBox;
+        chkKFUPM.Visible = true;
+        int willingnessRecieved = 0;
+        int ackSend = 0;
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        LabelPCSelection.Text = "";
+        LabelSavePC.Text = "";
+        LabelSendEmail.Text = "";
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(appID);
+        PromotionTableAdapters.OldPromotionCommitteeTableAdapter adapterOldPC = new PromotionTableAdapters.OldPromotionCommitteeTableAdapter();
+        ackSend = Int32.Parse(adapterOldPC.ScalarQuery(appID).ToString());
+        if (table.Count == 5)
+        {
+            LabelPCSelection.ForeColor = System.Drawing.Color.Green;
+            LabelPCSelection.Text = "The Nominated Ad hoc Promotion Committee is complete";
+            if (!table[1].Type.Equals('V'.ToString()))
+            {
+                LabelSavePC.ForeColor = System.Drawing.Color.Red;
+                LabelSavePC.Text = "The Nominated Ad hoc Promotion Committee is not saved";
+            }
+            else
+            {
+                LabelSavePC.ForeColor = System.Drawing.Color.Green;
+                LabelSavePC.Text = "The Nominated Ad hoc Promotion Committee is saved";
+                for (int rowNo = 0; rowNo < table.Count; rowNo++)
+                {
+                    if (table[rowNo].WLStatus.Equals("Accepted".Trim()))
+                    {
+                        willingnessRecieved++;
+                    }
+                }
+
+                if (willingnessRecieved == 5 && ackSend == 0)
+                {
+                    ButtonAcknowledgePC.Enabled = true;
+                    ButtonAcknowledgeRevisedPC.Enabled = false;
+                }
+                else if (willingnessRecieved == 5 && ackSend == 5)
+                {
+                    ButtonAcknowledgePC.Enabled = false;
+                    ButtonAcknowledgeRevisedPC.Enabled = true;
+
+                }
+
+            }
+
+        }
+        else
+        {
+            LabelPCSelection.ForeColor = System.Drawing.Color.Red;
+            LabelPCSelection.Text = "The Nominated Ad hoc Promotion is not complete";
+        }
+    }
+    public void LoadCommittee()
+    {
+        if (!Page.IsPostBack)
+        {
+
+            int applicationIDGlobal = Int32.Parse(Session["ApplicationIDGlobal"].ToString());
+            ObjectDataSourcePC.SelectParameters["ApplicationID"].DefaultValue = applicationIDGlobal.ToString(); ;
+            ObjectDataSourcePC.SelectParameters["Type"].DefaultValue = "C";
+            GridViewPC.DataBind();
+            ObjectDataSourceFinalSelection.SelectParameters["ApplicationID"].DefaultValue = applicationIDGlobal.ToString();
+            GridViewFinalSelection.DataBind();
+
+        }
+
+    }
+
+    protected void GridViewPC_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int newPosition = -1;
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        GridViewRow row = GridViewPC.SelectedRow;
+        DropDownList DropDownListAsWhat = row.FindControl("DropDownListAsWhat") as DropDownList;
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        //row.Cells[5].Text
+
+
+        for (int rowNo = 0; rowNo < table.Count; rowNo++)
+        {
+            if (table[rowNo].Name.Equals(row.Cells[3].Text))
+            {
+                Alert1.Message("This selection is already present in the Ad hoc Promotion Committee.");
+                //LabelPCSelection.Text = "This selection is already present in the Ad hoc Promotion Committee";
+                return;
+            }
+
+        }
+        if (DropDownListAsWhat.SelectedValue == "chairman")
+        {
+            if (table.Count != 0 && table[0].Position == 10)
+            {
+                //LabelPCSelection.ForeColor = System.Drawing.Color.Red;
+                //LabelPCSelection.Text = "The Ad hoc Promotion Committee can have only one chairman.\n Please delete the existing entry of chairman to include the new selection.";
+                Alert1.Message("The Nominated Ad hoc Promotion Committee can have only one chairman. Please delete the existing entry of chairman to include the new selection.");
+            }
+            else
+            {
+                newPosition = 10;
+                adapter.InsertQuery(int.Parse(Session["ApplicationIDGlobal"].ToString()), "C", int.Parse(GridViewPC.DataKeys[GridViewPC.SelectedIndex].Values[2].ToString()), newPosition);
+                GridViewFinalSelection.DataBind();
+
+            }
+        }
+        else if (DropDownListAsWhat.SelectedValue == "memberSA")
+        {
+
+            if ((table.Count >= 3 && table[1].Position == 11 && table[2].Position == 11) || (table.Count >= 2 && table[0].Position == 11 && table[1].Position == 11))
+            {
+                //                LabelPCSelection.ForeColor = System.Drawing.Color.Red;
+                //                LabelPCSelection.Text = "The Ad hoc Promotion Committee can have only two members from Speciality Area. \n Please delete any of the existing entries of members in Speciality Area to include the new selection.";
+                Alert1.Message("The Nominated Ad hoc Promotion Committee can have only two members from Speciality Area. Please delete any of the existing entries of members in Speciality Area to include the new selection.");
+            }
+            else
+            {
+                newPosition = 11;
+                adapter.InsertQuery(int.Parse(Session["ApplicationIDGlobal"].ToString()), "C", int.Parse(GridViewPC.DataKeys[GridViewPC.SelectedIndex].Values[2].ToString()), newPosition);
+                GridViewFinalSelection.DataBind();
+
+            }
+
+
+        }
+        else
+        {
+            if (table.Count >= 2 && table[table.Count - 2].Position == 12 && table[table.Count - 1].Position == 12)
+            {
+                //LabelPCSelection.ForeColor = System.Drawing.Color.Red;
+                //LabelPCSelection.Text = "The Ad hoc Promotion Committee can have only two members from Related Area.\n Please delete any of the existing entries of members in Related Area to include the new selection.";
+                Alert1.Message("The Nominated Ad hoc Promotion Committee can have only two members from Related Area. Please delete any of the existing entries of members in Related Area to include the new selection.");
+
+            }
+            else
+            {
+                newPosition = 12;
+                adapter.InsertQuery(int.Parse(Session["ApplicationIDGlobal"].ToString()), "C", int.Parse(GridViewPC.DataKeys[GridViewPC.SelectedIndex].Values[2].ToString()), newPosition);
+                GridViewFinalSelection.DataBind();
+
+            }
+
+        }
+
+
+    }
+    protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DetailsView1.PageIndex = GridViewFinalSelection.SelectedIndex;
+        DetailsView1.DataBind();
+    }
+
+    protected void GridViewFinalSelection_DataBound(object sender, EventArgs e)
+    {
+
+        foreach (GridViewRow row in GridViewFinalSelection.Rows)
+        {
+            LinkButton linkbuttondelete = row.FindControl("LinkButtonDelete") as LinkButton;
+            linkbuttondelete.Attributes.Add("OnClick", "return confirm_delete();");
+            int newPosition = int.Parse(GridViewFinalSelection.DataKeys[row.RowIndex].Values[2].ToString());
+            //            Response.Write("" + newPosition);
+            Button ButtonSendWLChair = row.FindControl("ButtonSendWLChair") as Button;
+            CheckBox checkboxSend = row.FindControl("checkboxSend") as CheckBox;
+            RadioButtonList RadioButtonListUserAccess = row.FindControl("RadioButtonListUserAccess") as RadioButtonList;
+            Label labelPosition = row.FindControl("labelPosition") as Label;
+            if (newPosition == 10)
+            {
+                labelPosition.Text = "Chairman";
+            }
+            else if (newPosition == 11)
+            {
+                labelPosition.Text = "Member in Speciality Area";
+            }
+            else if (newPosition == 12)
+            {
+                labelPosition.Text = "Member in Related Area";
+            }
+
+            if (row.RowIndex == 0)
+            {
+                /*                ButtonSendWLChair.Visible = true;
+                                checkboxSend.Visible = false;
+                            }
+                            else
+                            {
+
+                                ButtonSendWLChair.Visible = false;
+                                checkboxSend.Visible = true;
+                  */
+            }
+        }
+    }
+    protected void GridViewPC_DataBound(object sender, EventArgs e)
+    {
+
+        foreach (GridViewRow row in GridViewPC.Rows)
+        {
+            DropDownList DropDownListAsWhat = row.FindControl("DropDownListAsWhat") as DropDownList;
+            //LinkButton lnkBtnSelect = row.FindControl("linkButtonSelect") as LinkButton;
+            //lnkBtnSelect.Attributes.Add("OnClick", "return MyFn('" + "Shomaail" + "');");
+            if (row.RowIndex >= 0 && row.RowIndex <= 2)
+            {
+                DropDownListAsWhat.Items[0].Selected = true;
+
+            }
+            else if (row.RowIndex >= 3 && row.RowIndex <= 6)
+            {
+                DropDownListAsWhat.Items[1].Selected = true;
+            }
+            else
+            {
+                DropDownListAsWhat.Items[2].Selected = true;
+            }
+
+        }
+
+    }
+    protected void DropDownListAsWhat_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //      DropDownList DropDownListAsWhat = row.FindControl("DropDownListAsWhat") as DropDownList;
+        //        DropDownListAsWhat.Items[0].Selected = true;
+    }
+
+
+
+
+    protected void ButtonSavePC_Click(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        WorkflowDynamicTableAdapters.Application_LogTableAdapter appLogAdapter = new WorkflowDynamicTableAdapters.Application_LogTableAdapter();
+        //PromotionTableAdapters.ApplicationLogTableAdapter appLogAdapter = new PromotionTableAdapters.ApplicationLogTableAdapter();
+        PanelSendEmail.Visible = false;
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        if (table.Count != 5)
+        {
+            //LabelSavePC.Text = "The Ad Hoc Promotion Committee is not complete with one chairman and four members. The Promotion Committee is not saved.";
+            Alert1.Message("The Nominated Ad Hoc Promotion Committee is not complete with one chairman and four members. The Promotion Committee is not saved.");
+            adapter.UpdateType("C", int.Parse(Session["ApplicationIDGlobal"].ToString()));
+            return;
+        }
+
+
+
+        foreach (GridViewRow row in GridViewFinalSelection.Rows)
+        {
+            RadioButtonList RadioButtonListUserAccess = row.FindControl("RadioButtonListUserAccess") as RadioButtonList;
+            if (RadioButtonListUserAccess.SelectedValue == "True")
+            {
+                adapter.UpdateUserAccess(true, Int32.Parse(GridViewFinalSelection.DataKeys[row.RowIndex].Values[3].ToString()));
+            }
+            else
+            {
+                if (table[row.RowIndex].Position == 10)//Chairman
+                {
+                    //LabelSavePC.ForeColor = System.Drawing.Color.Red;
+                    //LabelSavePC.Text = "The Chariman cannot have manual user access. The Promotion Committee is not saved.";
+                    Alert1.Message("The Chariman cannot have manual user access. The Promotion Committee is not saved.");
+                    adapter.UpdateType("C", int.Parse(Session["ApplicationIDGlobal"].ToString()));
+                    return;
+                }
+                adapter.UpdateUserAccess(false, Int32.Parse(GridViewFinalSelection.DataKeys[row.RowIndex].Values[3].ToString()));
+            }
+        }
+        adapter.UpdateType("V", int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        //LabelSavePC.ForeColor = System.Drawing.Color.Green;
+        //LabelSavePC.Text = "The Promotion Committee is successfully saved";
+        Alert1.Message("The Promotion Committee is successfully saved");
+        GridViewFinalSelection.DataBind();
+        appLogAdapter.Insert(int.Parse(Session["ApplicationIDGlobal"].ToString()), null, DateTime.Now, null, null, "Save Promotion Committee", "");
+    }
+    protected void ButtonSendWLChair_Click(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        string pcChairmanName = "";
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(appID);
+        if (table[0].Position == 10)
+            pcChairmanName = table[0].Name;
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+
+        if (!table[0].Type.Equals('V'.ToString()))
+        {
+            LabelSavePC.ForeColor = System.Drawing.Color.Red;
+            LabelSavePC.Text = "The Promotion Committee must be saved before Willingness Letter is send to the Chairman";
+            Alert1.Message("The Promotion Committee must be saved before Willingness Letter is send to the Chairman");
+            return;
+        }
+
+        PanelSendEmail.Visible = true;
+        TextBoxSubject.Text = "Serving on Ad Hoc Promotion Committee as Chairman";
+        TextBoxSubject.ReadOnly = true;
+        TextBoxEmailAddress.Text = table[0].Email;
+        TextBoxEmailAddress.ReadOnly = true;
+
+        TextBoxBody.Text =
+
+@"
+Dear Dr. " + pcChairmanName +
+
+@"
+I would like to request your participation in the committee as its Chairman that will consider the application of Dr. " + employeeRow.Name +
+@" for promotion from " + employeeRow.Rank + @" to " + applicationRow.ForRank + @" in the Department of " + employeeRow.Department + @". 
+                    
+Guidelines for promotion adopted by the University will be provided to you for your information.
+
+To provide an atmosphere, which is conducive to a fair and comprehensive evaluation of each candidate based solely on professional consideration, the rules and regulations of the University require that the promotion committee members treat the deliberations, observations and recommendation of the committee as strictly confidential. According to these rules, you are expected to take every care not to divulge any information concerning any person, and to abstain from discussion on any aspect of the case outside the committee. 
+
+In this connection, all communications on this case between the committee members and anyone outside the committee shall be directed through the committee chair. 
+
+I would appreciate it if you would indicate your willingness to work within the framework of these guidelines by pressing the ACCEPT button on the following URL:
+
+http://facultypromotion.kfupm.edu.sa/ExtForms/ShowWillingnessPC.aspx?pcID=" + table[0].AutoNumberPK + @"
+
+
+Thank you.
+
+
+Dr. Nasser Al-Aqeeli 
+Vice Rector for Graduate Studies & Scientific Research
+";
+        GridViewFinalSelection.Enabled = false;
+    }
+
+    protected void ButtonSendWLMem_Click(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        int noOfRecipients = 0;
+        string recipientName = "";
+        string membersEmailAddresses = "";
+
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(appID);
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+
+        if (!table[0].Type.Equals('V'.ToString()))
+        {
+            //LabelSavePC.ForeColor = System.Drawing.Color.Red;
+            //LabelSavePC.Text = "The Promotion Committee must be saved before Willingness Letter is send to any of the Members";
+
+            Alert1.Message("The Promotion Committee must be saved before Willingness Letter is send to any of the Members");
+            return;
+        }
+        foreach (GridViewRow row in GridViewFinalSelection.Rows)
+        {
+            CheckBox checkboxSend = row.FindControl("checkboxSend") as CheckBox;
+            RadioButtonList RadioButtonListUserAccess = row.FindControl("RadioButtonListUserAccess") as RadioButtonList;
+            if (checkboxSend.Checked == true && checkboxSend.Enabled == true && checkboxSend.Visible == true)
+            {
+                if (RadioButtonListUserAccess.SelectedValue == "False")
+                {
+                    //table[row.RowIndex].Name;
+                }
+                else
+                {
+                    membersEmailAddresses = membersEmailAddresses + table[row.RowIndex].Email + ",";
+                    PanelSendEmail.Visible = true;
+                    TextBoxEmailAddress.Text = membersEmailAddresses;
+                    noOfRecipients++;
+                    recipientName = table[row.RowIndex].Name;
+                }
+
+            }
+        }
+        TextBoxEmailAddress.ReadOnly = true;
+        TextBoxSubject.Text = "Serving on Ad Hoc Promotion Committee";
+        TextBoxSubject.ReadOnly = true;
+        TextBoxBody.Text =
+
+@"Dear Dr. (Selected Member)
+
+I would like to request your participation in the committee as one of its Member that will consider the application of Dr. " + employeeRow.Name +
+
+@" for promotion from " + employeeRow.Rank + @" to " + applicationRow.ForRank + @" in the Department of " + employeeRow.Department + @". 
+                    
+Guidelines for promotion adopted by the University will be provided to you for your information.
+
+To provide an atmosphere, which is conducive to a fair and comprehensive evaluation of each candidate based solely on professional consideration, the rules and regulations of the University require that the promotion committee members treat the deliberations, observations and recommendation of the committee as strictly confidential. According to these rules, you are expected to take every care not to divulge any information concerning any person, and to abstain from discussion on any aspect of the case outside the committee. 
+
+In this connection, all communications on this case between the committee members and anyone outside the committee shall be directed through the committee chair. 
+
+I would appreciate it if you would indicate your willingness to work within the framework of these guidelines by pressing the ACCEPT button on the following URL:
+
+http://facultypromotion.kfupm.edu.sa/ExtForms/ShowWillingnessPC.aspx?pcID=
+
+
+Thank you.
+
+Dr. Nasser Al-Aqeeli
+Vice Rector for Graduate Studies & Scientific Research
+
+سعادة الدكتور (Selected Member),
+يطيب لي أن أطلب من سعادتكم المشاركة كعضو باللجنة التي ستنظر في الطلب المقدم من سعادة 
+" + "Dr. " + employeeRow.Name + @" للحصول على الترقية من درجة " + employeeRow.Rank + @" إلى درجة " + applicationRow.ForRank + @" بقسم الدراسات الإسلامية و العربية.
+هذا وسوف نوافيكم بإرشادات الترقية المتبعة بالجامعة للاطلاع عليها.
+ومن أجل خلق مناخ يضمن لنا التقييم العادل والشامل لكل مرشح اعتمادا فقط على الاعتبارات المهنية تستلزم قواعد ولوائح الجامعة من أعضاء لجنة الترقية إحاطة مداولات وملاحظات وتوصيات اللجنة بالسرية التامة، وحسب هذه القواعد ينتظر من سعادتكم الحذر التام من إفشاء أي معلومة تخص أي فرد، والإحجام عن أي نقاش يخص أي جانب من جوانب الحالة المنظورة خارج اللجنة المختصة.
+وفي هذا الإطار يجب أن تدار جميع المراسلات المتعلقة بالحالة المنظورة والمتبادلة بين أعضاء اللجنة وأي شخص آخر من خارجها عن طريق سعادة رئيس اللجنة.
+وأخيرا نشكر لكم توضيح رغبتكم في العمل في ظل إطار عمل هذه الإرشادات عن طريق النقر على زر [القبول] الموجود بالصفحة الإلكترونية التالية:
+http://facultypromotion.kfupm.edu.sa/ExtForms/ShowWillingnessPC.aspx?pclD=
+
+
+وتفضلوا بقبول وافر التحية والتقدير
+
+
+
+                                                                           الدكتور ناصر العقيلي
+                                                                  وكيل الجامعة للدراسات العلیا  والبحث العلمي    
+                                                                          جامعة الملك فهد للبترول والمعادن
+
+
+";
+
+
+
+
+        if (noOfRecipients == 1)
+        {
+            TextBoxBody.Text = TextBoxBody.Text.Replace("(Selected Member)", recipientName);
+        }
+
+    }
+
+    protected void ButtonCancel_Click(object sender, EventArgs e)
+    {
+        PanelSendEmail.Visible = false;
+        Alert1.Message("The email is not sent.");
+        LabelSendEmail.Text = "The email is not sent.";
+        LabelSendEmail.ForeColor = System.Drawing.Color.Red;
+        GridViewFinalSelection.Enabled = true;
+    }
+    protected void ButtonSendEmail_Click(object sender, EventArgs e)
+    {
+        string KFUPMUserID = "";
+        try
+        {
+            HR.EmployeeRow employee = (HR.EmployeeRow)Session["user"];
+            KFUPMUserID = employee.KFUPMUserID;
+        }
+        catch
+        {
+
+        }
+        const string CRLF = "\r\n";
+        const string TAB = "    ";
+        bool EmailSent = false;
+        string backupTextBoxBody = "";
+        backupTextBoxBody = TextBoxBody.Text;
+        PanelSendEmail.Visible = false;
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow application = appAdapter.GetApplication(appID)[0];
+
+
+        Promotion.PromotionCommitteeTempDataTable pcTable = adapter.GetData(appID);
+        HR.EmployeeDataTable employeeTable = employeeAdapter.GetApplicant(appID);
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+
+        foreach (GridViewRow row in GridViewFinalSelection.Rows)
+        {
+            CheckBox checkboxSend = row.FindControl("checkboxSend") as CheckBox;
+            RadioButtonList RadioButtonListUserAccess = row.FindControl("RadioButtonListUserAccess") as RadioButtonList;
+            Button buttonSendWLChair = row.FindControl("buttonSendWLChair") as Button;
+            if (checkboxSend.Checked == true && checkboxSend.Enabled == true && TextBoxSubject.Text.Equals("Serving on Ad Hoc Promotion Committee"))
+            {
+                if (RadioButtonListUserAccess.SelectedValue == "True")
+                {
+                    adapter.UpdateWLStatus("waiting", "", int.Parse(GridViewFinalSelection.DataKeys[row.RowIndex].Values[3].ToString()));
+                    GridViewFinalSelection.DataBind();
+                    checkboxSend.Checked = false;
+                    checkboxSend.Enabled = false;
+
+                    TextBoxBody.Text = TextBoxBody.Text.Replace("(Selected Member)", pcTable[row.RowIndex].Name);
+                    TextBoxBody.Text = TextBoxBody.Text.Replace("pcID=", "pcID=" + GridViewFinalSelection.DataKeys[row.RowIndex].Values[3].ToString());
+                    try
+                    {
+                        Emailer.Send(pcTable[row.RowIndex].Email, TextBoxSubject.Text, TextBoxBody.Text, KFUPMUserID, appID);
+                        appTskLgExtAdapter.InsertQuery(appID
+                            , tskExtAdapter.GetDataByTitle("Willingness Letter for Promotion Committee")[0].TaskID
+                            , TextBoxBody.Text
+                            , pcTable[row.RowIndex].Email
+                            , pcTable[row.RowIndex].AutoNumberPK);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    TextBoxBody.Text = backupTextBoxBody;
+                    EmailSent = true;
+                }
+            }
+            else if (buttonSendWLChair.Visible == true && buttonSendWLChair.Enabled == true && TextBoxSubject.Text.Equals("Serving on Ad Hoc Promotion Committee as Chairman"))
+            //&& !TextBoxBody.Text.Contains("(Selected Member)"))
+            {
+                adapter.UpdateWLStatus("waiting", "", int.Parse(GridViewFinalSelection.DataKeys[row.RowIndex].Values[3].ToString()));
+                GridViewFinalSelection.DataBind();
+                buttonSendWLChair.Enabled = false;
+                appTskLgExtAdapter.InsertQuery(appID
+                    , tskExtAdapter.GetDataByTitle("Willingness Letter for Promotion Committee")[0].TaskID
+                    , TextBoxBody.Text
+                    , TextBoxEmailAddress.Text
+                    , pcTable[0].AutoNumberPK);
+                //                TextBoxBody.Text = TextBoxBody.Text.Replace("pcID=", "pcID=" + pcTable[row.RowIndex].AutoNumberPK);
+
+
+
+            }
+        }
+
+        if (TextBoxSubject.Text == "Promotion Committee Acknowledgement")
+        {
+            PromotionTableAdapters.OldPromotionCommitteeTableAdapter adapterOldPC = new PromotionTableAdapters.OldPromotionCommitteeTableAdapter();
+            PromotionTableAdapters.Application_RoleTableAdapter adapterAR = new PromotionTableAdapters.Application_RoleTableAdapter();
+            if (pcTable[0].UserAccess == true && pcTable[0].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 10, pcTable[0].EmployeeID);
+            if (pcTable[1].UserAccess == true && pcTable[1].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 11, pcTable[1].EmployeeID);
+            if (pcTable[2].UserAccess == true && pcTable[2].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 12, pcTable[2].EmployeeID);
+            if (pcTable[3].UserAccess == true && pcTable[3].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 13, pcTable[3].EmployeeID);
+            if (pcTable[4].UserAccess == true && pcTable[4].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 14, pcTable[4].EmployeeID);
+            adapterOldPC.InsertPC(appID);
+            formsuccessfailure = (FormSuccessFailure)Page;
+            formsuccessfailure.ShowSuccess();
+            Alert1.Message("Please forward the promotion application to the Promotion Committee by clicking on the Action menu item.");
+
+        }
+        if (TextBoxSubject.Text == "Revised Promotion Committee Acknowledgement")
+        {
+            PromotionTableAdapters.OldPromotionCommitteeTableAdapter adapterOldPC = new PromotionTableAdapters.OldPromotionCommitteeTableAdapter();
+            PromotionTableAdapters.Application_RoleTableAdapter adapterAR = new PromotionTableAdapters.Application_RoleTableAdapter();
+            WorkflowStaticTableAdapters.RoleTableAdapter adapterRole = new WorkflowStaticTableAdapters.RoleTableAdapter();
+
+            adapterAR.DeleteByRoleID(appID, adapterRole.GetDataByTitle("Promotion Committee Chairman")[0].RoleID);
+            adapterAR.DeleteByRoleID(appID, adapterRole.GetDataByTitle("Promotion Committee Member 1")[0].RoleID);
+            adapterAR.DeleteByRoleID(appID, adapterRole.GetDataByTitle("Promotion Committee Member 2")[0].RoleID);
+            adapterAR.DeleteByRoleID(appID, adapterRole.GetDataByTitle("Promotion Committee Member 3")[0].RoleID);
+            adapterAR.DeleteByRoleID(appID, adapterRole.GetDataByTitle("Promotion Committee Member 4")[0].RoleID);
+            if (pcTable[0].UserAccess == true && pcTable[0].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 10, pcTable[0].EmployeeID);
+            if (pcTable[1].UserAccess == true && pcTable[1].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 11, pcTable[1].EmployeeID);
+            if (pcTable[2].UserAccess == true && pcTable[2].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 12, pcTable[2].EmployeeID);
+            if (pcTable[3].UserAccess == true && pcTable[3].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 13, pcTable[3].EmployeeID);
+            if (pcTable[4].UserAccess == true && pcTable[4].isKFUPM == true)
+                adapterAR.InsertPromotionCommittee(appID, 14, pcTable[4].EmployeeID);
+            adapterOldPC.InsertPC(appID);
+            formsuccessfailure = (FormSuccessFailure)Page;
+            formsuccessfailure.ShowSuccess();
+            Alert1.Message("Please forward the promotion application to the Promotion Committee by clicking on the Action menu item.");
+        }
+        if (EmailSent == false)
+        {
+            try
+            {
+                Emailer.Send(TextBoxEmailAddress.Text, TextBoxSubject.Text, TextBoxBody.Text
+                    , KFUPMUserID
+                    , appID);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        //LabelSendEmail.Text = "The email has been successfully send.";
+        //LabelSendEmail.ForeColor = System.Drawing.Color.Green;
+        GridViewFinalSelection.Enabled = true;
+        Alert1.Message("The email has been sent successfully.");
+    }
+    protected void ButtonAcknowledgePC_Click(object sender, EventArgs e)
+    {
+        String pcEmailAddresses = "";
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        ButtonAcknowledgePC.Enabled = false;
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(int.Parse(Session["ApplicationIDGlobal"].ToString()));
+
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+
+        //        adapter.UpdateAcknoedgementSend(appID);
+        for (int rowNo = 0; rowNo < table.Count; rowNo++)
+        {
+            pcEmailAddresses = pcEmailAddresses + table[rowNo].Email + ",";
+        }
+        TextBoxEmailAddress.Text = pcEmailAddresses + "promotion@kfupm.edu.sa";
+        //        TextBoxEmailAddress.ReadOnly = true;
+        TextBoxSubject.Text = "Promotion Committee Acknowledgement";
+        TextBoxSubject.ReadOnly = true;
+        TextBoxBody.Text =
+@"
+
+Dr. " + employeeRow.Name + @", an " + employeeRow.Rank + @" in the Department of " + employeeRow.Department +
+@", has applied for promotion to " + applicationRow.ForRank + @" rank. It has been decided to form the following ad-hoc committee to review Dr." + employeeRow.Name + @"'s  credentials and his qualifications for promotion in accordance with the job description for " + applicationRow.ForRank + @" and the Faculty Promotion Guidelines. The following promotion committee is formed:
+
+    1) Dr. " + table[0].Name + @"(" + table[0].Department + @") - Chairman
+
+    2) Dr. " + table[1].Name + @"(" + table[1].Department + @")	- Member
+
+    3) Dr. " + table[2].Name + @"(" + table[2].Department + @") - Member
+
+    4) Dr. " + table[3].Name + @"(" + table[3].Department + @")	- Member
+
+    5) Dr. " + table[4].Name + @"(" + table[4].Department + @")	- Member
+
+The Committee shall make a thorough and complete evaluation of the candidate’s performance in the areas of Teaching, Research, and the University, College, Department and Public Service based on the Unified Guidelines for Saudi faculty and their equivalents in universities (Articles 21-37) and the revised KFUPM Faculty Promotion Guidelines. This study should include, but not be limited to, a review of the material submitted by the candidate in support of his request.
+
+It is now mandatory for promotion to all professorial ranks to seek evaluation and opinions of prominent individuals in the applicant’s area of specialization in universities, inside and outside the Kingdom. In fulfillment of this requirement, the members of the above mentioned ad-hoc promotion committee are already given login information for loging on to the online faculty promotion system. The Chairman and all the members can access the website any time for arranging meeting, reviewing the promotion file of the candidate. Three external reviewers names will also be visible which have been selected by the Scientific Council based on the list of names recommended by the concerned College Council.
+
+The Committee shall immediately meet to discuss the appropriateness of the selected external reviewers. The chairman should provide comments related to each external reviewer. The Vice Rector office will seek willingness of the external reviewers and provide them login info to fill evaluation forms. On receipt of reviewers’ evaluation forms from the reviewers, the committee will be able to see the read-only copy of the forms online. 
+
+Under no circumstances may the committee contact anyone other than this office with regard to its work. The committee members, individually and collectively, shall insure strict confidentiality of these deliberations and shall give fair and unbiased consideration of the candidate’s qualifications. The chairman can arrange meeting time by submitting a busy schedule which will be shown and to be filled by all the members. The chairman can decide the meeting time on the basis of this busy schedule. 
+
+It is anticipated that the committee will conclude the case within three months that includes the Promotion Committee Report digitally signed by all the members and a committee Feedback form duly filled.
+
+This email will be followed by another email assigning roles to all the members in the promotion committee. This will allow the promotion committee members to open the electronic promotion application online and take appropriate actions.
+
+Thank you
+_______________________
+Dr. Nasser Al-Aqeeli 
+Vice Rector for Graduate Studies & Scientific Research
+
+
+نفيدكم أن سعادة الدكتـــور/ " + employeeRow.Name + @" " + employeeRow.Rank + @" " + employeeRow.Department +
+@" بقسم الدراســـات الإسلامية والعربية – قد تقدم بطلب للترقية إلى درجة الأستاذية، وقد تقرر تشكيل لجنة مختصة لمراجعة أوراق اعتماد سعادته ومؤهلاته للترقية وفقا لصفات منصب الاستاذية، وبناء على إرشادات ترقية السادة أعضاء هيئة التدريس في جامعة الملك فهد للبترول والمعادن. وقد شكلت لجنة الترقية على النحو التالي:
+
+1)	سعادة الدكتور/ " + table[0].Name + @" (قسم  " + table[0].Department + @" )– رئيساً
+                                                                      
+2)	سعادة الدكتور/ " + table[1].Name + @"  (قسم " + table[1].Department + @" ) – عضواً
+                                         .
+3)	سعادة الدكتور/ " + table[2].Name + @"  (قسم " + table[2].Department + @" ) – عضواً
+
+4)	سعادة الدكتور/ " + table[3].Name + @"  (قسم " + table[3].Department + @" ) – عضواً
+
+5)	سعادة الدكتور/ " + table[4].Name + @"  (قسم " + table[4].Department + @" ) – عضواً
+
+مع العلم بأن من واجبات اللجنة إجراء تقييما شاملاً ومتكاملاً لأداء المرشح في مجالات التدريس والبحث العلمي والمشاركة بأنشطة الجامعة والكلية والقسم والخدمة العامة بناءً على الإرشادات الموحدة للسادة أعضاء هيئة التدريس بالمملكة العربية السعودية، وما يماثلها بالجامعات (المواد 21 – 37)، والإرشادات المنقحة لترقية السادة أعضاء هيئة التدريس بجامعة الملك فهد للبترول والمعادن. ويجب أن يتضمن هذا التقييم – دون الاقتصار على ذلك – مراجعةً للمواد المقدمة من سعادة المرشح تأييداً لطلبه.
+
+وقد أصبح الآن لزاماً للترقية إلى جميع درجات الأستاذية الحصول على تقييم وآراء أفراد بارزين في مجال تخصص مقدم الطلب بالجامعات المختلفة داخل وخارج المملكة. ومن أجل الوفاء بهذا المتطلب فقد أعطي السادة أعضاء لجنة الترقية المختصة المذكورين أعلاه معلومات للدخول إلى نظام ترقية السادة أعضاء هيئة التدريس الإلكتروني، حيث يستطيع رئيس اللجنة وجميع الأعضاء الدخول إلى الموقع في أي وقت لترتيب الاجتماعات ومراجعة ملف ترقية المرشح. كما ستظهر أسماء ثلاثة محكمين خارجيين هم من وقع عليهم اختيار المجلس العلمي بناءً على قائمة الأسماء الموصي بها من قبل مجلس الكلية المعنية.
+
+هذا ويجب على اللجنة أن تجتمع فوراً لمناقشة مدى ملائمة المحكمين الخارجيين المختارين للمهمة، على أن يعلق سعادة رئيس اللجنة على كل محكم خارجي على حدة. ويتولى مكتب وكيل الجامعة التواصل مع المحكمين الخارجيين للوقوف على رغبتهم في المشاركة من عدمها، ثم يمدهم – حال الموافقة – بمعلومات الدخول إلى نظام ترقية السادة أعضاء هيئة التدريس الإلكتروني لتعبئة نماذج التقييم. وعند استلام نماذج تقييم المحكمين تستطيع اللجنة الاطلاع على نسخة إلكترونية مخصصة للقراءة فقط من هذه النماذج.
+
+ولا يجوز – بأي حال من الاحوال – اتصال اللجنة بأي أحدٍ سوى مكتب وكيل الجامعة فيما يتعلق بأعمالها. ويجب عل السادة أعضاء اللجنة – أفراداً ومجتمعين – ضمان السرية التامة لجميع المداولات والتقييم العادل غير المنحاز لمؤهلات المرشح. ويمكن لرئيس اللجنة تنظيم مواعيد الاجتماعات عن طريق إعداد جدول لمواعيد الانشغال يعرض على جميع الأعضاء و يعبأ بمعرفتهم، وبناءً على ذلك يقرر رئيس للجنة مواعيد الاجتماعات.
+
+ويتوقع من لجنة الترقية الإنتهاء من دراسة الحالة خلال ثلاثة أشهر على أن يتضمن ذلك تقرير اللجنة الموقع إلكترونيا من قبل جميع الأعضاء، ونموذج التغذية الرجعية للجنة المعبأ على النحو اللائق.
+
+سيعقب هذا الخطاب الإلكتروني خطاب إلكتروني آخر لتحديد أدوار جميع السادة الأعضاء بلجنة الترقية، مما سيسمح للسادة أعضاء لجنة الترقية بفتح طلب الترقية الإلكتروني على شبكة المعلومات لاتخاذ ما يلزم من خطوات.
+
+وتفضلوا بقبول وافر التحية والتقدير،
+
+                                                             الدكتور ناصر العقيلي
+                                                        وكيل الجامعة للدراسات العلیا  والبحث العلمي   
+                                                            جامعة الملك فهد للبترول والمعادن
+
+
+
+
+";
+
+        PanelSendEmail.Visible = true;
+    }
+    protected void ButtonAcknowledgeRevisedPC_Click(object sender, EventArgs e)
+    {
+        String pcEmailAddresses = "";
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        PromotionTableAdapters.OldPromotionCommitteeTableAdapter adapterOldPC = new PromotionTableAdapters.OldPromotionCommitteeTableAdapter();
+        Promotion.OldPromotionCommitteeDataTable tableOldPC = adapterOldPC.GetData(appID);
+
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+
+
+        //"Date and Time: "+ System.DateTime.Now.ToString() + @"
+
+        //        TextBoxBody.Text = "" + tableOldPC[0].Name + tableOldPC[1].Name + tableOldPC[2].Name + tableOldPC[3].Name + tableOldPC[4].Name;
+        //        TextBoxBody.Text = TextBoxBody.Text + "\n is replaced by PC comprising of \n" + table[0].Name + table[1].Name + table[2].Name + table[3].Name + table[4].Name;
+        TextBoxBody.Text =
+@"This has reference to my earlier email forming the following committee to consider the promotion request of Dr. " + employeeRow.Name +
+@"," + employeeRow.Rank + " in the Department of " + employeeRow.Department + " for the promotion to the rank of " + applicationRow.ForRank +
+@". The following Promotion committee was formed:
+	1)	Dr. " + tableOldPC[0].Name + @" (" + tableOldPC[0].Department + @")	-	Chairman
+
+	2)	Dr. " + tableOldPC[1].Name + @" (" + tableOldPC[1].Department + @")	-	Member
+
+	3)	Dr. " + tableOldPC[2].Name + @" (" + tableOldPC[2].Department + @")	-	Member
+
+    4)	Dr. " + tableOldPC[3].Name + @" (" + tableOldPC[3].Department + @")	-	Member
+	
+    5)	Dr. " + tableOldPC[4].Name + @" (" + tableOldPC[4].Department + @")	-	Member
+
+It is now decided that the new committee be formed comprising of the following members
+
+	1)	Dr. " + table[0].Name + @" (" + table[0].Department + @")	-	Chairman
+
+	2)	Dr. " + table[1].Name + @" (" + table[1].Department + @")	-	Member
+
+	3)	Dr. " + table[2].Name + @" (" + table[2].Department + @")	-	Member
+
+    4)	Dr. " + table[3].Name + @" (" + table[3].Department + @")	-	Member
+	
+    5)	Dr. " + table[4].Name + @" (" + table[4].Department + @")	-	Member
+
+I hope the committee deliberations will be concluded soon and report submitted in the near future. It is anticipated that the committee will conclude the case within three months.
+
+Thank you.
+______________________
+Dr. Nasser Al-Aqeeli 
+Vice Rector for Graduate Studies & Scientific Research
+";
+
+        for (int rowNo = 0; rowNo < table.Count; rowNo++)
+        {
+            pcEmailAddresses = pcEmailAddresses + table[rowNo].Email + ",";
+        }
+        TextBoxEmailAddress.Text = pcEmailAddresses + "promotion@kfupm.edu.sa";
+        TextBoxEmailAddress.ReadOnly = true;
+        TextBoxSubject.Text = "Revised Promotion Committee Acknowledgement";
+        TextBoxSubject.ReadOnly = true;
+        PanelSendEmail.Visible = true;
+    }
+    protected void ButtonSelectNew_Click(object sender, EventArgs e)
+    {
+        ASP.controls_employeeinputpccomm_ascx[] inputs = new ASP.controls_employeeinputpccomm_ascx[1];
+        inputs[0] = EmployeeInputPCComm1;
+
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        TextBox textboxName = EmployeeInputPCComm1.FindControl("lblName") as TextBox;
+        TextBox textboxRank = EmployeeInputPCComm1.FindControl("lblRank") as TextBox;
+        TextBox textboxDepartment = EmployeeInputPCComm1.FindControl("txtDepartment") as TextBox;
+        TextBox textboxEmail = EmployeeInputPCComm1.FindControl("txtEmail") as TextBox;
+        TextBox textboxMajor = EmployeeInputPCComm1.FindControl("txtMajor") as TextBox;
+        TextBox textboxPhone = EmployeeInputPCComm1.FindControl("txtPhone") as TextBox;
+        TextBox textboxMailingAddress = EmployeeInputPCComm1.FindControl("txtMailingAddress") as TextBox;
+        CheckBox chkKFUPM = EmployeeInputPCComm1.FindControl("chkKFUPM") as CheckBox;
+        if (chkKFUPM.Checked == false && DropDownListNewSelection.SelectedValue == "10")
+        {
+            //LabelPCSelection.ForeColor = System.Drawing.Color.Red;
+            //LabelPCSelection.Text = "A NON-KFUPM employee cannot be selected as chairman of the Promotion Committee";
+            Alert1.Message("A NON-KFUPM employee cannot be selected as chairman of the Promotion Committee");
+            return;
+        }
+
+
+        adapter.InsertNewSelection(int.Parse(Session["ApplicationIDGlobal"].ToString())
+            , Byte.Parse(DropDownListNewSelection.SelectedValue)
+            , "C"
+            , chkKFUPM.Checked
+            , textboxName.Text
+            , inputs[0].EmployeeID
+            , textboxDepartment.Text
+            , textboxRank.Text
+            , textboxEmail.Text
+            , textboxMailingAddress.Text
+            , textboxMajor.Text
+            , "not send"
+            , true
+            , 0
+            , false
+            , null
+            , ""
+            , ""
+            , textboxPhone.Text
+            , ""
+
+            );
+        GridViewFinalSelection.DataBind();
+        adapter.UpdateType("C", int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        Initialize();
+    }
+    protected void RadioButtonListUserAccess_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        adapter.UpdateType("C", int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        //LabelSavePC.ForeColor = System.Drawing.Color.Red;
+        //LabelSavePC.Text = "The user access is changed. The Promotion Committee is not saved.";
+        Alert1.Message("The user access is changed. The Promotion Committee is not saved.");
+    }
+    protected void GridViewFinalSelection_RowDeleted(object sender, GridViewDeletedEventArgs e)
+    {
+
+        Initialize();
+    }
+    public System.Drawing.Color GetColor(string WLStatus)
+    {
+        if (WLStatus == "Accepted")
+            return System.Drawing.Color.Green;
+        else if (WLStatus == "Declined")
+            return System.Drawing.Color.Red;
+        return System.Drawing.Color.Black;
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+
+}
+

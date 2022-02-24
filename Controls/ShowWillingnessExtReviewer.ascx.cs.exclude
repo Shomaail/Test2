@@ -1,0 +1,217 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ShowWillingness : System.Web.UI.UserControl
+{
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        
+        try
+        {
+            int RefreeID = int.Parse(Request.Params.Get("refreeID"));
+            FormTableAdapters.Form_FinalRefreeAccInfoTableAdapter adapterFrmFnRfrAccInf = new FormTableAdapters.Form_FinalRefreeAccInfoTableAdapter();
+            Form.Form_FinalRefreeAccInfoRow r = adapterFrmFnRfrAccInf.GetDataByPK(RefreeID)[0];
+            tbName.Value = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(RefreeID)[0].Name; 
+            tbMailingAddress.Value = r.IsMailingAddressNull() ? "" : r.MailingAddress;
+            tbSWIFTCode.Value = r.IsSWIFTCodeNull() ? "" : r.SWIFTCode;
+            tbIBAN.Value = r.IsIBANNull() ? "" : r.IBAN;
+            if (Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(RefreeID)[0].WLStatus != "Accepted"
+                && Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(RefreeID)[0].WLStatus != "Declined")
+            {
+                RadioButtonAccept.Enabled = true;
+                RadioButtonReject.Enabled = true;
+                ButtonSubmit.Enabled = chbxCinfrm.Checked;
+
+            }
+            else
+            {
+                if (Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(RefreeID)[0].WLStatus == "Accepted")
+                {
+                    RadioButtonAccept.Checked = true;
+                    RadioButtonReject.Checked = false;
+                    chbxCinfrm.Checked = true;
+                }
+                else
+                {
+                    RadioButtonAccept.Checked = false;
+                    RadioButtonReject.Checked = true;
+                }
+                chbxCinfrm.Enabled = false;
+                RadioButtonAccept.Enabled = false;
+                RadioButtonReject.Enabled = false;
+                ButtonSubmit.Enabled = false;
+                LabelThanks.Text = "You have already submitted your willingness.";
+            }
+        }
+        catch (Exception)
+        {
+            
+            
+        }
+
+    }
+    protected void ButtonSubmit_Click(object sender, EventArgs e)
+    {
+        string emailText;
+        int refreeID = int.Parse(Request.Params.Get("refreeID"));
+        string Username, Password;
+
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        Form.Form_FinalRefreeDataTable refreeTable = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(refreeID);
+
+        if (RadioButtonAccept.Checked == true)
+        {
+            BAL bal = new BAL();
+            bal.UpdateFinalRefreeAccInfo(tbName.Value, tbMailingAddress.Value, tbSWIFTCode.Value, tbIBAN.Value, refreeID);
+            Adapters.FrmFnlRefAdapter.UpdateWLStatus("Accepted", TextBoxComments.Text, DateTime.Now, refreeID);
+            Username = "Reviewer" + refreeID.ToString();
+            Password = GetPassword();
+            try
+            {
+emailText = @"
+Dear Dr. " + refreeTable[0].Name + @",
+
+Thank you for your willingness for accepting review of the papers of Dr. "+ LabelApplicantName.Text + @" 
+for promotion. The university's internal ad-hoc committee looking after this case will meet soon to select representative papers for review. We will provide you the login Info as soon as the committee holds its first meeting. Thank you again for your acceptance.
+
+Thanks 
+Dr. Nasser Al-Aqeeli
+Vice Rector for Graduate Studies & Scientific Research
+King Fahd University of Petroleum and Minerals
+
+سعادة الدكتور " + refreeTable[0].Name + @"
+نشكر لكم قبول تحكيم أبحاث سعادة الدكتور"
++ LabelApplicantName.Text + @"
+المقدمة من أجل الحصول على الترقية. مع العلم بأن اللجنة الداخلية بالجامعة والمختصة بالنظر في مثل هذه الحالات ستجتمع قريبا لانتقاء الابحاث الأمثل لمراجعتها، وسنوافي سعادتكم بالمعلومات اللازمة للدخول إلى نظام ترقية أعضاء هيئة التدريس الإلكتروني بمجرد عقد اللجنة لاجتماعها الأول. ومرة أخرى نشكر لكم قبولكم لهذا الأمر.
+
+وتفضلوا بقبول وافر التحية والتقدير،
+
+                                                                           الدكتور ناصر العقيلي
+                                                                     وكيل الجامعة للدراسات العلیا  والبحث العلمي
+                                                                          جامعة الملك فهد للبترول والمعادن
+
+
+";
+                Emailer.Send(refreeTable[0].Email, "Promotion Evaluation", emailText, "AutoEmailer", refreeTable[0].ApplicationID);
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            Adapters.FrmFnlRefAdapter.UpdateLoginInfo(Username, Password, refreeID);
+            RadioButtonAccept.Enabled = false;
+            RadioButtonReject.Enabled = false;
+            ButtonSubmit.Enabled = false;
+            LabelThanks.Text = @"
+            <center>Thanks for accepting the request. 
+An email has been sent to your email address. 
+Thanks for cooperation.</center>";
+            appTskLgExtAdapter.InsertQuery(refreeTable[0].ApplicationID
+                                            , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                                            , Cryptography.Encrypt(emailText)
+                                            , refreeTable[0].Email
+                                            , refreeTable[0].RefreeID);
+            appTskLgExtAdapter.UpdateExtTskComplete(true, refreeTable[0].ApplicationID, tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID, refreeTable[0].RefreeID);
+            //appLogExtAdaptper.Insert(refreeTable[0].ApplicationID
+            //            , "External Evaluation Start"
+            //            , DateTime.Now
+            //            , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+            //            , refreeTable[0].Name);
+
+
+        }
+        else
+        {
+
+            RadioButtonAccept.Enabled = false;
+            RadioButtonReject.Enabled = false;
+            ButtonSubmit.Enabled = false;
+            Adapters.FrmFnlRefAdapter.UpdateWLStatus("Declined", TextBoxComments.Text, DateTime.Now, refreeID);
+            LabelThanks.Text = "Your willingness has been submitted. <br>Thanks for cooperation.";
+        }
+       
+        appTskLgExtAdapter.UpdateExtTskComplete(true
+            , refreeTable[0].ApplicationID
+            , tskExtAdapter.GetDataByTitle("Willingness Letter for External Reviewers")[0].TaskID
+            , refreeTable[0].RefreeID);
+
+
+    }
+    private string RandomString(int size, bool lowerCase)
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        Random random = new Random();
+        char ch;
+        for (int i = 0; i < size; i++)
+        {
+            ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+            builder.Append(ch);
+        }
+        if (lowerCase)
+            return builder.ToString().ToLower();
+        return builder.ToString();
+    }
+
+    private int RandomNumber(int min, int max)
+    {
+        Random random = new Random();
+        return random.Next(min, max);
+    }
+
+    public string GetPassword()
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        builder.Append(RandomString(1, true));
+        builder.Append(RandomNumber(100, 999));
+        builder.Append(RandomString(1, false));
+        return Cryptography.Encrypt(builder.ToString());
+    }
+    public string GetUsername()
+    {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        builder.Append(RandomString(3, true));
+        return builder.ToString();
+    }
+    protected void RadioButtonAccept_CheckedChanged(object sender, EventArgs e)
+    {
+        pnlAccInfo.Visible = true;
+        ButtonSubmit.Enabled = false;
+    }
+    protected void RadioButtonReject_CheckedChanged(object sender, EventArgs e)
+    {
+        pnlAccInfo.Visible = false;
+        ButtonSubmit.Enabled = true;
+    }
+    protected void chbxCinfrm_CheckedChanged(object sender, EventArgs e)
+    {
+        if (tbName.Value == "")
+        {
+            tbName.Attributes.Add("bgcolor", System.Drawing.Color.Red.ToString());
+            tbName.Attributes.Add("title", "Enter a Name");
+            
+            ButtonSubmit.Enabled = false;
+            return;
+        }
+        else
+        {
+            tbName.Attributes.Add("bgcolor", System.Drawing.Color.White.ToString());            
+        }
+        ButtonSubmit.Enabled = chbxCinfrm.Checked;
+    }
+}

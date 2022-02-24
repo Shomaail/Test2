@@ -1,0 +1,1128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="PromAdmin" targetNamespace="http://tempuri.org/PromAdmin.xsd" xmlns:mstns="http://tempuri.org/PromAdmin.xsd" xmlns="http://tempuri.org/PromAdmin.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="3" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsPropertyName="PromotionConnectionString" ConnectionStringObject="Data Source=.;Initial Catalog=Promotion;Integrated Security=True" IsAppSettingsProperty="false" Modifier="Assembly" Name="PromotionConnectionString" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+          <Connection AppSettingsObjectName="Web.config" AppSettingsPropertyName="PromotionConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="PromotionConnectionString (Web.config)" ParameterPrefix="@" PropertyReference="AppConfig.System.Configuration.ConfigurationManager.0.ConnectionStrings.PromotionConnectionString.ConnectionString" Provider="System.Data.SqlClient" />
+          <Connection AppSettingsObjectName="Web.config" AppSettingsPropertyName="FPSDBConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="FPSDBConnectionString (Web.config)" ParameterPrefix="@" PropertyReference="AppConfig.System.Configuration.ConfigurationManager.0.ConnectionStrings.FPSDBConnectionString.ConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ActionMessagesTableAdapter" GeneratorDataComponentClassName="ActionMessagesTableAdapter" Name="ActionMessages" UserDataComponentName="ActionMessagesTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     ActionMessage.ActionID, ActionMessage.NextTaskID, Role.Title AS Role, Task.Title AS Task, NextTask.Title AS NextTask, Action.Title AS Action, 
+                      ActionMessage.Message
+FROM         Action INNER JOIN
+                      ActionMessage ON Action.ActionID = ActionMessage.ActionID INNER JOIN
+                      Task ON Action.TaskID = Task.TaskID INNER JOIN
+                      Role ON Task.RoleID = Role.RoleID INNER JOIN
+                      Task AS NextTask ON ActionMessage.NextTaskID = NextTask.TaskID
+ORDER BY Role.RoleID, Action.TaskID, ActionMessage.ActionID</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ActionID" DataSetColumn="ActionID" />
+              <Mapping SourceColumn="NextTaskID" DataSetColumn="NextTaskID" />
+              <Mapping SourceColumn="Role" DataSetColumn="Role" />
+              <Mapping SourceColumn="Task" DataSetColumn="Task" />
+              <Mapping SourceColumn="Action" DataSetColumn="Action" />
+              <Mapping SourceColumn="Message" DataSetColumn="Message" />
+              <Mapping SourceColumn="NextTask" DataSetColumn="NextTask" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillByKey" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetDataByKey" GeneratorSourceName="FillByKey" GetMethodModifier="Public" GetMethodName="GetDataByKey" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataByKey" UserSourceName="FillByKey">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     ActionMessage.ActionID, ActionMessage.NextTaskID, Role.Title AS Role, Task.Title AS Task, NextTask.Title AS NextTask, Action.Title AS Action, 
+                      ActionMessage.Message
+FROM         Action INNER JOIN
+                      ActionMessage ON Action.ActionID = ActionMessage.ActionID INNER JOIN
+                      Task ON Action.TaskID = Task.TaskID INNER JOIN
+                      Role ON Task.RoleID = Role.RoleID INNER JOIN
+                      Task AS NextTask ON ActionMessage.NextTaskID = NextTask.TaskID
+WHERE     (ActionMessage.ActionID = @ActionID) AND (ActionMessage.NextTaskID = @NextTaskID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="ActionID" ColumnName="ActionID" DataSourceName="FPSDB_1.dbo.ActionMessage" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@ActionID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ActionID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="NextTaskID" ColumnName="NextTaskID" DataSourceName="FPSDB_1.dbo.ActionMessage" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@NextTaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="NextTaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorGetMethodName="GetDataBy" GeneratorSourceName="UpdateQuery" Modifier="Public" Name="UpdateQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateQuery">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE    ActionMessage
+SET              Message = @Message
+WHERE     (ActionID = @original_ActionID) AND (NextTaskID = @original_NextTaskID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="Message" ColumnName="Message" DataSourceName="FPSDB_1.dbo.ActionMessage" DataTypeServer="text" DbType="AnsiString" Direction="Input" ParameterName="@Message" Precision="0" ProviderType="Text" Scale="0" Size="2147483647" SourceColumn="Message" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_ActionID" ColumnName="ActionID" DataSourceName="FPSDB_1.dbo.ActionMessage" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@original_ActionID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ActionID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_NextTaskID" ColumnName="NextTaskID" DataSourceName="FPSDB_1.dbo.ActionMessage" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@original_NextTaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="NextTaskID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="DepartmentManagersTableAdapter" GeneratorDataComponentClassName="DepartmentManagersTableAdapter" Name="DepartmentManagers" UserDataComponentName="DepartmentManagersTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     DepartmentManager.Department, DepartmentManager.RoleID, Role.Title AS Role, Employee.EmployeeID, Employee.Name, 
+                      DepartmentManager.DeputyEmployeeID, Employee.KFUPMUserID, DepartmentManager.DeputyEmail
+FROM         DepartmentManager INNER JOIN
+                      Employee ON DepartmentManager.EmployeeID = Employee.EmployeeID INNER JOIN
+                      Role ON DepartmentManager.RoleID = Role.RoleID
+ORDER BY DepartmentManager.Department</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Department" DataSetColumn="Department" />
+              <Mapping SourceColumn="RoleID" DataSetColumn="RoleID" />
+              <Mapping SourceColumn="Role" DataSetColumn="Role" />
+              <Mapping SourceColumn="EmployeeID" DataSetColumn="EmployeeID" />
+              <Mapping SourceColumn="Name" DataSetColumn="Name" />
+              <Mapping SourceColumn="DeputyEmployeeID" DataSetColumn="DeputyEmployeeID" />
+              <Mapping SourceColumn="KFUPMUserID" DataSetColumn="KFUPMUserID" />
+              <Mapping SourceColumn="DeputyEmail" DataSetColumn="DeputyEmail" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="AssignManager" Modifier="Public" Name="AssignManager" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="AssignManager">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE    DepartmentManager
+SET              EmployeeID = @EmployeeID, DeputyEmployeeID = @DeputyEmployeeID, DeputyEmail = @DeputyEmail
+WHERE     (Department = @original_Department) AND (RoleID = @original_RoleID); 
+
+update Application_Role
+set EmployeeID = @EmployeeID
+where
+	(select PhaseID from Application where Application.ApplicationID = Application_Role.ApplicationID) &gt; 0 and
+	EmployeeID = @original_EmployeeID and
+	RoleID = @original_RoleID
+
+</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="EmployeeID" ColumnName="EmployeeID" DataSourceName="FPSDB.dbo.DepartmentManager" DataTypeServer="varchar(10)" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="10" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="DeputyEmployeeID" ColumnName="DeputyEmployeeID" DataSourceName="FPSDB.dbo.DepartmentManager" DataTypeServer="varchar(50)" DbType="AnsiString" Direction="Input" ParameterName="@DeputyEmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="50" SourceColumn="DeputyEmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="DeputyEmail" ColumnName="DeputyEmail" DataSourceName="FPSDB.dbo.DepartmentManager" DataTypeServer="varchar(50)" DbType="AnsiString" Direction="Input" ParameterName="@DeputyEmail" Precision="0" ProviderType="VarChar" Scale="0" Size="50" SourceColumn="DeputyEmail" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_Department" ColumnName="Department" DataSourceName="FPSDB.dbo.DepartmentManager" DataTypeServer="varchar(240)" DbType="AnsiString" Direction="Input" ParameterName="@original_Department" Precision="0" ProviderType="VarChar" Scale="0" Size="240" SourceColumn="Department" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_RoleID" ColumnName="RoleID" DataSourceName="FPSDB.dbo.DepartmentManager" DataTypeServer="tinyint" DbType="Byte" Direction="Input" ParameterName="@original_RoleID" Precision="0" ProviderType="TinyInt" Scale="0" Size="1" SourceColumn="RoleID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_EmployeeID" ColumnName="EmployeeID" DataSourceName="FPSDB.dbo.Application_Role" DataTypeServer="varchar(10)" DbType="AnsiString" Direction="Input" ParameterName="@original_EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="10" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillByApplicationTask" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetDataByApplicationTask" GeneratorSourceName="FillByApplicationTask" GetMethodModifier="Public" GetMethodName="GetDataByApplicationTask" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataByApplicationTask" UserSourceName="FillByApplicationTask">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     DepartmentManager.Department, DepartmentManager.RoleID, Role.Title AS Role, Employee.EmployeeID, Employee.Name, 
+                      DepartmentManager.DeputyEmployeeID, Employee.KFUPMUserID, DepartmentManager.DeputyEmail
+FROM         Task INNER JOIN
+                      Role ON Task.RoleID = Role.RoleID INNER JOIN
+                      Application_Role ON Role.RoleID = Application_Role.RoleID INNER JOIN
+                      DepartmentManager ON Application_Role.EmployeeID = DepartmentManager.EmployeeID AND 
+                      Application_Role.RoleID = DepartmentManager.RoleID INNER JOIN
+                      Employee ON Employee.EmployeeID = DepartmentManager.EmployeeID
+WHERE     (Application_Role.ApplicationID = @ApplicationID) AND (Task.TaskID = @TaskID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="ApplicationID" ColumnName="ApplicationID" DataSourceName="FPS.FPSADMIN.Application_Role" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="TaskID" ColumnName="TaskID" DataSourceName="FPS.FPSADMIN.Task" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@TaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillByDepartment" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetDataByDepartment" GeneratorSourceName="FillByDepartment" GetMethodModifier="Public" GetMethodName="GetDataByDepartment" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataByDepartment" UserSourceName="FillByDepartment">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     DepartmentManager.Department, DepartmentManager.DeputyEmail, DepartmentManager.RoleID, Role.Title AS Role, Employee.EmployeeID, 
+                      Employee.Name, DepartmentManager.DeputyEmployeeID, Employee.KFUPMUserID
+FROM         DepartmentManager INNER JOIN
+                      Employee ON DepartmentManager.EmployeeID = Employee.EmployeeID INNER JOIN
+                      Role ON DepartmentManager.RoleID = Role.RoleID
+WHERE     (DepartmentManager.Department = @Department) AND (DepartmentManager.RoleID = @RoleID)
+ORDER BY DepartmentManager.Department</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="Department" ColumnName="Department" DataSourceName="FPS.FPSADMIN.DepartmentManager" DataTypeServer="varchar(100)" DbType="AnsiString" Direction="Input" ParameterName="@Department" Precision="0" ProviderType="VarChar" Scale="0" Size="100" SourceColumn="Department" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="RoleID" ColumnName="RoleID" DataSourceName="FPS.FPSADMIN.DepartmentManager" DataTypeServer="tinyint" DbType="Int32" Direction="Input" ParameterName="@RoleID" Precision="0" ProviderType="TinyInt" Scale="0" Size="1" SourceColumn="RoleID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" GenerateMethods="Get" GenerateShortCommands="true" GeneratorGetMethodName="GetDataByEmployee" GeneratorSourceName="FillByEmployee" GetMethodModifier="Public" GetMethodName="GetDataByEmployee" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataByEmployee" UserSourceName="GetDataByEmployee">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     DepartmentManager.Department, DepartmentManager.RoleID, Role.Title AS Role, Employee.EmployeeID, Employee.Name, 
+                      DepartmentManager.DeputyEmployeeID, Employee.KFUPMUserID, DepartmentManager.DeputyEmail
+FROM         DepartmentManager INNER JOIN
+                      Employee ON DepartmentManager.EmployeeID = Employee.EmployeeID INNER JOIN
+                      Role ON DepartmentManager.RoleID = Role.RoleID
+WHERE     (Employee.EmployeeID = @EmployeeID)
+ORDER BY DepartmentManager.Department</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="EmployeeID" ColumnName="EmployeeID" DataSourceName="FPSDB_1.dbo.Employee" DataTypeServer="varchar(10)" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="10" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="FPS.FPSADMIN.Employee" DbObjectType="Table" GenerateShortCommands="true" GeneratorGetMethodName="GetDataBy1" GeneratorSourceName="GetEmployeeID" Modifier="Public" Name="GetEmployeeID" QueryType="Scalar" ScalarCallRetval="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="GetEmployeeID">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     EmployeeID
+FROM         Employee
+WHERE     (KFUPMUserID = @KFUPMUserID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="KFUPMUserID" ColumnName="KFUPMUserID" DataSourceName="FPS.FPSADMIN.Employee" DataTypeServer="varchar(25)" DbType="AnsiString" Direction="Input" ParameterName="@KFUPMUserID" Precision="0" ProviderType="VarChar" Scale="0" Size="25" SourceColumn="KFUPMUserID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="RoleTableAdapter" GeneratorDataComponentClassName="RoleTableAdapter" Name="Role" UserDataComponentName="RoleTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="Promotion.dbo.Role" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <DeleteCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>DELETE FROM [Role] WHERE (([RoleID] = @Original_RoleID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Original_RoleID" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="RoleID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </DeleteCommand>
+                <InsertCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>INSERT INTO [Role] ([Title], [Type]) VALUES (@Title, @Type)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Title" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Title" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Type" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </InsertCommand>
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>select * from Role</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>UPDATE [Role] SET [Title] = @Title, [Type] = @Type WHERE (([RoleID] = @Original_RoleID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Title" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Title" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Type" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Original_RoleID" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="RoleID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="RoleID" DataSetColumn="RoleID" />
+              <Mapping SourceColumn="Title" DataSetColumn="Title" />
+              <Mapping SourceColumn="Type" DataSetColumn="Type" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="DepartmentCommitteeTableAdapter" GeneratorDataComponentClassName="DepartmentCommitteeTableAdapter" Name="DepartmentCommittee" UserDataComponentName="DepartmentCommitteeTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="FPSDB.dbo.Employee" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     Form_DepartmentCommittte.ApplicationID, Form_DepartmentCommittte.Position, Employee.EmployeeID, Employee.KFUPMEmail, Employee.Name, 
+                      Employee.Rank
+FROM         Form_DepartmentCommittte INNER JOIN
+                      Employee ON Form_DepartmentCommittte.EmployeeID = Employee.EmployeeID
+WHERE     (Form_DepartmentCommittte.ApplicationID = @ApplicationID)
+ORDER BY Form_DepartmentCommittte.Position</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="ApplicationID" ColumnName="ApplicationID" DataSourceName="FPSDB_1.dbo.Form_DepartmentCommittte" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Position" DataSetColumn="Position" />
+              <Mapping SourceColumn="EmployeeID" DataSetColumn="EmployeeID" />
+              <Mapping SourceColumn="KFUPMEmail" DataSetColumn="KFUPMEmail" />
+              <Mapping SourceColumn="Name" DataSetColumn="Name" />
+              <Mapping SourceColumn="Rank" DataSetColumn="Rank" />
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorGetMethodName="GetDataBy" GeneratorSourceName="UpdateQuery" Modifier="Public" Name="UpdateQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateQuery">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE    Form_DepartmentCommittte
+SET              EmployeeID = @EmployeeID
+WHERE     (Position = @original_Position) AND (ApplicationID = @original_ApplicationID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="EmployeeID" ColumnName="EmployeeID" DataSourceName="FPSDB_1.dbo.Form_DepartmentCommittte" DataTypeServer="varchar(10)" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="10" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_Position" ColumnName="Position" DataSourceName="FPSDB_1.dbo.Form_DepartmentCommittte" DataTypeServer="tinyint" DbType="Int32" Direction="Input" ParameterName="@original_Position" Precision="0" ProviderType="TinyInt" Scale="0" Size="1" SourceColumn="Position" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_ApplicationID" ColumnName="ApplicationID" DataSourceName="FPSDB_1.dbo.Form_DepartmentCommittte" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@original_ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ApplicationTableAdapter" GeneratorDataComponentClassName="ApplicationTableAdapter" Name="Application" UserDataComponentName="ApplicationTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="Promotion.dbo.Application" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     Application.ApplicationID, Employee.Name + ' (' + Application.Rank + ')' AS Name
+FROM         Application INNER JOIN
+                      Employee ON Application.EmployeeID = Employee.EmployeeID</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+              <Mapping SourceColumn="Name" DataSetColumn="Name" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="PromotionCommitteeTableAdapter" GeneratorDataComponentClassName="PromotionCommitteeTableAdapter" Name="PromotionCommittee" UserDataComponentName="PromotionCommitteeTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="FPSDB_1.dbo.Form_PromotionCommittee" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <DeleteCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>DELETE FROM [Form_PromotionCommittee] WHERE (([ApplicationID] = @Original_ApplicationID) AND ([Type] = @Original_Type) AND ([Position] = @Original_Position))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@Original_ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiStringFixedLength" Direction="Input" ParameterName="@Original_Type" Precision="0" ProviderType="Char" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Original_Position" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Position" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </DeleteCommand>
+                <InsertCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>INSERT INTO [Form_PromotionCommittee] ([ApplicationID], [Type], [Position], [IsKFUPM], [EmployeeID], [Name], [Department], [Rank], [Email], [MailingAddress], [Major]) VALUES (@ApplicationID, @Type, @Position, @IsKFUPM, @EmployeeID, @Name, @Department, @Rank, @Email, @MailingAddress, @Major)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiStringFixedLength" Direction="Input" ParameterName="@Type" Precision="0" ProviderType="Char" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Position" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Position" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Boolean" Direction="Input" ParameterName="@IsKFUPM" Precision="0" ProviderType="Bit" Scale="0" Size="0" SourceColumn="IsKFUPM" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Name" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Name" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Department" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Department" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Rank" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Rank" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Email" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Email" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@MailingAddress" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="MailingAddress" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Major" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Major" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </InsertCommand>
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     Form_PromotionCommittee.*
+FROM         Form_PromotionCommittee
+where ApplicationID=@ApplicationID and Type=@Type</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="ApplicationID" ColumnName="ApplicationID" DataSourceName="FPSDB_1.dbo.Form_PromotionCommittee" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="Type" ColumnName="Type" DataSourceName="FPSDB_1.dbo.Form_PromotionCommittee" DataTypeServer="char(1)" DbType="AnsiString" Direction="Input" ParameterName="@Type" Precision="0" ProviderType="Char" Scale="0" Size="1" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>UPDATE [Form_PromotionCommittee] SET [ApplicationID] = @ApplicationID, [Type] = @Type, [Position] = @Position, [IsKFUPM] = @IsKFUPM, [EmployeeID] = @EmployeeID, [Name] = @Name, [Department] = @Department, [Rank] = @Rank, [Email] = @Email, [MailingAddress] = @MailingAddress, [Major] = @Major WHERE (([ApplicationID] = @Original_ApplicationID) AND ([Type] = @Original_Type) AND ([Position] = @Original_Position))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiStringFixedLength" Direction="Input" ParameterName="@Type" Precision="0" ProviderType="Char" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Position" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Position" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Boolean" Direction="Input" ParameterName="@IsKFUPM" Precision="0" ProviderType="Bit" Scale="0" Size="0" SourceColumn="IsKFUPM" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Name" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Name" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Department" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Department" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Rank" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Rank" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Email" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Email" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@MailingAddress" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="MailingAddress" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Major" Precision="0" ProviderType="VarChar" Scale="0" Size="0" SourceColumn="Major" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@Original_ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="AnsiStringFixedLength" Direction="Input" ParameterName="@Original_Type" Precision="0" ProviderType="Char" Scale="0" Size="0" SourceColumn="Type" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Original_Position" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Position" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+              <Mapping SourceColumn="Type" DataSetColumn="Type" />
+              <Mapping SourceColumn="Position" DataSetColumn="Position" />
+              <Mapping SourceColumn="IsKFUPM" DataSetColumn="IsKFUPM" />
+              <Mapping SourceColumn="EmployeeID" DataSetColumn="EmployeeID" />
+              <Mapping SourceColumn="Name" DataSetColumn="Name" />
+              <Mapping SourceColumn="Department" DataSetColumn="Department" />
+              <Mapping SourceColumn="Rank" DataSetColumn="Rank" />
+              <Mapping SourceColumn="Email" DataSetColumn="Email" />
+              <Mapping SourceColumn="MailingAddress" DataSetColumn="MailingAddress" />
+              <Mapping SourceColumn="Major" DataSetColumn="Major" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="TaskTableAdapter" GeneratorDataComponentClassName="TaskTableAdapter" Name="Task" UserDataComponentName="TaskTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     Task.TaskID, Task.PhaseID, Task.RoleID, Task.Title, Task.RemindAfter, Role.Title AS Role
+FROM         Task INNER JOIN
+                      Role ON Task.RoleID = Role.RoleID</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="TaskID" DataSetColumn="TaskID" />
+              <Mapping SourceColumn="PhaseID" DataSetColumn="PhaseID" />
+              <Mapping SourceColumn="RoleID" DataSetColumn="RoleID" />
+              <Mapping SourceColumn="Title" DataSetColumn="Title" />
+              <Mapping SourceColumn="RemindAfter" DataSetColumn="RemindAfter" />
+              <Mapping SourceColumn="Role" DataSetColumn="Role" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateQuery" Modifier="Public" Name="UpdateQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateQuery">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE [Task] SET [Title] = @Title, [RemindAfter] = @RemindAfter WHERE (([TaskID] = @Original_TaskID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="Title" ColumnName="Title" DataSourceName="Promotion.dbo.Task" DataTypeServer="varchar(100)" DbType="AnsiString" Direction="Input" ParameterName="@Title" Precision="0" ProviderType="VarChar" Scale="0" Size="100" SourceColumn="Title" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="RemindAfter" ColumnName="RemindAfter" DataSourceName="Promotion.dbo.Task" DataTypeServer="tinyint" DbType="Int32" Direction="Input" ParameterName="@RemindAfter" Precision="0" ProviderType="TinyInt" Scale="0" Size="1" SourceColumn="RemindAfter" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="Original_TaskID" ColumnName="TaskID" DataSourceName="Promotion.dbo.Task" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@Original_TaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ActionTableAdapter" GeneratorDataComponentClassName="ActionTableAdapter" Name="Action" UserDataComponentName="ActionTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     Action.ActionID, Action.TaskID, Action.NextPhaseID, Action.NextTaskID, Action.Type, Action.Title, Role.Title AS Role, Task.Title AS Task
+FROM         Action INNER JOIN
+                      Task ON Action.TaskID = Task.TaskID INNER JOIN
+                      Role ON Task.RoleID = Role.RoleID</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ActionID" DataSetColumn="ActionID" />
+              <Mapping SourceColumn="TaskID" DataSetColumn="TaskID" />
+              <Mapping SourceColumn="NextPhaseID" DataSetColumn="NextPhaseID" />
+              <Mapping SourceColumn="NextTaskID" DataSetColumn="NextTaskID" />
+              <Mapping SourceColumn="Type" DataSetColumn="Type" />
+              <Mapping SourceColumn="Role" DataSetColumn="Role" />
+              <Mapping SourceColumn="Task" DataSetColumn="Task" />
+              <Mapping SourceColumn="Title" DataSetColumn="Title" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateQuery" Modifier="Public" Name="UpdateQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateQuery">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE [Action] SET [Title] = @Title WHERE (([ActionID] = @Original_ActionID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="Title" ColumnName="Title" DataSourceName="FPSDB_1.dbo.Action" DataTypeServer="varchar(100)" DbType="AnsiString" Direction="Input" ParameterName="@Title" Precision="0" ProviderType="VarChar" Scale="0" Size="100" SourceColumn="Title" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="Original_ActionID" ColumnName="ActionID" DataSourceName="FPSDB_1.dbo.Action" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@Original_ActionID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="ActionID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ApplicationTaskLogTableAdapter" GeneratorDataComponentClassName="ApplicationTaskLogTableAdapter" Name="ApplicationTaskLog" UserDataComponentName="ApplicationTaskLogTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="FPSDB_1.dbo.Application_TaskLog" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <DeleteCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>DELETE FROM [Application_TaskLog] WHERE (([TaskLogID] = @Original_TaskLogID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@Original_TaskLogID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="TaskLogID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </DeleteCommand>
+                <InsertCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>INSERT INTO [Application_TaskLog] ([ApplicationID], [TaskID], [ActionID], [Message], [SentDate], [Completed], [Reminders]) VALUES (@ApplicationID, @TaskID, @ActionID, @Message, @SentDate, @Completed, @Reminders)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@TaskID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ActionID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ActionID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Message" Precision="0" ProviderType="Text" Scale="0" Size="0" SourceColumn="Message" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="DateTime" Direction="Input" ParameterName="@SentDate" Precision="0" ProviderType="SmallDateTime" Scale="0" Size="0" SourceColumn="SentDate" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Boolean" Direction="Input" ParameterName="@Completed" Precision="0" ProviderType="Bit" Scale="0" Size="0" SourceColumn="Completed" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Reminders" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Reminders" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </InsertCommand>
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     TaskLogID, ApplicationID, TaskID, ActionID, Message, SentDate, Completed, Reminders
+FROM         Application_TaskLog</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>UPDATE [Application_TaskLog] SET [ApplicationID] = @ApplicationID, [TaskID] = @TaskID, [ActionID] = @ActionID, [Message] = @Message, [SentDate] = @SentDate, [Completed] = @Completed, [Reminders] = @Reminders WHERE (([TaskLogID] = @Original_TaskLogID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ApplicationID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ApplicationID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@TaskID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@ActionID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="ActionID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="AnsiString" Direction="Input" ParameterName="@Message" Precision="0" ProviderType="Text" Scale="0" Size="0" SourceColumn="Message" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="DateTime" Direction="Input" ParameterName="@SentDate" Precision="0" ProviderType="SmallDateTime" Scale="0" Size="0" SourceColumn="SentDate" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Boolean" Direction="Input" ParameterName="@Completed" Precision="0" ProviderType="Bit" Scale="0" Size="0" SourceColumn="Completed" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Byte" Direction="Input" ParameterName="@Reminders" Precision="0" ProviderType="TinyInt" Scale="0" Size="0" SourceColumn="Reminders" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@Original_TaskLogID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="TaskLogID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="TaskLogID" DataSetColumn="TaskLogID" />
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+              <Mapping SourceColumn="TaskID" DataSetColumn="TaskID" />
+              <Mapping SourceColumn="ActionID" DataSetColumn="ActionID" />
+              <Mapping SourceColumn="Message" DataSetColumn="Message" />
+              <Mapping SourceColumn="SentDate" DataSetColumn="SentDate" />
+              <Mapping SourceColumn="Completed" DataSetColumn="Completed" />
+              <Mapping SourceColumn="Reminders" DataSetColumn="Reminders" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateReminders" Modifier="Public" Name="UpdateReminders" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateReminders">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE [Application_TaskLog] SET [Reminders] =  [Reminders]+1 WHERE (([TaskLogID] = @Original_TaskLogID))</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="Original_TaskLogID" ColumnName="TaskLogID" DataSourceName="FPSDB_1.dbo.Application_TaskLog" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@Original_TaskLogID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="TaskLogID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="vw_RemindersTableAdapter" GeneratorDataComponentClassName="vw_RemindersTableAdapter" Name="vw_Reminders" UserDataComponentName="vw_RemindersTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectName="FPSDB_1.dbo.vw_Reminders" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT ReminderNumber, DaysPassed, Reminders, RemindersExpected, TaskLogID, ApplicationID, TaskID, ActionID, Message, RemindAfter, RemindAgainAfter FROM dbo.vw_Reminders</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ReminderNumber" DataSetColumn="ReminderNumber" />
+              <Mapping SourceColumn="DaysPassed" DataSetColumn="DaysPassed" />
+              <Mapping SourceColumn="Reminders" DataSetColumn="Reminders" />
+              <Mapping SourceColumn="RemindersExpected" DataSetColumn="RemindersExpected" />
+              <Mapping SourceColumn="TaskLogID" DataSetColumn="TaskLogID" />
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+              <Mapping SourceColumn="TaskID" DataSetColumn="TaskID" />
+              <Mapping SourceColumn="ActionID" DataSetColumn="ActionID" />
+              <Mapping SourceColumn="Message" DataSetColumn="Message" />
+              <Mapping SourceColumn="RemindAfter" DataSetColumn="RemindAfter" />
+              <Mapping SourceColumn="RemindAgainAfter" DataSetColumn="RemindAgainAfter" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ApplicationList4VRGSSRTableAdapter" GeneratorDataComponentClassName="ApplicationList4VRGSSRTableAdapter" Name="ApplicationList4VRGSSR" UserDataComponentName="ApplicationList4VRGSSRTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="PromotionConnectionString (Web.config)" DbObjectType="Unknown" GenerateMethods="Get" GenerateShortCommands="false" GeneratorGetMethodName="GetData4VRGSSR" GetMethodModifier="Public" GetMethodName="GetData4VRGSSR" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData4VRGSSR" UserSourceName="GetData4VRGSSR">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        ar.ApplicationID, r.RoleID, r.Title AS Role, e.KFUPMUserID AS Employee, e.Name + '(' + Departments.ShortName + ')' AS Name, e.Department, e.Rank, 
+                         a.ForRank AS ToRank, atl.SentDate AS AppDate, CASE WHEN a.PhaseID &gt; 0 THEN 'Active' ELSE 'Ended' END AS Status
+FROM            Application_Role AS ar INNER JOIN
+                         Application AS a ON a.ApplicationID = ar.ApplicationID INNER JOIN
+                         Employee AS e ON e.EmployeeID = a.EmployeeID INNER JOIN
+                         Role AS r ON r.RoleID = ar.RoleID INNER JOIN
+                         Application_TaskLog AS atl ON ar.ApplicationID = atl.ApplicationID AND atl.TaskID = 1 LEFT OUTER JOIN
+                         Departments ON e.Department = Departments.Name
+WHERE        (ar.EmployeeID = @EmployeeID) AND (a.ApplicationClosed = 0) AND
+                             ((SELECT        COUNT(*) AS Expr1
+                                 FROM            Application_TaskLog
+                                 WHERE        (ApplicationID = ar.ApplicationID) AND (Completed = 0) AND (TaskID = 9 OR
+                                                          TaskID = 25 OR
+                                                          TaskID = 33 OR
+                                                          TaskID = 55)) &gt; 0) OR
+                         (ar.EmployeeID = @EmployeeID) AND (a.ApplicationClosed = 0) AND (a.EmployeeID = @EmployeeID)
+ORDER BY AppDate DESC</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="EmployeeID" ColumnName="EmployeeID" DataSourceName="FPSDB.dbo.Application_Role" DataTypeServer="varchar(10)" DbType="AnsiString" Direction="Input" ParameterName="@EmployeeID" Precision="0" ProviderType="VarChar" Scale="0" Size="10" SourceColumn="EmployeeID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="ApplicationID" DataSetColumn="ApplicationID" />
+              <Mapping SourceColumn="RoleID" DataSetColumn="RoleID" />
+              <Mapping SourceColumn="Role" DataSetColumn="Role" />
+              <Mapping SourceColumn="Employee" DataSetColumn="Employee" />
+              <Mapping SourceColumn="Name" DataSetColumn="Name" />
+              <Mapping SourceColumn="Department" DataSetColumn="Department" />
+              <Mapping SourceColumn="Rank" DataSetColumn="Rank" />
+              <Mapping SourceColumn="ToRank" DataSetColumn="ToRank" />
+              <Mapping SourceColumn="AppDate" DataSetColumn="AppDate" />
+              <Mapping SourceColumn="Status" DataSetColumn="Status" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="Task_ExtMessagesTableAdapter" GeneratorDataComponentClassName="Task_ExtMessagesTableAdapter" Name="Task_ExtMessages" UserDataComponentName="Task_ExtMessagesTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="FPSDBConnectionString (Web.config)" DbObjectName="FPSDB.dbo.Task_ExtMessages" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <InsertCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>INSERT INTO [dbo].[Task_ExtMessages] ([TaskID], [Subject], [Message]) VALUES (@TaskID, @Subject, @Message)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="@TaskID" Precision="0" ProviderType="Int" Scale="0" Size="0" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="String" Direction="Input" ParameterName="@Subject" Precision="0" ProviderType="NVarChar" Scale="0" Size="0" SourceColumn="Subject" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="String" Direction="Input" ParameterName="@Message" Precision="0" ProviderType="NText" Scale="0" Size="0" SourceColumn="Message" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </InsertCommand>
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT TaskID, Subject, Message FROM dbo.Task_ExtMessages</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="TaskID" DataSetColumn="TaskID" />
+              <Mapping SourceColumn="Subject" DataSetColumn="Subject" />
+              <Mapping SourceColumn="Message" DataSetColumn="Message" />
+            </Mappings>
+            <Sources>
+              <DbSource ConnectionRef="FPSDBConnectionString (Web.config)" DbObjectName="FPSDB.dbo.Task_ExtMessages" DbObjectType="Table" GenerateMethods="Get" GenerateShortCommands="true" GeneratorGetMethodName="GetDataByKey" GetMethodModifier="Public" GetMethodName="GetDataByKey" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataByKey" UserSourceName="GetDataByKey">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT     TaskID, Subject, Message
+FROM         Task_ExtMessages
+WHERE     (TaskID = @TaskID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="false" AutogeneratedName="TaskID" ColumnName="TaskID" DataSourceName="FPSDB.dbo.Task_ExtMessages" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@TaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Current" />
+                    </Parameters>
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="FPSDBConnectionString (Web.config)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateQuery" Modifier="Public" Name="UpdateQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="UpdateQuery">
+                <UpdateCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>UPDATE    Task_ExtMessages
+SET              Subject = @Subject, Message = @Message
+WHERE     (TaskID = @original_TaskID)</CommandText>
+                    <Parameters>
+                      <Parameter AllowDbNull="true" AutogeneratedName="Subject" ColumnName="Subject" DataSourceName="FPSDB.dbo.Task_ExtMessages" DataTypeServer="nvarchar(50)" DbType="String" Direction="Input" ParameterName="@Subject" Precision="0" ProviderType="NVarChar" Scale="0" Size="50" SourceColumn="Subject" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="Message" ColumnName="Message" DataSourceName="FPSDB.dbo.Task_ExtMessages" DataTypeServer="ntext" DbType="String" Direction="Input" ParameterName="@Message" Precision="0" ProviderType="NText" Scale="0" Size="1073741823" SourceColumn="Message" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="original_TaskID" ColumnName="TaskID" DataSourceName="FPSDB.dbo.Task_ExtMessages" DataTypeServer="int" DbType="Int32" Direction="Input" ParameterName="@original_TaskID" Precision="0" ProviderType="Int" Scale="0" Size="4" SourceColumn="TaskID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                    </Parameters>
+                  </DbCommand>
+                </UpdateCommand>
+              </DbSource>
+            </Sources>
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="PromAdmin" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_DataSetName="PromAdmin" msprop:Generator_UserDSName="PromAdmin">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ActionMessages" msprop:Generator_UserTableName="ActionMessages" msprop:Generator_RowEvArgName="ActionMessagesRowChangeEvent" msprop:Generator_TableVarName="tableActionMessages" msprop:Generator_TablePropName="ActionMessages" msprop:Generator_RowDeletingName="ActionMessagesRowDeleting" msprop:Generator_RowChangingName="ActionMessagesRowChanging" msprop:Generator_RowDeletedName="ActionMessagesRowDeleted" msprop:Generator_RowEvHandlerName="ActionMessagesRowChangeEventHandler" msprop:Generator_TableClassName="ActionMessagesDataTable" msprop:Generator_RowChangedName="ActionMessagesRowChanged" msprop:Generator_RowClassName="ActionMessagesRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ActionID" msprop:Generator_ColumnVarNameInTable="columnActionID" msprop:Generator_ColumnPropNameInRow="ActionID" msprop:Generator_ColumnPropNameInTable="ActionIDColumn" msprop:Generator_UserColumnName="ActionID" type="xs:int" />
+              <xs:element name="NextTaskID" msprop:Generator_ColumnVarNameInTable="columnNextTaskID" msprop:Generator_ColumnPropNameInRow="NextTaskID" msprop:Generator_ColumnPropNameInTable="NextTaskIDColumn" msprop:Generator_UserColumnName="NextTaskID" type="xs:int" />
+              <xs:element name="Role" msprop:Generator_ColumnVarNameInTable="columnRole" msprop:Generator_ColumnPropNameInRow="Role" msprop:Generator_ColumnPropNameInTable="RoleColumn" msprop:Generator_UserColumnName="Role" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Task" msprop:Generator_ColumnVarNameInTable="columnTask" msprop:Generator_ColumnPropNameInRow="Task" msprop:Generator_ColumnPropNameInTable="TaskColumn" msprop:Generator_UserColumnName="Task" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Action" msprop:Generator_ColumnVarNameInTable="columnAction" msprop:Generator_ColumnPropNameInRow="Action" msprop:Generator_ColumnPropNameInTable="ActionColumn" msprop:Generator_UserColumnName="Action" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Message" msprop:Generator_ColumnVarNameInTable="columnMessage" msprop:Generator_ColumnPropNameInRow="Message" msprop:Generator_ColumnPropNameInTable="MessageColumn" msprop:Generator_UserColumnName="Message" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2147483647" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="NextTask" msprop:Generator_ColumnVarNameInTable="columnNextTask" msprop:Generator_ColumnPropNameInRow="NextTask" msprop:Generator_ColumnPropNameInTable="NextTaskColumn" msprop:Generator_UserColumnName="NextTask" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DepartmentManagers" msprop:Generator_UserTableName="DepartmentManagers" msprop:Generator_RowEvArgName="DepartmentManagersRowChangeEvent" msprop:Generator_TableVarName="tableDepartmentManagers" msprop:Generator_TablePropName="DepartmentManagers" msprop:Generator_RowDeletingName="DepartmentManagersRowDeleting" msprop:Generator_RowChangingName="DepartmentManagersRowChanging" msprop:Generator_RowDeletedName="DepartmentManagersRowDeleted" msprop:Generator_RowEvHandlerName="DepartmentManagersRowChangeEventHandler" msprop:Generator_TableClassName="DepartmentManagersDataTable" msprop:Generator_RowChangedName="DepartmentManagersRowChanged" msprop:Generator_RowClassName="DepartmentManagersRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Department" msprop:Generator_ColumnVarNameInTable="columnDepartment" msprop:Generator_ColumnPropNameInRow="Department" msprop:Generator_ColumnPropNameInTable="DepartmentColumn" msprop:Generator_UserColumnName="Department">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RoleID" msprop:Generator_ColumnVarNameInTable="columnRoleID" msprop:Generator_ColumnPropNameInRow="RoleID" msprop:Generator_ColumnPropNameInTable="RoleIDColumn" msprop:Generator_UserColumnName="RoleID" type="xs:unsignedByte" />
+              <xs:element name="Role" msprop:Generator_ColumnVarNameInTable="columnRole" msprop:Generator_ColumnPropNameInRow="Role" msprop:Generator_ColumnPropNameInTable="RoleColumn" msprop:Generator_UserColumnName="Role" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="EmployeeID" msprop:Generator_ColumnVarNameInTable="columnEmployeeID" msprop:Generator_ColumnPropNameInRow="EmployeeID" msprop:Generator_ColumnPropNameInTable="EmployeeIDColumn" msprop:Generator_UserColumnName="EmployeeID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="DeputyEmployeeID" msprop:Generator_ColumnVarNameInTable="columnDeputyEmployeeID" msprop:Generator_ColumnPropNameInRow="DeputyEmployeeID" msprop:Generator_ColumnPropNameInTable="DeputyEmployeeIDColumn" msprop:Generator_UserColumnName="DeputyEmployeeID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="KFUPMUserID" msprop:Generator_ColumnVarNameInTable="columnKFUPMUserID" msprop:Generator_ColumnPropNameInRow="KFUPMUserID" msprop:Generator_ColumnPropNameInTable="KFUPMUserIDColumn" msprop:Generator_UserColumnName="KFUPMUserID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="25" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="DeputyEmail" msprop:Generator_ColumnVarNameInTable="columnDeputyEmail" msprop:Generator_ColumnPropNameInRow="DeputyEmail" msprop:Generator_ColumnPropNameInTable="DeputyEmailColumn" msprop:Generator_UserColumnName="DeputyEmail" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Role" msprop:Generator_UserTableName="Role" msprop:Generator_RowEvArgName="RoleRowChangeEvent" msprop:Generator_TableVarName="tableRole" msprop:Generator_TablePropName="Role" msprop:Generator_RowDeletingName="RoleRowDeleting" msprop:Generator_RowChangingName="RoleRowChanging" msprop:Generator_RowDeletedName="RoleRowDeleted" msprop:Generator_RowEvHandlerName="RoleRowChangeEventHandler" msprop:Generator_TableClassName="RoleDataTable" msprop:Generator_RowChangedName="RoleRowChanged" msprop:Generator_RowClassName="RoleRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="RoleID" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnRoleID" msprop:Generator_ColumnPropNameInRow="RoleID" msprop:Generator_ColumnPropNameInTable="RoleIDColumn" msprop:Generator_UserColumnName="RoleID" type="xs:unsignedByte" />
+              <xs:element name="Title" msprop:Generator_ColumnVarNameInTable="columnTitle" msprop:Generator_ColumnPropNameInRow="Title" msprop:Generator_ColumnPropNameInTable="TitleColumn" msprop:Generator_UserColumnName="Title" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Type" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInRow="Type" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_UserColumnName="Type" type="xs:unsignedByte" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DepartmentCommittee" msprop:Generator_UserTableName="DepartmentCommittee" msprop:Generator_RowEvArgName="DepartmentCommitteeRowChangeEvent" msprop:Generator_TableVarName="tableDepartmentCommittee" msprop:Generator_TablePropName="DepartmentCommittee" msprop:Generator_RowDeletingName="DepartmentCommitteeRowDeleting" msprop:Generator_RowChangingName="DepartmentCommitteeRowChanging" msprop:Generator_RowDeletedName="DepartmentCommitteeRowDeleted" msprop:Generator_RowEvHandlerName="DepartmentCommitteeRowChangeEventHandler" msprop:Generator_TableClassName="DepartmentCommitteeDataTable" msprop:Generator_RowChangedName="DepartmentCommitteeRowChanged" msprop:Generator_RowClassName="DepartmentCommitteeRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Position" msprop:Generator_ColumnVarNameInTable="columnPosition" msprop:Generator_ColumnPropNameInRow="Position" msprop:Generator_ColumnPropNameInTable="PositionColumn" msprop:Generator_UserColumnName="Position" type="xs:unsignedByte" />
+              <xs:element name="EmployeeID" msprop:Generator_ColumnVarNameInTable="columnEmployeeID" msprop:Generator_ColumnPropNameInRow="EmployeeID" msprop:Generator_ColumnPropNameInTable="EmployeeIDColumn" msprop:Generator_UserColumnName="EmployeeID">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="KFUPMEmail" msprop:Generator_ColumnVarNameInTable="columnKFUPMEmail" msprop:Generator_ColumnPropNameInRow="KFUPMEmail" msprop:Generator_ColumnPropNameInTable="KFUPMEmailColumn" msprop:Generator_UserColumnName="KFUPMEmail" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="25" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Rank" msprop:Generator_ColumnVarNameInTable="columnRank" msprop:Generator_ColumnPropNameInRow="Rank" msprop:Generator_ColumnPropNameInTable="RankColumn" msprop:Generator_UserColumnName="Rank" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ApplicationID" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Application" msprop:Generator_UserTableName="Application" msprop:Generator_RowEvArgName="ApplicationRowChangeEvent" msprop:Generator_TableVarName="tableApplication" msprop:Generator_TablePropName="Application" msprop:Generator_RowDeletingName="ApplicationRowDeleting" msprop:Generator_RowChangingName="ApplicationRowChanging" msprop:Generator_RowDeletedName="ApplicationRowDeleted" msprop:Generator_RowEvHandlerName="ApplicationRowChangeEventHandler" msprop:Generator_TableClassName="ApplicationDataTable" msprop:Generator_RowChangedName="ApplicationRowChanged" msprop:Generator_RowClassName="ApplicationRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ApplicationID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+              <xs:element name="Name" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="203" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="PromotionCommittee" msprop:Generator_UserTableName="PromotionCommittee" msprop:Generator_RowEvArgName="PromotionCommitteeRowChangeEvent" msprop:Generator_TableVarName="tablePromotionCommittee" msprop:Generator_TablePropName="PromotionCommittee" msprop:Generator_RowDeletingName="PromotionCommitteeRowDeleting" msprop:Generator_RowChangingName="PromotionCommitteeRowChanging" msprop:Generator_RowDeletedName="PromotionCommitteeRowDeleted" msprop:Generator_RowEvHandlerName="PromotionCommitteeRowChangeEventHandler" msprop:Generator_TableClassName="PromotionCommitteeDataTable" msprop:Generator_RowChangedName="PromotionCommitteeRowChanged" msprop:Generator_RowClassName="PromotionCommitteeRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ApplicationID" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+              <xs:element name="Type" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInRow="Type" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_UserColumnName="Type">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Position" msprop:Generator_ColumnVarNameInTable="columnPosition" msprop:Generator_ColumnPropNameInRow="Position" msprop:Generator_ColumnPropNameInTable="PositionColumn" msprop:Generator_UserColumnName="Position" type="xs:unsignedByte" />
+              <xs:element name="IsKFUPM" msprop:Generator_ColumnVarNameInTable="columnIsKFUPM" msprop:Generator_ColumnPropNameInRow="IsKFUPM" msprop:Generator_ColumnPropNameInTable="IsKFUPMColumn" msprop:Generator_UserColumnName="IsKFUPM" type="xs:boolean" minOccurs="0" />
+              <xs:element name="EmployeeID" msprop:Generator_ColumnVarNameInTable="columnEmployeeID" msprop:Generator_ColumnPropNameInRow="EmployeeID" msprop:Generator_ColumnPropNameInTable="EmployeeIDColumn" msprop:Generator_UserColumnName="EmployeeID" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Department" msprop:Generator_ColumnVarNameInTable="columnDepartment" msprop:Generator_ColumnPropNameInRow="Department" msprop:Generator_ColumnPropNameInTable="DepartmentColumn" msprop:Generator_UserColumnName="Department" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="500" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Rank" msprop:Generator_ColumnVarNameInTable="columnRank" msprop:Generator_ColumnPropNameInRow="Rank" msprop:Generator_ColumnPropNameInTable="RankColumn" msprop:Generator_UserColumnName="Rank" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Email" msprop:Generator_ColumnVarNameInTable="columnEmail" msprop:Generator_ColumnPropNameInRow="Email" msprop:Generator_ColumnPropNameInTable="EmailColumn" msprop:Generator_UserColumnName="Email" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="150" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="MailingAddress" msprop:Generator_ColumnVarNameInTable="columnMailingAddress" msprop:Generator_ColumnPropNameInRow="MailingAddress" msprop:Generator_ColumnPropNameInTable="MailingAddressColumn" msprop:Generator_UserColumnName="MailingAddress" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Major" msprop:Generator_ColumnVarNameInTable="columnMajor" msprop:Generator_ColumnPropNameInRow="Major" msprop:Generator_ColumnPropNameInTable="MajorColumn" msprop:Generator_UserColumnName="Major" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Task" msprop:Generator_UserTableName="Task" msprop:Generator_RowEvArgName="TaskRowChangeEvent" msprop:Generator_TableVarName="tableTask" msprop:Generator_TablePropName="Task" msprop:Generator_RowDeletingName="TaskRowDeleting" msprop:Generator_RowChangingName="TaskRowChanging" msprop:Generator_RowDeletedName="TaskRowDeleted" msprop:Generator_RowEvHandlerName="TaskRowChangeEventHandler" msprop:Generator_TableClassName="TaskDataTable" msprop:Generator_RowChangedName="TaskRowChanged" msprop:Generator_RowClassName="TaskRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TaskID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnTaskID" msprop:Generator_ColumnPropNameInRow="TaskID" msprop:Generator_ColumnPropNameInTable="TaskIDColumn" msprop:Generator_UserColumnName="TaskID" type="xs:int" />
+              <xs:element name="PhaseID" msprop:Generator_ColumnVarNameInTable="columnPhaseID" msprop:Generator_ColumnPropNameInRow="PhaseID" msprop:Generator_ColumnPropNameInTable="PhaseIDColumn" msprop:Generator_UserColumnName="PhaseID" type="xs:unsignedByte" />
+              <xs:element name="RoleID" msprop:Generator_ColumnVarNameInTable="columnRoleID" msprop:Generator_ColumnPropNameInRow="RoleID" msprop:Generator_ColumnPropNameInTable="RoleIDColumn" msprop:Generator_UserColumnName="RoleID" type="xs:unsignedByte" />
+              <xs:element name="Title" msprop:Generator_ColumnVarNameInTable="columnTitle" msprop:Generator_ColumnPropNameInRow="Title" msprop:Generator_ColumnPropNameInTable="TitleColumn" msprop:Generator_UserColumnName="Title" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RemindAfter" msprop:Generator_ColumnVarNameInTable="columnRemindAfter" msprop:Generator_ColumnPropNameInRow="RemindAfter" msprop:Generator_ColumnPropNameInTable="RemindAfterColumn" msprop:Generator_UserColumnName="RemindAfter" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="Role" msprop:Generator_ColumnVarNameInTable="columnRole" msprop:Generator_ColumnPropNameInRow="Role" msprop:Generator_ColumnPropNameInTable="RoleColumn" msprop:Generator_UserColumnName="Role" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Action" msprop:Generator_UserTableName="Action" msprop:Generator_RowEvArgName="ActionRowChangeEvent" msprop:Generator_TableVarName="tableAction" msprop:Generator_TablePropName="Action" msprop:Generator_RowDeletingName="ActionRowDeleting" msprop:Generator_RowChangingName="ActionRowChanging" msprop:Generator_RowDeletedName="ActionRowDeleted" msprop:Generator_RowEvHandlerName="ActionRowChangeEventHandler" msprop:Generator_TableClassName="ActionDataTable" msprop:Generator_RowChangedName="ActionRowChanged" msprop:Generator_RowClassName="ActionRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ActionID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnActionID" msprop:Generator_ColumnPropNameInRow="ActionID" msprop:Generator_ColumnPropNameInTable="ActionIDColumn" msprop:Generator_UserColumnName="ActionID" type="xs:int" />
+              <xs:element name="TaskID" msprop:Generator_ColumnVarNameInTable="columnTaskID" msprop:Generator_ColumnPropNameInRow="TaskID" msprop:Generator_ColumnPropNameInTable="TaskIDColumn" msprop:Generator_UserColumnName="TaskID" type="xs:int" minOccurs="0" />
+              <xs:element name="NextPhaseID" msprop:Generator_ColumnVarNameInTable="columnNextPhaseID" msprop:Generator_ColumnPropNameInRow="NextPhaseID" msprop:Generator_ColumnPropNameInTable="NextPhaseIDColumn" msprop:Generator_UserColumnName="NextPhaseID" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="NextTaskID" msprop:Generator_ColumnVarNameInTable="columnNextTaskID" msprop:Generator_ColumnPropNameInRow="NextTaskID" msprop:Generator_ColumnPropNameInTable="NextTaskIDColumn" msprop:Generator_UserColumnName="NextTaskID" type="xs:int" minOccurs="0" />
+              <xs:element name="Type" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInRow="Type" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_UserColumnName="Type" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Role" msprop:Generator_ColumnVarNameInTable="columnRole" msprop:Generator_ColumnPropNameInRow="Role" msprop:Generator_ColumnPropNameInTable="RoleColumn" msprop:Generator_UserColumnName="Role" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Task" msprop:Generator_ColumnVarNameInTable="columnTask" msprop:Generator_ColumnPropNameInRow="Task" msprop:Generator_ColumnPropNameInTable="TaskColumn" msprop:Generator_UserColumnName="Task" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Title" msprop:Generator_ColumnVarNameInTable="columnTitle" msprop:Generator_ColumnPropNameInRow="Title" msprop:Generator_ColumnPropNameInTable="TitleColumn" msprop:Generator_UserColumnName="Title" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ApplicationTaskLog" msprop:Generator_UserTableName="ApplicationTaskLog" msprop:Generator_RowEvArgName="ApplicationTaskLogRowChangeEvent" msprop:Generator_TableVarName="tableApplicationTaskLog" msprop:Generator_TablePropName="ApplicationTaskLog" msprop:Generator_RowDeletingName="ApplicationTaskLogRowDeleting" msprop:Generator_RowChangingName="ApplicationTaskLogRowChanging" msprop:Generator_RowDeletedName="ApplicationTaskLogRowDeleted" msprop:Generator_RowEvHandlerName="ApplicationTaskLogRowChangeEventHandler" msprop:Generator_TableClassName="ApplicationTaskLogDataTable" msprop:Generator_RowChangedName="ApplicationTaskLogRowChanged" msprop:Generator_RowClassName="ApplicationTaskLogRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TaskLogID" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnTaskLogID" msprop:Generator_ColumnPropNameInRow="TaskLogID" msprop:Generator_ColumnPropNameInTable="TaskLogIDColumn" msprop:Generator_UserColumnName="TaskLogID" type="xs:int" />
+              <xs:element name="ApplicationID" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+              <xs:element name="TaskID" msprop:Generator_ColumnVarNameInTable="columnTaskID" msprop:Generator_ColumnPropNameInRow="TaskID" msprop:Generator_ColumnPropNameInTable="TaskIDColumn" msprop:Generator_UserColumnName="TaskID" type="xs:int" />
+              <xs:element name="ActionID" msprop:Generator_ColumnVarNameInTable="columnActionID" msprop:Generator_ColumnPropNameInRow="ActionID" msprop:Generator_ColumnPropNameInTable="ActionIDColumn" msprop:Generator_UserColumnName="ActionID" type="xs:int" minOccurs="0" />
+              <xs:element name="Message" msprop:Generator_ColumnVarNameInTable="columnMessage" msprop:Generator_ColumnPropNameInRow="Message" msprop:Generator_ColumnPropNameInTable="MessageColumn" msprop:Generator_UserColumnName="Message" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2147483647" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SentDate" msprop:Generator_ColumnVarNameInTable="columnSentDate" msprop:Generator_ColumnPropNameInRow="SentDate" msprop:Generator_ColumnPropNameInTable="SentDateColumn" msprop:Generator_UserColumnName="SentDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Completed" msprop:Generator_ColumnVarNameInTable="columnCompleted" msprop:Generator_ColumnPropNameInRow="Completed" msprop:Generator_ColumnPropNameInTable="CompletedColumn" msprop:Generator_UserColumnName="Completed" type="xs:boolean" />
+              <xs:element name="Reminders" msprop:Generator_ColumnVarNameInTable="columnReminders" msprop:Generator_ColumnPropNameInRow="Reminders" msprop:Generator_ColumnPropNameInTable="RemindersColumn" msprop:Generator_UserColumnName="Reminders" type="xs:unsignedByte" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="vw_Reminders" msprop:Generator_UserTableName="vw_Reminders" msprop:Generator_RowEvArgName="vw_RemindersRowChangeEvent" msprop:Generator_TableVarName="tablevw_Reminders" msprop:Generator_TablePropName="vw_Reminders" msprop:Generator_RowDeletingName="vw_RemindersRowDeleting" msprop:Generator_RowChangingName="vw_RemindersRowChanging" msprop:Generator_RowDeletedName="vw_RemindersRowDeleted" msprop:Generator_RowEvHandlerName="vw_RemindersRowChangeEventHandler" msprop:Generator_TableClassName="vw_RemindersDataTable" msprop:Generator_RowChangedName="vw_RemindersRowChanged" msprop:Generator_RowClassName="vw_RemindersRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ReminderNumber" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnReminderNumber" msprop:Generator_ColumnPropNameInRow="ReminderNumber" msprop:Generator_ColumnPropNameInTable="ReminderNumberColumn" msprop:Generator_UserColumnName="ReminderNumber" type="xs:int" minOccurs="0" />
+              <xs:element name="DaysPassed" msprop:Generator_ColumnVarNameInTable="columnDaysPassed" msprop:Generator_ColumnPropNameInRow="DaysPassed" msprop:Generator_ColumnPropNameInTable="DaysPassedColumn" msprop:Generator_UserColumnName="DaysPassed" type="xs:int" minOccurs="0" />
+              <xs:element name="Reminders" msprop:Generator_ColumnVarNameInTable="columnReminders" msprop:Generator_ColumnPropNameInRow="Reminders" msprop:Generator_ColumnPropNameInTable="RemindersColumn" msprop:Generator_UserColumnName="Reminders" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="RemindersExpected" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnRemindersExpected" msprop:Generator_ColumnPropNameInRow="RemindersExpected" msprop:Generator_ColumnPropNameInTable="RemindersExpectedColumn" msprop:Generator_UserColumnName="RemindersExpected" type="xs:int" minOccurs="0" />
+              <xs:element name="TaskLogID" msprop:Generator_ColumnVarNameInTable="columnTaskLogID" msprop:Generator_ColumnPropNameInRow="TaskLogID" msprop:Generator_ColumnPropNameInTable="TaskLogIDColumn" msprop:Generator_UserColumnName="TaskLogID" type="xs:int" />
+              <xs:element name="ApplicationID" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+              <xs:element name="TaskID" msprop:Generator_ColumnVarNameInTable="columnTaskID" msprop:Generator_ColumnPropNameInRow="TaskID" msprop:Generator_ColumnPropNameInTable="TaskIDColumn" msprop:Generator_UserColumnName="TaskID" type="xs:int" />
+              <xs:element name="ActionID" msprop:Generator_ColumnVarNameInTable="columnActionID" msprop:Generator_ColumnPropNameInRow="ActionID" msprop:Generator_ColumnPropNameInTable="ActionIDColumn" msprop:Generator_UserColumnName="ActionID" type="xs:int" minOccurs="0" />
+              <xs:element name="Message" msprop:Generator_ColumnVarNameInTable="columnMessage" msprop:Generator_ColumnPropNameInRow="Message" msprop:Generator_ColumnPropNameInTable="MessageColumn" msprop:Generator_UserColumnName="Message" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1073741823" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RemindAfter" msprop:Generator_ColumnVarNameInTable="columnRemindAfter" msprop:Generator_ColumnPropNameInRow="RemindAfter" msprop:Generator_ColumnPropNameInTable="RemindAfterColumn" msprop:Generator_UserColumnName="RemindAfter" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="RemindAgainAfter" msprop:Generator_ColumnVarNameInTable="columnRemindAgainAfter" msprop:Generator_ColumnPropNameInRow="RemindAgainAfter" msprop:Generator_ColumnPropNameInTable="RemindAgainAfterColumn" msprop:Generator_UserColumnName="RemindAgainAfter" type="xs:unsignedByte" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ApplicationList4VRGSSR" msprop:Generator_UserTableName="ApplicationList4VRGSSR" msprop:Generator_RowEvArgName="ApplicationList4VRGSSRRowChangeEvent" msprop:Generator_TableVarName="tableApplicationList4VRGSSR" msprop:Generator_TablePropName="ApplicationList4VRGSSR" msprop:Generator_RowDeletingName="ApplicationList4VRGSSRRowDeleting" msprop:Generator_RowChangingName="ApplicationList4VRGSSRRowChanging" msprop:Generator_RowDeletedName="ApplicationList4VRGSSRRowDeleted" msprop:Generator_RowEvHandlerName="ApplicationList4VRGSSRRowChangeEventHandler" msprop:Generator_TableClassName="ApplicationList4VRGSSRDataTable" msprop:Generator_RowChangedName="ApplicationList4VRGSSRRowChanged" msprop:Generator_RowClassName="ApplicationList4VRGSSRRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ApplicationID" msprop:Generator_ColumnVarNameInTable="columnApplicationID" msprop:Generator_ColumnPropNameInRow="ApplicationID" msprop:Generator_ColumnPropNameInTable="ApplicationIDColumn" msprop:Generator_UserColumnName="ApplicationID" type="xs:int" />
+              <xs:element name="RoleID" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnRoleID" msprop:Generator_ColumnPropNameInRow="RoleID" msprop:Generator_ColumnPropNameInTable="RoleIDColumn" msprop:Generator_UserColumnName="RoleID" type="xs:unsignedByte" />
+              <xs:element name="Role" msprop:Generator_ColumnVarNameInTable="columnRole" msprop:Generator_ColumnPropNameInRow="Role" msprop:Generator_ColumnPropNameInTable="RoleColumn" msprop:Generator_UserColumnName="Role" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Employee" msprop:Generator_ColumnVarNameInTable="columnEmployee" msprop:Generator_ColumnPropNameInRow="Employee" msprop:Generator_ColumnPropNameInTable="EmployeeColumn" msprop:Generator_UserColumnName="Employee" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="240" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Department" msprop:Generator_ColumnVarNameInTable="columnDepartment" msprop:Generator_ColumnPropNameInRow="Department" msprop:Generator_ColumnPropNameInTable="DepartmentColumn" msprop:Generator_UserColumnName="Department" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="240" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Rank" msprop:Generator_ColumnVarNameInTable="columnRank" msprop:Generator_ColumnPropNameInRow="Rank" msprop:Generator_ColumnPropNameInTable="RankColumn" msprop:Generator_UserColumnName="Rank" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="150" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ToRank" msprop:Generator_ColumnVarNameInTable="columnToRank" msprop:Generator_ColumnPropNameInRow="ToRank" msprop:Generator_ColumnPropNameInTable="ToRankColumn" msprop:Generator_UserColumnName="ToRank" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="AppDate" msprop:Generator_ColumnVarNameInTable="columnAppDate" msprop:Generator_ColumnPropNameInRow="AppDate" msprop:Generator_ColumnPropNameInTable="AppDateColumn" msprop:Generator_UserColumnName="AppDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Status" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnStatus" msprop:Generator_ColumnPropNameInRow="Status" msprop:Generator_ColumnPropNameInTable="StatusColumn" msprop:Generator_UserColumnName="Status" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Task_ExtMessages" msprop:Generator_TableClassName="Task_ExtMessagesDataTable" msprop:Generator_TableVarName="tableTask_ExtMessages" msprop:Generator_TablePropName="Task_ExtMessages" msprop:Generator_RowDeletingName="Task_ExtMessagesRowDeleting" msprop:Generator_RowChangingName="Task_ExtMessagesRowChanging" msprop:Generator_RowEvHandlerName="Task_ExtMessagesRowChangeEventHandler" msprop:Generator_RowDeletedName="Task_ExtMessagesRowDeleted" msprop:Generator_UserTableName="Task_ExtMessages" msprop:Generator_RowChangedName="Task_ExtMessagesRowChanged" msprop:Generator_RowEvArgName="Task_ExtMessagesRowChangeEvent" msprop:Generator_RowClassName="Task_ExtMessagesRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TaskID" msprop:Generator_ColumnVarNameInTable="columnTaskID" msprop:Generator_ColumnPropNameInRow="TaskID" msprop:Generator_ColumnPropNameInTable="TaskIDColumn" msprop:Generator_UserColumnName="TaskID" type="xs:int" />
+              <xs:element name="Subject" msprop:Generator_ColumnVarNameInTable="columnSubject" msprop:Generator_ColumnPropNameInRow="Subject" msprop:Generator_ColumnPropNameInTable="SubjectColumn" msprop:Generator_UserColumnName="Subject" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Message" msprop:Generator_ColumnVarNameInTable="columnMessage" msprop:Generator_ColumnPropNameInRow="Message" msprop:Generator_ColumnPropNameInTable="MessageColumn" msprop:Generator_UserColumnName="Message" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1073741823" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:ActionMessages" />
+      <xs:field xpath="mstns:ActionID" />
+      <xs:field xpath="mstns:NextTaskID" />
+    </xs:unique>
+    <xs:unique name="DepartmentManagers_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:DepartmentManagers" />
+      <xs:field xpath="mstns:Department" />
+      <xs:field xpath="mstns:RoleID" />
+    </xs:unique>
+    <xs:unique name="Role_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Role" />
+      <xs:field xpath="mstns:RoleID" />
+    </xs:unique>
+    <xs:unique name="DepartmentCommittee_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:DepartmentCommittee" />
+      <xs:field xpath="mstns:ApplicationID" />
+      <xs:field xpath="mstns:Position" />
+    </xs:unique>
+    <xs:unique name="Application_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Application" />
+      <xs:field xpath="mstns:ApplicationID" />
+    </xs:unique>
+    <xs:unique name="PromotionCommittee_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:PromotionCommittee" />
+      <xs:field xpath="mstns:ApplicationID" />
+      <xs:field xpath="mstns:Type" />
+      <xs:field xpath="mstns:Position" />
+    </xs:unique>
+    <xs:unique name="Task_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Task" />
+      <xs:field xpath="mstns:TaskID" />
+    </xs:unique>
+    <xs:unique name="Action_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Action" />
+      <xs:field xpath="mstns:ActionID" />
+    </xs:unique>
+    <xs:unique name="ApplicationTaskLog_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:ApplicationTaskLog" />
+      <xs:field xpath="mstns:TaskLogID" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="FK_DepartmentManager_Role" msdata:parent="Role" msdata:child="DepartmentManagers" msdata:parentkey="RoleID" msdata:childkey="RoleID" msprop:Generator_UserChildTable="DepartmentManagers" msprop:Generator_ChildPropName="GetDepartmentManagersRows" msprop:Generator_UserRelationName="FK_DepartmentManager_Role" msprop:Generator_RelationVarName="relationFK_DepartmentManager_Role" msprop:Generator_UserParentTable="Role" msprop:Generator_ParentPropName="RoleRow" />
+      <msdata:Relationship name="FK_DepartmentCommittte_Application" msdata:parent="Application" msdata:child="DepartmentCommittee" msdata:parentkey="ApplicationID" msdata:childkey="ApplicationID" msprop:Generator_UserChildTable="DepartmentCommittee" msprop:Generator_ChildPropName="GetDepartmentCommitteeRows" msprop:Generator_UserRelationName="FK_DepartmentCommittte_Application" msprop:Generator_RelationVarName="relationFK_DepartmentCommittte_Application" msprop:Generator_UserParentTable="Application" msprop:Generator_ParentPropName="ApplicationRow" />
+      <msdata:Relationship name="FK_PromotionCommittee_Application" msdata:parent="Application" msdata:child="PromotionCommittee" msdata:parentkey="ApplicationID" msdata:childkey="ApplicationID" msprop:Generator_UserChildTable="PromotionCommittee" msprop:Generator_ChildPropName="GetPromotionCommitteeRows" msprop:Generator_UserRelationName="FK_PromotionCommittee_Application" msprop:Generator_RelationVarName="relationFK_PromotionCommittee_Application" msprop:Generator_UserParentTable="Application" msprop:Generator_ParentPropName="ApplicationRow" />
+      <msdata:Relationship name="FK_Task_Role" msdata:parent="Role" msdata:child="Task" msdata:parentkey="RoleID" msdata:childkey="RoleID" msprop:Generator_UserChildTable="Task" msprop:Generator_ChildPropName="GetTaskRows" msprop:Generator_UserRelationName="FK_Task_Role" msprop:Generator_RelationVarName="relationFK_Task_Role" msprop:Generator_UserParentTable="Role" msprop:Generator_ParentPropName="RoleRow" />
+      <msdata:Relationship name="FK_ApplicationActiveTask_Application" msdata:parent="Application" msdata:child="ApplicationTaskLog" msdata:parentkey="ApplicationID" msdata:childkey="ApplicationID" msprop:Generator_UserChildTable="ApplicationTaskLog" msprop:Generator_ChildPropName="GetApplicationTaskLogRows" msprop:Generator_UserRelationName="FK_ApplicationActiveTask_Application" msprop:Generator_RelationVarName="relationFK_ApplicationActiveTask_Application" msprop:Generator_UserParentTable="Application" msprop:Generator_ParentPropName="ApplicationRow" />
+      <msdata:Relationship name="FK_DepartmentManager_Employee" msdata:parent="DepartmentCommittee" msdata:child="DepartmentManagers" msdata:parentkey="EmployeeID" msdata:childkey="EmployeeID" msprop:Generator_UserChildTable="DepartmentManagers" msprop:Generator_ChildPropName="GetDepartmentManagersRows" msprop:Generator_UserRelationName="FK_DepartmentManager_Employee" msprop:Generator_RelationVarName="relationFK_DepartmentManager_Employee" msprop:Generator_UserParentTable="DepartmentCommittee" msprop:Generator_ParentPropName="DepartmentCommitteeRow" />
+      <msdata:Relationship name="FK_PromotionCommittee_Employee" msdata:parent="DepartmentCommittee" msdata:child="PromotionCommittee" msdata:parentkey="EmployeeID" msdata:childkey="EmployeeID" msprop:Generator_UserChildTable="PromotionCommittee" msprop:Generator_ChildPropName="GetPromotionCommitteeRows" msprop:Generator_UserRelationName="FK_PromotionCommittee_Employee" msprop:Generator_RelationVarName="relationFK_PromotionCommittee_Employee" msprop:Generator_UserParentTable="DepartmentCommittee" msprop:Generator_ParentPropName="DepartmentCommitteeRow" />
+      <msdata:Relationship name="FK_PromotionCommittee_Application1" msdata:parent="ApplicationList4VRGSSR" msdata:child="PromotionCommittee" msdata:parentkey="ApplicationID" msdata:childkey="ApplicationID" msprop:Generator_UserChildTable="PromotionCommittee" msprop:Generator_ChildPropName="GetPromotionCommitteeRows" msprop:Generator_UserRelationName="FK_PromotionCommittee_Application1" msprop:Generator_RelationVarName="relationFK_PromotionCommittee_Application1" msprop:Generator_UserParentTable="ApplicationList4VRGSSR" msprop:Generator_ParentPropName="ApplicationList4VRGSSRRow" />
+      <msdata:Relationship name="FK_ApplicationActiveTask_Application1" msdata:parent="ApplicationList4VRGSSR" msdata:child="ApplicationTaskLog" msdata:parentkey="ApplicationID" msdata:childkey="ApplicationID" msprop:Generator_UserChildTable="ApplicationTaskLog" msprop:Generator_ChildPropName="GetApplicationTaskLogRows" msprop:Generator_UserRelationName="FK_ApplicationActiveTask_Application1" msprop:Generator_RelationVarName="relationFK_ApplicationActiveTask_Application1" msprop:Generator_UserParentTable="ApplicationList4VRGSSR" msprop:Generator_ParentPropName="ApplicationList4VRGSSRRow" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

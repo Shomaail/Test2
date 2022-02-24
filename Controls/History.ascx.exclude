@@ -1,0 +1,93 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="History.ascx.cs" Inherits="Controls_History" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<asp:GridView ID="grdHistory" runat="server" CellPadding="4" ForeColor="Black" BorderColor="#3062AF" class="table"
+    AutoGenerateColumns="False" DataKeyNames="LogID" DataSourceID="ObjectDataSourceHistory"
+    AllowSorting="True" OnRowCommand="grdHistory_RowCommand">
+    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+    <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+    <HeaderStyle BackColor="#007d40" Font-Bold="True" ForeColor="White" />
+    <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+    <Columns>
+        <asp:BoundField DataField="LogID" HeaderText="LogID" InsertVisible="False" ReadOnly="True"
+            SortExpression="LogID" Visible="False" />
+        <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" SortExpression="ApplicationID"
+            Visible="False" />
+        <asp:BoundField DataField="Task" HeaderText="Task" SortExpression="Task">
+            <ItemStyle Wrap="True" Font-Bold="True" Font-Size="10pt" />
+        </asp:BoundField>
+        <asp:TemplateField HeaderText="Person" SortExpression="Role">
+            <ItemStyle Wrap="False" />
+            <ItemTemplate>
+                <asp:Label ID="Label1" runat="server" Text='<%# Bind("Person") %>'></asp:Label><br />
+                <span style="font-size: 10pt; color: Maroon"><em>(<asp:Label ID="Label2" runat="server"
+                    Text='<%# Bind("Role") %>'></asp:Label>)</em></span>
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:BoundField DataField="Action" HeaderText="Action" SortExpression="Action">
+            <ItemStyle Font-Bold="True" Font-Italic="True" Font-Names="Arial,Verdana" Font-Size="10pt" />
+        </asp:BoundField>
+        <asp:TemplateField HeaderText="Action Time" SortExpression="ActionTime">
+            <ItemStyle Font-Names="Verdana,Arial" Font-Size="10pt" Wrap="False" />
+            <ItemTemplate>
+                <asp:Label ID="Label3" runat="server" Text='<%# Bind("ActionTime", "{0:MMMM d, yyyy <i> h:mm tt </i>}") %>'></asp:Label>
+                <br />
+                <em>
+                    <%# GetPeriod((DateTime)Eval("ActionTime"), Eval("PrevActionTime") == DBNull.Value ? DateTime.MinValue : (DateTime)Eval("PrevActionTime"))%></em>
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Email">
+            <ItemStyle Font-Names="Verdana,Arial" Font-Size="10pt" Wrap="False" />
+            <ItemTemplate>
+                <asp:LinkButton ID="lbtnShowEmail" CommandName="ShowEmail" CommandArgument='<%# Eval("LogID") %>'
+                    runat="server">ShowEmail</asp:LinkButton>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+    <EmptyDataTemplate>
+        [<em>No further tasks have been done after the initiation</em>]
+    </EmptyDataTemplate>
+    <EditRowStyle BackColor="#999999" />
+</asp:GridView>
+<asp:ObjectDataSource ID="ObjectDataSourceHistory" runat="server" OldValuesParameterFormatString="original_{0}"
+    SelectMethod="GetDataByApplication" TypeName="PromotionTableAdapters.ApplicationHistoryListTableAdapter">
+    <SelectParameters>
+        <asp:Parameter DefaultValue="-1" Name="RoleID" Type="Int32" />
+        <asp:Parameter DefaultValue="-1" Name="ApplicationID" Type="Int32" />
+    </SelectParameters>
+</asp:ObjectDataSource>
+<asp:Button runat="server" ID="hdnTargetControlForModalPopup1" Style="display: none" />
+<asp:ModalPopupExtender runat="server" ID="programmaticModalPopup1" BehaviorID="programmaticModalPopupBehavior1"
+    TargetControlID="hdnTargetControlForModalPopup1" PopupControlID="programmaticPopup1"
+    BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle1"
+    RepositionMode="RepositionOnWindowScroll">
+</asp:ModalPopupExtender>
+<asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup1"  Style="display: none;
+    width: 600px; padding: 10px">
+    <asp:Panel runat="Server" ID="programmaticPopupDragHandle1" Style="cursor: move;
+        background-color: #DDDDDD; border: solid 1px Gray; color: Black; text-align: center;">
+        Email
+    </asp:Panel>
+    <div style="width: 100%; height: 400px; overflow: scroll">
+    <asp:GridView ID="gvEmail" runat="server" AutoGenerateColumns="False" 
+        EnableModelValidation="True">
+        <Columns>
+            <asp:TemplateField >
+                <EditItemTemplate>
+
+                </EditItemTemplate>
+                <ItemTemplate>
+                    <asp:TextBox ID="TextBox1" TextMode="MultiLine" runat="server" 
+                        Text='<%# Bind("Message") %>' Height="369px" Width="594px"></asp:TextBox>
+                    
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+    </asp:GridView>
+    </div>
+    <br />
+    <div align="center">
+        <asp:LinkButton runat="server" ID="hideModalPopupViaServer1" Text="OK" OnClick="hideModalPopupViaServer1_Click" />
+    </div>
+</asp:Panel>

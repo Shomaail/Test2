@@ -1,0 +1,126 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ShowWillingnessExtReviewer.ascx.cs" Inherits="Controls_ShowWillingness" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<script type="text/javascript">
+
+    function limitCharsLength(Object, MaxLen) {
+        if (Object.value.length > MaxLen - 1) {
+            Object.value = Object.value.substring(0, MaxLen);
+            alert("Only " + MaxLen + " Characters with spaces are allowed.");
+        }
+    }
+    function limitClipBoard(Object, MaxLen) {
+        if (window.clipboardData != null) {
+            //alert("clipboardData  is not null");
+            if (window.clipboardData.getData("Text").length > MaxLen - 1 - Object.value.length) {
+                //  alert("clipboardData  is very big");
+                window.clipboardData.setData("Text", window.clipboardData.getData("Text").toString().substring(0, (MaxLen - Object.value.length)));
+                alert("Your copy/paste text size  is quite big. Only " + MaxLen + " characters with spaces are allowed.");
+            }
+        }
+    }
+    function ValidateTextLength(oSrc, args) {
+        args.IsValid = args.Value.length > 20;
+    }
+
+</script>
+<div align="center">
+    Welcome to the online Faculty Promotion System in King Fahd University of Petroleum and
+Minerals.
+
+    <br />
+
+    <br />
+    Please express your willingness to evaluate Research Performance of Dr. <asp:Label ID="LabelApplicantName" runat="server" Style="z-index: 100; left: 0px; position: relative; top: 0px"></asp:Label>
+    &nbsp;by selecting one of the following options.<br />
+    <br />
+    <br />
+
+    <asp:Panel ID="Panel1" runat="server" Height="663px" Width="871px">
+        <div align="left" style="width: 559px">
+            <br />
+            <asp:RadioButton ID="RadioButtonAccept" runat="server" Checked="True" GroupName="Williingness"
+                Text="I Accept to evaluate the Research Performance" AutoPostBack="true" OnCheckedChanged="RadioButtonAccept_CheckedChanged" /><br />
+            <br />
+            <asp:RadioButton ID="RadioButtonReject" runat="server" GroupName="Williingness" Height="20px"
+                Text="Decline" Width="89px" AutoPostBack="true" OnCheckedChanged="RadioButtonReject_CheckedChanged" />
+
+            <br />
+            <br />
+            <asp:Panel ID="pnlAccInfo" runat="server" Height="600px" Width="800px" Visible="true" BackColor="#E8E8EC" BorderStyle="Groove">
+                <table>
+                    <tr><td style="font-weight: 700">My Name:</td><td><input id="tbName" runat="server" placeholder="Enter Name" maxlength="100" 
+                   style="height:29px ; width:518px"/></td></tr>
+                    <tr><td>*Please write your complete Name (as per passport) </td></tr>          
+                    <tr><td> <strong>Passport Number:</strong></td><td><input id="tbSWIFTCode" runat="server" placeholder="Enter Passport Number " maxlength="50" 
+                   style="height:25px ; width:518px"/></td></tr>
+                    <tr><td>  <br /> </td></tr>
+                     <tr><td><strong>University / Institution Name and Mailing Address:</strong> </td>
+                         <td><textarea  id="tbMailingAddress" runat="server" placeholder="Enter Mailing Address" maxlength="250" 
+                   style="height:100px ; width:518px"></textarea></td></tr>
+                    <tr><td>*complete mailing address with postal / zip codes, etc</td></tr>
+                     <tr><td><strong>Bank Details:</strong> </td>
+                         <td> <textarea id="tbIBAN" runat="server" placeholder="Enter IBAN or Bank Acc. No." maxlength="250" 
+                    style="height:100px ; width:518px"></textarea></td></tr>
+                    <tr><td>* BIC / SWIFT Code/ BANK ADDRESS / BRANCH CITY, ZIP, COUNTRY</td></tr>
+                     <tr><td colspan="2">Bank details are required to remit honorarium to your account – to check details put your bank codes here: <a href="https://www.iban.com/">iban.com</a>  or <a href="https://www.ifscswiftcodes.com/SWIFT-Codes/index1.htm">ifscswiftcodes.com</a> ]</td></tr>                     
+                    <tr><td colspan="2">Please note that scanned copy of your Valid Passport will be needed at the time of submission of your evaluation, which is required by <strong>SAMA (Saudi Arabian Monetary Agency)</strong> and <strong>JP Morgan Chase Bank</strong>, New York, USA for clearance of payment as per their new Policy to avoid any fraudulent attempt. The Passport copy is also necessary to check the correct name, etc, so that the cheque or bank transaction may not be bounced back.<br />
+                        <br />
+                        To confirm, please click the CHECK BOX and submit</td></tr>
+                     <tr><td colspan="2" style="align-items:center"> <asp:CheckBox ID="chbxCinfrm" runat="server" Checked="false"                    
+                    AutoPostBack="true" Text="I confirm all the information and will upload the copy of Passport at the time of submission of evaluation ." OnCheckedChanged="chbxCinfrm_CheckedChanged" />
+</td></tr>
+                </table>
+      
+                <%--<br />
+                </strong> 
+                
+               <%-- <asp:TextBox ID="tbName" onKeyPress="return limitCharsLength(this,100);" 
+                   
+                    onPaste="return limitClipBoard(this,100);" runat="server" Height="29px" Width="344px"></asp:TextBox>
+                 <asp:RequiredFieldValidator ID="RequiredFieldValidator_tbName" ControlToValidate="tbName" ValidationGroup="Willingness"
+                                    runat="server" ErrorMessage="*" ToolTip="Must Enter a Name"></asp:RequiredFieldValidator>--%>
+               
+      
+                
+               <%-- <asp:TextBox ID="tbSWIFTCode" runat="server" AutoPostBack="false" onKeyPress="return limitCharsLength(this,50);" onPaste="return limitClipBoard(this,50);"
+                    CssClass="unwatermarked" Height="25px" Width="344px"></asp:TextBox>
+                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator_tbSWIFTCode" ControlToValidate="tbSWIFTCode" ValidationGroup="Willingness"
+                                    runat="server" ErrorMessage="*" ToolTip="Must Enter your Passport Number"></asp:RequiredFieldValidator>--%>
+                <br />
+                <br />
+                <%--<asp:TextBoxWatermarkExtender ID="tbSWIFTCode_TextBoxWatermarkExtender" runat="server"
+                    Enabled="True" TargetControlID="tbSWIFTCode" WatermarkText="Enter Passport Number "
+                    WatermarkCssClass="watermarked">
+                </asp:TextBoxWatermarkExtender>--%>
+                
+                
+<%--                <asp:TextBox ID="tbMailingAddress" runat="server" Font-Bold="True" 
+                    onKeyPress="return limitCharsLength(this,250);" onPaste="return limitClipBoard(this,250);"
+                    CssClass="unwatermarked" Height="50px"
+                    TextMode="MultiLine" Width="518px"></asp:TextBox>--%>
+              
+                
+      <%--          <asp:TextBoxWatermarkExtender ID="tbMailingAddress_TextBoxWatermarkExtender" runat="server"
+                    Enabled="True" TargetControlID="tbMailingAddress" WatermarkText="Enter Mailing Address"
+                    WatermarkCssClass="watermarked">
+                </asp:TextBoxWatermarkExtender>--%>
+
+            
+            </asp:Panel>
+            <br />
+            Comments:
+    <asp:TextBox ID="TextBoxComments" runat="server" TextMode="MultiLine"
+        onKeyPress="return limitCharsLength(this,500);"
+        onDrop="return false;"
+        onPaste="return limitClipBoard(this,500);"
+        Rows="3" Width="458px"></asp:TextBox>
+            <br />
+            <br />
+            <asp:Button ID="ButtonSubmit" runat="server" OnClick="ButtonSubmit_Click" Text="Submit"  /><br />
+            <br />
+            <asp:Label ID="LabelThanks" runat="server" Width="386px" Height="82px"></asp:Label>
+        </div>
+    </asp:Panel>
+    &nbsp;&nbsp;
+
+</div>

@@ -1,0 +1,473 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Linq;
+//using System.Globalization;
+
+public partial class Controls_BusyScheduleMember : System.Web.UI.UserControl
+{
+    BAL bal = new BAL();
+    private string empID;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+        int appID = 0;
+        byte roleID = 0;
+        try
+        {
+            appID = int.Parse(Request.Params.Get("applicationID").ToString());
+            roleID = byte.Parse(Request.Params.Get("roleID").ToString());
+        }
+        catch 
+        {
+            try
+            {
+                appID = int.Parse(Session["applicationID"].ToString());
+            }
+            catch 
+            {
+                if (HttpContext.Current.Request.Url.AbsolutePath.Contains("ExtPCForms"))
+                    Response.Redirect("ExtPCLogin.aspx");
+                else
+                    FormsAuthentication.SignOut();
+                    FormsAuthentication.RedirectToLoginPage();
+
+                
+            }
+        }
+
+
+        MeetingsTableAdapters.Form_MeetingsTableAdapter adapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();        
+        Meetings.Form_MeetingsDataTable frmMeetingTable = adapter.GetDataByAppIDMS(appID,true);
+        if (frmMeetingTable.Count == 0)
+        {
+
+            ButtonPost.Enabled = false;
+            LabelAfterPost.Text = "No Busy Week Schedule has been launched by the chairman of Promotion Committee.<br/> You can post your busy schedule only after a busy week schedule is launched";
+            LabelAfterPost.ForeColor = System.Drawing.Color.Red;
+
+            return;
+        }
+        else
+        {
+            //bal.GetForm_FinalPC(appID).Where(a=>a.)
+            
+            //Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+            
+            
+            //if (user != null)
+            //{
+                MeetingsTableAdapters.Form_MeetingMembersTableAdapter frmMeetnMemAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+                Meetings.Form_MeetingMembersDataTable frmMeetnMemTable = frmMeetnMemAdapter.GetDataByMemPostStatus(appID, bal.GetApplicationRole(appID, roleID)[0].EmployeeID);
+                if (frmMeetnMemTable.Count > 0)
+                {
+                    empID = bal.GetApplicationRole(appID, roleID)[0].EmployeeID.ToString();
+                }
+                else
+                {
+                    ButtonPost.Enabled = false;
+                    LabelAfterPost.Text = "You have already posted your Busy Week Schedule.";
+                    LabelAfterPost.ForeColor = System.Drawing.Color.Blue;
+
+                    return;
+                }
+            //}
+            //else
+            //{
+            //    if (HttpContext.Current.Request.Url.AbsolutePath.Contains("ExtPCForms"))
+            //        Response.Redirect("ExtPCLogin.aspx");
+            //    else
+            //        Response.Redirect("~/Login.aspx");
+            //}
+
+        }
+
+        Meetings.Form_MeetingsRow row = frmMeetingTable[0];
+
+        TextBoxWeekNo.Text = row.IsWeekNoNull() ? "-" : row.WeekNo.ToString()+"of the Year "+row.Year;
+
+        getWeekDaysFromWeekNumber(row.WeekNo, row.Year);
+                
+    }
+
+    protected void ButtonPost_Click(object sender, EventArgs e)
+    {
+
+        int applID;
+        try
+        {
+            applID = int.Parse(Request.Params.Get("applicationID").ToString());
+        }
+        catch
+        {
+            applID = int.Parse(Session["applicationID"].ToString());
+        }
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        MeetingsTableAdapters.Form_MeetingsTableAdapter frmMeetingsAdapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+        //Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+
+        Meetings.Form_MeetingsDataTable table = frmMeetingsAdapter.GetDataByAppIDMS(applID,true);
+        if (table.Count == 0) return ;
+
+        Meetings.Form_MeetingsRow row = table[0];
+
+        int Slot1 = (CheckBox1.Checked ? 1 : 0) + (row.IsTimeSlot1Null() ? 0 : row.TimeSlot1);
+        int Slot2 = (CheckBox2.Checked ? 1 : 0) + (row.IsTimeSlot2Null() ? 0 : row.TimeSlot2);
+        int Slot3 = (CheckBox3.Checked ? 1 : 0) + (row.IsTimeSlot3Null() ? 0 : row.TimeSlot3);
+        int Slot4 = (CheckBox4.Checked ? 1 : 0) + (row.IsTimeSlot4Null() ? 0 : row.TimeSlot4);
+        int Slot5 = (CheckBox5.Checked ? 1 : 0) + (row.IsTimeSlot5Null() ? 0 : row.TimeSlot5);
+        int Slot6 = (CheckBox6.Checked ? 1 : 0) + (row.IsTimeSlot6Null() ? 0 : row.TimeSlot6);
+        int Slot7 = (CheckBox7.Checked ? 1 : 0) + (row.IsTimeSlot7Null() ? 0 : row.TimeSlot7);
+        int Slot8 = (CheckBox8.Checked ? 1 : 0) + (row.IsTimeSlot8Null() ? 0 : row.TimeSlot8);
+        int Slot9 = (CheckBox9.Checked ? 1 : 0) + (row.IsTimeSlot9Null() ? 0 : row.TimeSlot9);
+        int Slot10 = (CheckBox10.Checked ? 1 : 0) + (row.IsTimeSlot10Null() ? 0 : row.TimeSlot10);
+        int Slot11 = (CheckBox11.Checked ? 1 : 0) + (row.IsTimeSlot11Null() ? 0 : row.TimeSlot11);
+        int Slot12 = (CheckBox12.Checked ? 1 : 0) + (row.IsTimeSlot12Null() ? 0 : row.TimeSlot12);
+        int Slot13 = (CheckBox13.Checked ? 1 : 0) + (row.IsTimeSlot13Null() ? 0 : row.TimeSlot13);
+        int Slot14 = (CheckBox14.Checked ? 1 : 0) + (row.IsTimeSlot14Null() ? 0 : row.TimeSlot14);
+        int Slot15 = (CheckBox15.Checked ? 1 : 0) + (row.IsTimeSlot15Null() ? 0 : row.TimeSlot15);
+        int Slot16 = (CheckBox16.Checked ? 1 : 0) + (row.IsTimeSlot16Null() ? 0 : row.TimeSlot16);
+        int Slot17 = (CheckBox17.Checked ? 1 : 0) + (row.IsTimeSlot17Null() ? 0 : row.TimeSlot17);
+        int Slot18 = (CheckBox18.Checked ? 1 : 0) + (row.IsTimeSlot18Null() ? 0 : row.TimeSlot18);
+        int Slot19 = (CheckBox19.Checked ? 1 : 0) + (row.IsTimeSlot19Null() ? 0 : row.TimeSlot19);
+        int Slot20 = (CheckBox20.Checked ? 1 : 0) + (row.IsTimeSlot20Null() ? 0 : row.TimeSlot20);
+        int Slot21 = (CheckBox21.Checked ? 1 : 0) + (row.IsTimeSlot21Null() ? 0 : row.TimeSlot21);
+        int Slot22 = (CheckBox22.Checked ? 1 : 0) + (row.IsTimeSlot22Null() ? 0 : row.TimeSlot22);
+        int Slot23 = (CheckBox23.Checked ? 1 : 0) + (row.IsTimeSlot23Null() ? 0 : row.TimeSlot23);
+        int Slot24 = (CheckBox24.Checked ? 1 : 0) + (row.IsTimeSlot24Null() ? 0 : row.TimeSlot24);
+        int Slot25 = (CheckBox25.Checked ? 1 : 0) + (row.IsTimeSlot25Null() ? 0 : row.TimeSlot25);
+        int Slot26 = (CheckBox26.Checked ? 1 : 0) + (row.IsTimeSlot26Null() ? 0 : row.TimeSlot26);
+        int Slot27 = (CheckBox27.Checked ? 1 : 0) + (row.IsTimeSlot27Null() ? 0 : row.TimeSlot27);
+        int Slot28 = (CheckBox28.Checked ? 1 : 0) + (row.IsTimeSlot28Null() ? 0 : row.TimeSlot28);
+        int Slot29 = (CheckBox29.Checked ? 1 : 0) + (row.IsTimeSlot29Null() ? 0 : row.TimeSlot29);
+        int Slot30 = (CheckBox30.Checked ? 1 : 0) + (row.IsTimeSlot30Null() ? 0 : row.TimeSlot30);
+        int Slot31 = (CheckBox31.Checked ? 1 : 0) + (row.IsTimeSlot31Null() ? 0 : row.TimeSlot31);
+        int Slot32 = (CheckBox32.Checked ? 1 : 0) + (row.IsTimeSlot32Null() ? 0 : row.TimeSlot32);
+        int Slot33 = (CheckBox33.Checked ? 1 : 0) + (row.IsTimeSlot33Null() ? 0 : row.TimeSlot33);
+        int Slot34 = (CheckBox34.Checked ? 1 : 0) + (row.IsTimeSlot34Null() ? 0 : row.TimeSlot34);
+        int Slot35 = (CheckBox35.Checked ? 1 : 0) + (row.IsTimeSlot35Null() ? 0 : row.TimeSlot35);
+        int Slot36 = (CheckBox36.Checked ? 1 : 0) + (row.IsTimeSlot36Null() ? 0 : row.TimeSlot36);
+        int Slot37 = (CheckBox37.Checked ? 1 : 0) + (row.IsTimeSlot37Null() ? 0 : row.TimeSlot37);
+        int Slot38 = (CheckBox38.Checked ? 1 : 0) + (row.IsTimeSlot38Null() ? 0 : row.TimeSlot38);
+        int Slot39 = (CheckBox39.Checked ? 1 : 0) + (row.IsTimeSlot39Null() ? 0 : row.TimeSlot39);
+        int Slot40 = (CheckBox40.Checked ? 1 : 0) + (row.IsTimeSlot40Null() ? 0 : row.TimeSlot40);
+        int Slot41 = (CheckBox41.Checked ? 1 : 0) + (row.IsTimeSlot41Null() ? 0 : row.TimeSlot41);
+        int Slot42 = (CheckBox42.Checked ? 1 : 0) + (row.IsTimeSlot42Null() ? 0 : row.TimeSlot42);
+        int Slot43 = (CheckBox43.Checked ? 1 : 0) + (row.IsTimeSlot43Null() ? 0 : row.TimeSlot43);
+        int Slot44 = (CheckBox44.Checked ? 1 : 0) + (row.IsTimeSlot44Null() ? 0 : row.TimeSlot44);
+        int Slot45 = (CheckBox45.Checked ? 1 : 0) + (row.IsTimeSlot45Null() ? 0 : row.TimeSlot45);
+        int appId = row.ApplicationID;
+        byte roleID = byte.Parse(Request.Params.Get("roleID").ToString());
+        int WNo = row.WeekNo;
+        string year = row.Year;
+        int MId = row.MeetingID;
+        string KFUPMUserID = "";
+        try
+        {
+            // HR.EmployeeRow employee = (HR.EmployeeRow)Session["user"];
+            //KFUPMUserID = employee.KFUPMUserID;
+            KFUPMUserID = bal.GetApplicationRole(appId, roleID)[0].Employee.KFUPMUserID;
+        }
+        catch
+        {
+
+        }
+
+        try
+        {
+            frmMeetingsAdapter.UpdateByPK(applID, WNo, year, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7, Slot8, Slot9, Slot10, Slot11, Slot12, Slot13, Slot14, Slot15, Slot16, Slot17, Slot18, Slot19, Slot20, Slot21, Slot22, Slot23, Slot24, Slot25, Slot26, Slot27, Slot28, Slot29, Slot30, Slot31, Slot32, Slot33, Slot34, Slot35, Slot36, Slot37, Slot38, Slot39, Slot40, Slot41, Slot42, Slot43, Slot44, Slot45,null, null, MId);
+            MeetingsTableAdapters.Form_MeetingMembersTableAdapter mAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+            mAdapter.UpdateMemPostStatus(bool.Parse("true"), row.MeetingID, empID, applID);
+
+            appTskLgExtAdapter.UpdateExtTskComplete(true
+                , appId
+                , tskExtAdapter.GetDataByTitle("Post Busy Schedule")[0].TaskID
+                , int.Parse(bal.GetApplicationRole(appId, roleID)[0].EmployeeID));
+            
+            ButtonPost.Enabled = false;
+            Alert1.Message("You have successfully posted your Busy Week Schedule.");
+            LabelAfterPost.Text = "You have successfully posted your Busy Week Schedule.";
+            LabelAfterPost.ForeColor = System.Drawing.Color.Blue;
+            
+            ExternalRemindersTableAdapters.BusySchedulePostStatusTableAdapter bSPSAdapter = new ExternalRemindersTableAdapters.BusySchedulePostStatusTableAdapter();
+
+            foreach (ExternalReminders.BusySchedulePostStatusRow rowBSPS in bSPSAdapter.GetData(appId))
+            {
+                if (!rowBSPS.Busy_Schedule)
+                    return;
+            }
+            //PromotionTableAdapters.PromotionCommitteeTempTableAdapter pcAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+           // HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();
+            
+            
+            Emailer.Send(bal.GetForm_FinalPC(appId)[0].Employee.KFUPMUserID, "All Members Posted", @"
+Dear " + bal.GetForm_FinalPC(appId)[0].Employee.NameString+ @", Chairman Promotion Committee of " + bal.GetApplicant(appId)[0].NameString + @",
+
+This is to inform you that all members have posted their busy schedules. You are now required to call for a meeting considering the busy schedules shown on the View Busy Schedule menu item after you open the Promotion application.
+
+Thanks 
+Online Faculty Promotion System. 
+", "AutoEmailer", appId);
+            
+            
+
+
+            
+        }
+        catch (Exception exe)
+        {
+            Label2.Text = exe.ToString() + "Not Correct";
+            throw (exe);
+        }
+        
+
+    }
+
+    public void getWeekDaysFromWeekNumber(int WeekNumber, string Year)
+    {
+        DateTime firstDate = DateTime.Parse("1/1/" + Year);
+        int compensation = 0;
+
+        switch (firstDate.DayOfWeek)
+        {
+
+            case DayOfWeek.Sunday:
+                compensation = 0;
+                break;
+            case DayOfWeek.Monday:
+                compensation = 1;
+                break;
+            case DayOfWeek.Tuesday:
+                compensation = 2;
+                break;
+            case DayOfWeek.Wednesday:
+                compensation = 3;
+                break;
+            case DayOfWeek.Thursday:
+                compensation = 4;
+                break;
+            case DayOfWeek.Friday:
+                compensation = 5;
+                break;
+            case DayOfWeek.Saturday:
+                compensation = 6;
+                break;
+
+        }
+
+        DateTime startDateOfWeek = (firstDate.AddDays((7 * (WeekNumber - 1)) - compensation));
+        DateTime endDateOfWeek = startDateOfWeek.AddDays(4);
+        Label1.Text = "<b>Start Date of Week: </b>" + startDateOfWeek.ToString("D") + "<br/><b>End Date of Week: </b>" + endDateOfWeek.ToString("D");
+        Label1.Visible = true;
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+    protected void LinkButtonR1_Click(object sender, EventArgs e)
+    {
+        CheckBox1.Checked = true;
+        CheckBox2.Checked = true;
+        CheckBox3.Checked = true;
+        CheckBox4.Checked = true;
+        CheckBox5.Checked = true;
+       
+    }
+    protected void LinkButtonR2_Click(object sender, EventArgs e)
+    {
+        CheckBox6.Checked = true;
+        CheckBox7.Checked = true;
+        CheckBox8.Checked = true;
+        CheckBox9.Checked = true;
+        CheckBox10.Checked = true;
+    }
+
+
+    protected void LinkButtonR3_Click(object sender, EventArgs e)
+    {
+        CheckBox11.Checked = true;
+        CheckBox12.Checked = true;
+        CheckBox13.Checked = true;
+        CheckBox14.Checked = true;
+        CheckBox15.Checked = true;
+    }
+
+    protected void LinkButtonR4_Click(object sender, EventArgs e)
+    {
+        CheckBox16.Checked = true;
+        CheckBox17.Checked = true;
+        CheckBox18.Checked = true;
+        CheckBox19.Checked = true;
+        CheckBox20.Checked = true;
+    }
+    protected void LinkButtonR5_Click(object sender, EventArgs e)
+    {
+        CheckBox21.Checked = true;
+        CheckBox22.Checked = true;
+        CheckBox23.Checked = true;
+        CheckBox24.Checked = true;
+        CheckBox25.Checked = true;
+
+    } 
+    protected void LinkButtonR6_Click(object sender, EventArgs e)
+    {
+        CheckBox26.Checked = true;
+        CheckBox27.Checked = true;
+        CheckBox28.Checked = true;
+        CheckBox29.Checked = true;
+        CheckBox30.Checked = true;
+
+    }
+    protected void LinkButtonR7_Click(object sender, EventArgs e)
+    {
+        CheckBox31.Checked = true;
+        CheckBox32.Checked = true;
+        CheckBox33.Checked = true;
+        CheckBox34.Checked = true;
+        CheckBox35.Checked = true;
+
+    } 
+    protected void LinkButtonR8_Click(object sender, EventArgs e)
+    {
+        CheckBox36.Checked = true;
+        CheckBox37.Checked = true;
+        CheckBox38.Checked = true;
+        CheckBox39.Checked = true;
+        CheckBox40.Checked = true;
+
+    }
+    protected void LinkButtonR9_Click(object sender, EventArgs e)
+    {
+        CheckBox41.Checked = true;
+        CheckBox42.Checked = true;
+        CheckBox43.Checked = true;
+        CheckBox44.Checked = true;
+        CheckBox45.Checked = true;
+
+    }
+
+
+    protected void LinkButtonC1_Click(object sender, EventArgs e)
+    {
+        CheckBox1.Checked = true;
+        CheckBox6.Checked = true;
+        CheckBox11.Checked = true;
+        CheckBox16.Checked = true;
+        CheckBox21.Checked = true;
+        CheckBox26.Checked = true;
+        CheckBox31.Checked = true;
+        CheckBox36.Checked = true;
+        CheckBox41.Checked = true;
+    }
+    protected void LinkButtonC2_Click(object sender, EventArgs e)
+    {
+        CheckBox2.Checked = true;
+        CheckBox7.Checked = true;
+        CheckBox12.Checked = true;
+        CheckBox17.Checked = true;
+        CheckBox22.Checked = true;
+        CheckBox27.Checked = true;
+        CheckBox32.Checked = true;
+        CheckBox37.Checked = true;
+        CheckBox42.Checked = true;
+    }
+    protected void LinkButtonC3_Click(object sender, EventArgs e)
+    {
+        CheckBox3.Checked = true;
+        CheckBox8.Checked = true;
+        CheckBox13.Checked = true;
+        CheckBox18.Checked = true;
+        CheckBox23.Checked = true;
+        CheckBox28.Checked = true;
+        CheckBox33.Checked = true;
+        CheckBox38.Checked = true;
+        CheckBox43.Checked = true;
+
+    }
+    protected void LinkButtonC4_Click(object sender, EventArgs e)
+    {
+        CheckBox4.Checked = true;
+        CheckBox9.Checked = true;
+        CheckBox14.Checked = true;
+        CheckBox19.Checked = true;
+        CheckBox24.Checked = true;
+        CheckBox29.Checked = true;
+        CheckBox34.Checked = true;
+        CheckBox39.Checked = true;
+        CheckBox44.Checked = true;
+
+    }
+    protected void LinkButtonC5_Click(object sender, EventArgs e)
+    {
+        CheckBox5.Checked = true;
+        CheckBox10.Checked = true;
+        CheckBox15.Checked = true;
+        CheckBox20.Checked = true;
+        CheckBox25.Checked = true;
+        CheckBox30.Checked = true;
+        CheckBox35.Checked = true;
+        CheckBox40.Checked = true;
+        CheckBox45.Checked = true;
+
+    }
+    protected void LinkButtonCA_Click(object sender, EventArgs e)
+    {
+        CheckBox1.Checked  = false;
+        CheckBox2.Checked  = false;
+        CheckBox3.Checked  = false;
+        CheckBox4.Checked  = false;
+        CheckBox5.Checked  = false;
+        CheckBox6.Checked  = false;
+        CheckBox7.Checked  = false;
+        CheckBox8.Checked  = false;
+        CheckBox9.Checked  = false;
+        CheckBox10.Checked = false; 
+        CheckBox11.Checked = false;
+        CheckBox12.Checked = false;
+        CheckBox13.Checked = false;
+        CheckBox14.Checked = false;
+        CheckBox15.Checked = false;
+        CheckBox16.Checked = false;
+        CheckBox17.Checked = false;
+        CheckBox18.Checked = false;
+        CheckBox19.Checked = false;
+        CheckBox20.Checked = false;
+        CheckBox21.Checked = false; 
+        CheckBox22.Checked = false; 
+        CheckBox23.Checked = false; 
+        CheckBox24.Checked = false; 
+        CheckBox25.Checked = false; 
+        CheckBox26.Checked = false; 
+        CheckBox27.Checked = false; 
+        CheckBox28.Checked = false; 
+        CheckBox29.Checked = false; 
+        CheckBox30.Checked = false; 
+        CheckBox31.Checked = false; 
+        CheckBox32.Checked = false; 
+        CheckBox33.Checked = false; 
+        CheckBox34.Checked = false; 
+        CheckBox35.Checked = false; 
+        CheckBox36.Checked = false; 
+        CheckBox37.Checked = false; 
+        CheckBox38.Checked = false; 
+        CheckBox39.Checked = false; 
+        CheckBox40.Checked = false; 
+        CheckBox41.Checked = false;  
+        CheckBox42.Checked = false;  
+        CheckBox43.Checked = false;  
+        CheckBox44.Checked = false;  
+        CheckBox45.Checked = false;  
+    }
+}

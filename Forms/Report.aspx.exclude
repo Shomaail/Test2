@@ -1,0 +1,46 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="Report.aspx.cs" Inherits="Forms_Report" Title="Faculty Promotion System - Promotion File" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Assembly="Microsoft.ReportViewer.WebForms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    Namespace="Microsoft.Reporting.WebForms" TagPrefix="rsweb" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    
+        
+            <uc1:Instruction ID="Instruction1" runat="server" />
+            
+        
+            <h3>Application File</h3>
+    <p>
+        <strong>
+            <asp:Panel ID="pnlReport" runat="server" Width="817px" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" Height="883px">
+            
+                <rsweb:ReportViewer ID="ReportViewer1" runat="server" BorderColor="Transparent" BorderStyle="Solid"
+                BorderWidth="1px" Font-Names="Verdana" Font-Size="8pt" Height="810px" ProcessingMode="Remote"
+                ShowParameterPrompts="False" Width="800px" InternalBorderColor="Transparent">
+                <ServerReport ReportPath="/Promotion Reports2/PromotionFile" ReportServerUrl="http://fedoraweb2/ReportServer" />
+            </rsweb:ReportViewer>
+                <br />
+                <br />
+            </asp:Panel>
+        </strong>&nbsp;</p>
+<%--    <p>
+        &nbsp;</p>
+
+         <h3>Points Calculations</h3>
+            <asp:Panel ID="pnlPoints" runat="server" Width="100%" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px">
+               
+   
+         <strong> <rsweb:ReportViewer ID="ReportViewer2" runat="server" BorderColor="Black" BorderStyle="Solid"
+                BorderWidth="1px" Font-Names="Verdana" Font-Size="8pt" Height="612px" ProcessingMode="Remote"
+                ShowParameterPrompts="False" Width="100%">
+                <ServerReport ReportPath="/Promotion Reports2/PointsFile" ReportServerUrl="http://fedoraweb2/ReportServer" />
+            </rsweb:ReportViewer>
+        </strong>
+            </asp:Panel>--%>
+        
+    
+</asp:Content>
+
+
+

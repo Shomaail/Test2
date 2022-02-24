@@ -1,0 +1,51 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="CallForMeeting.ascx.cs" Inherits="Controls_CallForMeeting" %>
+<%@ Register src="ComposeEmailOld.ascx" tagname="ComposeEmail" tagprefix="uc2" %>
+<asp:HiddenField ID="HiddenFieldMeetingDDT" runat="server" />
+<asp:HiddenField ID="hdnMeetingApplicant" runat="server" />
+<asp:HiddenField ID="hdnApplicationID" runat="server" />
+
+    <br />
+<asp:Panel ID="PanelCallForMeeting" runat="server" BackColor="#f7f7f7" 
+    BorderColor="#333333" BorderWidth="1px">
+<%--    <uc5:Instruction ID="Instruction2" runat="server" />--%>
+    <div align="center">
+<asp:Calendar ID="CalendarCall4Meeting" runat="server" BackColor="White" 
+    BorderColor="White" BorderWidth="1px" Font-Names="Verdana" Font-Size="9pt" 
+    ForeColor="Black" Height="190px" NextPrevFormat="FullMonth" 
+    onselectionchanged="CalendarCall4Meeting_SelectionChanged" 
+    SelectedDate="05/14/2011 10:34:12" Width="643px" FirstDayOfWeek="Sunday">
+    <DayHeaderStyle Font-Bold="True" Font-Size="8pt" />
+    <NextPrevStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" 
+        VerticalAlign="Bottom" />
+    <OtherMonthDayStyle ForeColor="#999999" />
+    <SelectedDayStyle BackColor="#007d40" ForeColor="White" />
+    <TitleStyle BackColor="White" BorderColor="Black" BorderWidth="4px" 
+        Font-Bold="True" Font-Size="12pt" ForeColor="#007d40" />
+    <TodayDayStyle BackColor="#CCCCCC" />
+</asp:Calendar>
+    
+<asp:DropDownList ID="DropDownListCall4Meeting" runat="server" Enabled="False" 
+    onselectedindexchanged="DropDownListCall4Meeting_SelectedIndexChanged" 
+    AutoPostBack="True" Height="31px" Width="320px">
+    <asp:ListItem Selected="True">Select any time for Meeting</asp:ListItem>
+    <asp:ListItem>7:00 - 8:00 AM</asp:ListItem>
+    <asp:ListItem>8:00 - 9:00 AM</asp:ListItem>
+    <asp:ListItem>9:00 - 10:00 AM</asp:ListItem>
+    <asp:ListItem>10:00 - 11:00 AM</asp:ListItem>
+    <asp:ListItem>11:00 - 12:00 Noon</asp:ListItem>
+    <asp:ListItem>12:00 - 1:00 PM</asp:ListItem>
+    <asp:ListItem>1:00 - 2:00 PM</asp:ListItem>
+    <asp:ListItem>2:00 - 3:00 PM</asp:ListItem>
+    <asp:ListItem>3:00 - 4:00 PM</asp:ListItem>
+    <asp:ListItem>4:00 - 5:00 PM</asp:ListItem>
+    <asp:ListItem>5:00 - 6:00 PM</asp:ListItem>
+    <asp:ListItem>6:00 - 7:00 PM</asp:ListItem>
+    <asp:ListItem>7:00 - 8:00 PM</asp:ListItem>
+</asp:DropDownList>
+    <br />
+    <asp:Button ID="ButtonReturn" runat="server" Text="Return" class="btn btn-primary btn-md"  
+        onclick="ButtonReturn_Click" />
+
+<uc2:ComposeEmail ID="ComposeEmail1" runat="server" OnEmailSent="ComposeEmail_EmailSent" OnEmailNotSent="ComposeEmail_EmailNotSent"/>
+</div>
+</asp:Panel>

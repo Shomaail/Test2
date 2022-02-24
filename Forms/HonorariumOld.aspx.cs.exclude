@@ -1,0 +1,125 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+
+public partial class Forms_Honorarium : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        //if (Master.CurrentFormLevel == -1)
+        //{
+        //    Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+        //    return;
+        //}
+
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+    }
+    protected void RadioButtonListHonorarium_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Email.ComposeEmailDataTable email = new Email.ComposeEmailDataTable();
+
+        if (RadioButtonListHonorarium.SelectedValue == "Promotion Committee")
+        {
+            string Name = "";
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter fnlPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            //fnlPCAdapter.GetByApplication(Master.ApplicationID,
+            Promotion.PromotionCommitteeTempDataTable fnlPCDT = fnlPCAdapter.GetData(Master.ApplicationID);
+            int serialNo = 1;
+            foreach (Promotion.PromotionCommitteeTempRow row in fnlPCDT)
+            {
+                if (row.DigitalSignature == true && row.isKFUPM == true)
+                    Name += serialNo++ + ". Dr. " + row.Name + " (" + row.Department + ")   " + row.EmployeeID + "\n\n\t";
+            }
+            email.NewComposeEmailRow();
+            email.AddComposeEmailRow("", "Honorarium to Ad-Hoc Promotion Committee"
+                , @"An Ad-hoc committee was formed with the following faculty members to consider the promotion request of one of the faculty members of KFUPM:
+
+        "
+                + Name + @"
+
+As the committee has finalized and submitted the report, please arrange to pay SAR. 1500/- to the Chairman and SAR 600/- to each of the members in accordance with H.E. the Rectors approval, which was already sent to you earlier.
+
+Thank you
+
+
+_____________________
+Dr. Saleh N. Abduljauwad
+Vice Rector for Graduate Studies & Scientific Research
+");
+
+            ComposeEmail1.LoadData(email);
+            if (Name != "")
+                ComposeEmail1.Visible = true;
+            else
+                Alert1.Message("There is no relevant Promotion Committee Member whom the email should be sent.");
+
+        }
+        else
+        {
+            string Name = "";
+            
+            Form.Form_FinalRefreeDataTable fnlExtRevDT = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(Master.ApplicationID);
+            int serialNo = 1;
+            foreach (Form.Form_FinalRefreeRow row in fnlExtRevDT)
+            {
+                if (row.EvaluationRecieved == true && row.PermitPC == true && row.UserName == "")
+                    Name += serialNo++ + ". Dr. " + row.Name + @" 
+                " + row.MailingAddress + @",
+                Passport No.:"+ row.SWIFTCode +@",
+                IBAN: "+ row.IBAN +"\n\n\t"; 
+            }
+            email.NewComposeEmailRow();
+            email.AddComposeEmailRow("", "Honorarium to the Reviewers", @"The ad-hoc committees for promotion of some faculty members had requested external evaluations of their publications. Accordingly, we have received evaluation reports from the following reviewers:
+
+        "
+
+                + Name + @"
+
+As per the standing university regulations, an honorarium of US$ 400.00 is paid to each reviewer on receipt of his report.  All the above mentioned reviewers have reviewed more than five research papers.  Please, therefore, arrange payment of this honorarium to each of the above external reviewers.
+
+
+Thank you
+
+_____________________
+Dr. Nasser Al-Aqeeli
+Vice Rector for Graduate Studies & Scientific Research
+
+");
+
+            ComposeEmail1.LoadData(email);
+            if (Name != "")
+                ComposeEmail1.Visible = true;
+            else
+                Alert1.Message("There is no relevant Reviewers whom the email should be sent.");
+
+        }
+    }
+    protected void ComposeEmail_OnEmailSent(object sender, EventArgs e)
+    {
+        Alert1.Message("Email has been successfully send.");
+        ComposeEmail1.Visible = false;
+
+    }
+
+    protected void ComposeEmail_OnEmailNotSent(object sender, EventArgs e)
+    {
+        ComposeEmail1.Visible = false;
+    }
+
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+}

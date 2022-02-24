@@ -1,0 +1,19 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="ScientificCouncil.aspx.cs" Inherits="Forms_ScientificCouncil" Title="Faculty Promotion System" %>
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register src="../Controls/ScientificCouncil.ascx" tagname="ScientificCouncil" tagprefix="uc2" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:Instruction ID="Instruction1" runat="server"  />
+    <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label>
+    <br />
+    <br />
+    <br />
+    <uc2:ScientificCouncil ID="ScientificCouncil1" runat="server" />
+    <br />
+    
+   
+    <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="Save Scientific Council" class="btn btn-primary btn-md" /><br />
+    <br />
+    <br />
+</asp:Content>

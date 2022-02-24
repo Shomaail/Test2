@@ -1,0 +1,91 @@
+﻿<%@ Page Title="" Language="C#"  MasterPageFile="~/ExtForms/ExtForm.master" AutoEventWireup="true" CodeFile="ExtRevProfile.aspx.cs" Inherits="ExtForms_ExtRevProfile"  meta:resourcekey="PageResource1"%>
+<%@ MasterType VirtualPath="~/ExtForms/ExtForm.master" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" Runat="Server">
+   
+    <table>
+        <tr>
+            <td><span><%=Resources.Resource.Name%> </span></td>
+            <td>
+                <input runat="server" id="taName" type="text" required="required" style="width: 600px;" /></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Address%> </span></td>
+            <td>
+                <textarea runat="server" id="taAddress" type="text" required="required" style="width: 600px;height:200px" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.PassportNo%> </span></td>
+            <td>
+                <textarea runat="server" id="taPassportNo" type="text" required="required" style="width: 600px;"  ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Bank%> </span></td>
+            <td>
+                <textarea runat="server" id="taBank" type="text" required="required"  style="width: 600px;"  ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Website%> </span></td>
+            <td>
+                <textarea runat="server" id="taWebsite" type="text" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Email%> </span></td>
+            <td>
+                <input runat="server" id="taEmail" type="email" readonly style="width: 600px;" /></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Rank%> </span></td>
+            <td>
+                <textarea runat="server" id="taRank" type="text" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Major%> </span></td>
+            <td>
+                <textarea runat="server" id="taMajor" type="text" required="required" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.Specialty%> </span></td>
+            <td>
+                <textarea runat="server" id="taSpecialty" type="text" required="required" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.ActiveAreaOfResearch%> </span></td>
+            <td>
+                <textarea runat="server" id="taActiveAreaOfResearch" type="text" required="required" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.PreviousAreaOfResearch%> </span></td>
+            <td>
+                <textarea runat="server" id="taPreviousAreaOfResearch" type="text" style="width: 600px;" ></textarea></td>
+        </tr>
+         <tr>
+            <td><span><%=Resources.Resource.PhoneNFax%> </span></td>
+            <td>
+                <textarea runat="server" id="taPhoneNFax" type="tel" style="width: 600px;" ></textarea></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.TotalPublications%></span></td>
+            <td>
+                <input runat="server" id="taTotalPublications" type="number" style="width: 600px;" /></td>
+        </tr>
+        <tr>
+            <td><span><%=Resources.Resource.NoOfJournals%></span></td>
+            <td>
+                <input runat="server" id="taNoOfJournals" type="number" style="width: 600px;"  /></td>
+        </tr>
+                <tr>
+            <td><span><%=Resources.Resource.HIndex%></span></td>
+            <td>
+                <input runat="server" id="taHIndex"  type="number" style="width: 600px;" /></td>
+        </tr>
+                <tr>
+            <td><span><%=Resources.Resource.Citations%></span></td>
+            <td>
+                <input runat="server" id="taCitations" type="number" style="width: 600px;" /></td>
+        </tr>
+    </table>
+    <asp:Button ID="btnSave1" runat="server" meta:resourceKey="btnSave" Text="Save Default" CssClass="btn" OnClick="btnSave_Click" />
+    <%--<asp:Button ID="btnSave" runat="server" Text="<%$ Resources:Resource, SaveButtonText %>" CssClass="btn" OnClick="btnSave_Click" />--%>
+ </asp:Content>
+

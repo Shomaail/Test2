@@ -1,0 +1,13 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PostBusySchedule.aspx.cs" Inherits="Forms_PostBusySchedule" Title="Faculty Promotion System" MaintainScrollPositionOnPostback="true" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%--<%@ Register Src="~/Controls/BusyScheduleMember.ascx" TagName="PostBusySchedule" TagPrefix="uc1" %>--%>
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<span style="color: #FF3300"><strong>The Meeting scheduling through Busy week posting is disabled due to the upgrade in the Framework. 
+    <br/>
+    </strong></span>We are sorry for inconvenience 
+<uc2:Instruction ID="Instruction1" runat="server" Visible="false" />
+    &nbsp;<br />
+<%--<uc1:PostBusySchedule ID="PostBusySchedule1" runat="server" Visible="false"/>--%>
+</asp:Content>
+

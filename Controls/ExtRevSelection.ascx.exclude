@@ -1,0 +1,555 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ExtRevSelection.ascx.cs" Inherits="Controls_ExtRevComm" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register TagPrefix="mp" TagName="MyMP" Src="~/Forms/Forms.master"  %>
+
+
+<table>
+     <tr>
+        <td style="vertical-align: bottom">
+            <h3>Final External Reviewers</h3>
+            (sorted by Priority)
+        </td>
+
+        
+        <td></td>
+    </tr>
+    <tr>
+
+        <td style="text-align: center">
+            <asp:HyperLink Target="_blank" ToolTip="This document shows you how to use Scopus for filling the last four columns for external reviewers in the in the Faculty Promotion System namely Total Publications., No. Of Journal Publications, H-index and No. Of Citations" ID="HyperLinkHowfindTP_NoJ_HIndex" runat="server" NavigateUrl="~/Documents/HowtofindTotPublication_NoofJournals_h-Index_CitationForExternalReviewers.pdf">How to find?</asp:HyperLink>
+            &nbsp;                
+                <asp:HyperLink Target="_blank" ToolTip="Scopus" ID="hlScopus" runat="server" NavigateUrl="http://www.scopus.com/search/form.url?display=authorLookup">Scopus</asp:HyperLink>
+          
+        </td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">
+            <asp:GridView ID="GridViewFinalExtReviewers" runat="server" AutoGenerateColumns="False" class="table-condensed"
+                DataSourceID="odsFinalRefreeBAL" BorderColor="#3062AF"
+                OnSelectedIndexChanged="GridViewFinalExtReviewers_SelectedIndexChanged"
+                DataKeyNames="RefreeID" CellPadding="4" ForeColor="#333333"
+                OnRowDataBound="GridViewFinalExtReviewers_RowDataBound" EnableModelValidation="True">
+                <Columns>
+                    <asp:TemplateField ShowHeader="False">
+                        <EditItemTemplate>
+                            <asp:LinkButton ID="lbtnUpdate" runat="server" CausesValidation="True" ValidationGroup="UpdateFnlExtRev"
+                                CommandName="Update" Text="Update" CommandArgument='<%# Eval("RefreeID") %>'></asp:LinkButton>
+                            <asp:LinkButton ID="lbtnCancel" runat="server" CausesValidation="False"
+                                CommandName="Cancel" Text="Cancel"></asp:LinkButton>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lbtnEdit" runat="server" CausesValidation="False" CommandName="Edit"
+                                Text="Edit" CommandArgument='<%# Eval("RefreeID") %>'></asp:LinkButton>
+                            <asp:LinkButton ID="lbtnDelete" runat="server" CausesValidation="False"
+                                OnClientClick="return confirm('Are you sure you want to delete?');"
+                                CommandName="Delete" Text="Delete" CommandArgument='<%# Eval("RefreeID") %>'>
+                            </asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lbtnDetails" runat="server" CausesValidation="False" CommandName="Select" Text="Details"></asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Source" HeaderText="Source" ReadOnly="true" />
+                    <asp:TemplateField HeaderText="Priority" SortExpression="Priority">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="TextBox0" runat="server" Text='<%# Bind("Serial") %>'></asp:TextBox>
+                            <asp:FilteredTextBoxExtender ID="TextBox0_FilteredTextBoxExtender" runat="server"
+                                Enabled="True" TargetControlID="TextBox0" FilterType="Numbers">
+                            </asp:FilteredTextBoxExtender>
+
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label0" runat="server" Text='<%# Bind("Serial") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <%-- <asp:TemplateField HeaderText="Priority">
+                        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+                    </asp:TemplateField>--%>
+
+                    <asp:TemplateField HeaderText="Name" SortExpression="Name">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Name") %>'></asp:TextBox>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label1" runat="server" Text='<%# Bind("Name") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Total Publ." SortExpression="TotalPublications">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="tbTotalPublications" runat="server" Text='<%# Bind("TotalPublications") %>' Width="35px"></asp:TextBox>
+                            <asp:FilteredTextBoxExtender ID="tbTotalPublications_FilteredTextBoxExtender" runat="server"
+                                Enabled="True" TargetControlID="tbTotalPublications" FilterType="Numbers">
+                            </asp:FilteredTextBoxExtender>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label2" runat="server" Text='<%# Bind("TotalPublications") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="No Of Journals" SortExpression="NoOfJournals">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="tbNoOfJournals" runat="server" Text='<%# Bind("NoOfJournals") %>' Width="35px"></asp:TextBox>
+                            <asp:FilteredTextBoxExtender ID="tbNoOfJournals_FilteredTextBoxExtender" runat="server"
+                                Enabled="True" TargetControlID="tbNoOfJournals" FilterType="Numbers">
+                            </asp:FilteredTextBoxExtender>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label3" runat="server" Text='<%# Bind("NoOfJournals") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="H-Index" SortExpression="HIndex">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="tbHIndex" runat="server" Text='<%# Bind("HIndex") %>' Width="35px"></asp:TextBox>
+                            <asp:FilteredTextBoxExtender ID="tbHIndex_FilteredTextBoxExtender" runat="server"
+                                Enabled="True" TargetControlID="tbHIndex" FilterType="Numbers">
+                            </asp:FilteredTextBoxExtender>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label4" runat="server" Text='<%# Bind("HIndex") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Citations" SortExpression="Citations">
+                        <EditItemTemplate>
+                            <asp:TextBox ID="tbCitations" runat="server" Text='<%# Bind("Citations") %>' Width="35px"></asp:TextBox>
+                            <asp:FilteredTextBoxExtender ID="tbCitations_FilteredTextBoxExtender" runat="server"
+                                Enabled="True" TargetControlID="tbCitations" FilterType="Numbers">
+                            </asp:FilteredTextBoxExtender>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label5" runat="server" Text='<%# Bind("Citations") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                           <asp:TemplateField HeaderText="Total journal publications and H-index">
+                                    <ItemTemplate><asp:label runat="server" Text='<%# int.Parse(Eval("HIndex").ToString()) + int.Parse(Eval("NoOfJournals").ToString()) %>'></asp:label></ItemTemplate>                                    
+                                </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Affiliation">
+                        <EditItemTemplate>
+                            Email:<asp:TextBox ID="tbEmail" TextMode="MultiLine" runat="server" Text='<%# Bind("Email") %>'></asp:TextBox>
+                            <asp:TextBox ID="tbMailingAddress" TextMode="MultiLine" runat="server" Text='<%# Bind("MailingAddress") %>'></asp:TextBox>
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <strong>Email:</strong>
+                            <asp:Label ID="lblEmail" runat="server" Text='<%# Bind("Email") %>'></asp:Label>
+                            <asp:Label ID="Label6" runat="server" Text='<%# Bind("MailingAddress") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Speciality" HeaderText="Speciality" />
+             
+                </Columns>
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+                <EditRowStyle BackColor="#999999" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle BackColor="#007D40" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+                <EmptyDataTemplate>
+                    <asp:Label ID="Label1" runat="server" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px"
+                        Text="There is no External Reviewer Selected"></asp:Label>
+                </EmptyDataTemplate>
+            </asp:GridView>
+        </td>
+        <td style="vertical-align: top">
+            <asp:DetailsView ID="DetailsViewFinalExtReviewers" runat="server" AutoGenerateRows="False" class="table-condensed"
+                DataSourceID="odsFinalRefreeBAL"
+                Height="50px" Width="383px" CellPadding="4" ForeColor="#333333" GridLines="None" EmptyDataText="Click Detail in the above table to see the Detail View." EnableModelValidation="True">
+                <Fields>
+                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                    <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                    <asp:BoundField DataField="PhoneAndFax" HeaderText="PhoneAndFax" SortExpression="PhoneAndFax" />
+                    <asp:BoundField DataField="ActiveAreaOfResearch" HeaderText="ActiveAreaOfResearch"
+                        SortExpression="ActiveAreaOfResearch" />
+                    <asp:BoundField DataField="PrevAreaOfResearch" HeaderText="PrevAreaOfResearch" SortExpression="PrevAreaOfResearch" />
+                    <asp:BoundField DataField="Webpage" HeaderText="Webpage" SortExpression="Webpage" />
+                    <asp:BoundField DataField="Comments" HeaderText="Comments" SortExpression="Comments" />
+
+                </Fields>
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+                <EditRowStyle BackColor="#999999" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+            <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            </asp:DetailsView>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="LabelFinalExtReviewer" runat="server"></asp:Label></td>
+        <td></td>
+    </tr>
+
+    <tr>
+    <td style="vertical-align: bottom">
+            <h3>Suggested External Reviewers</h3>
+
+        </td>
+        </tr>
+    <tr>
+                         
+        <td>
+            <asp:GridView ID="GirdViewExtReviewers" runat="server" class="table"
+                AutoGenerateColumns="False" BorderColor="#3062AF"
+                CellPadding="4" DataKeyNames="ApplicationID,Type,Serial" DataSourceID="odsSuggestedExtReviewers"
+                ForeColor="Black"
+                OnRowCommand="GirdViewExtReviewers_RowCommand"
+                OnSelectedIndexChanged="GirdViewExtReviewers_SelectedIndexChanged"
+                EnableModelValidation="True" AllowSorting="false">
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <Columns>
+                    <asp:TemplateField>
+                        <ItemTemplate><%# Container.DataItemIndex % 10 +1%> </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:CommandField ShowSelectButton="True" />
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lbtnDetails" runat="server" CausesValidation="False" CommandArgument='<%# Container.DataItemIndex %>' CommandName="SelectDetails" Text="Details"></asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" ReadOnly="True"
+                        SortExpression="ApplicationID" Visible="False" />
+                    <asp:TemplateField HeaderText="Suggested by" SortExpression="Type">
+                        <ItemTemplate>
+                            <asp:Label ID="LabelSuggestedBy" runat="server" Text='<%# GetStatus() %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Serial" HeaderText="Serial" ReadOnly="True" SortExpression="Serial"
+                        Visible="False" />
+                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                    <asp:BoundField DataField="TotalPublications" HeaderText="Total Publications" ReadOnly="True" SortExpression="TotalPublications" />
+                    <asp:BoundField DataField="NoOfJournals" HeaderText="No Of Journals" ReadOnly="True" SortExpression="NoOfJournals" />
+                    <asp:BoundField DataField="HIndex" HeaderText="H-Index" ReadOnly="True" SortExpression="HIndex" />
+                    <asp:BoundField DataField="Citations" HeaderText="Citations" ReadOnly="True" SortExpression="Citations" />
+                           <asp:TemplateField HeaderText="Total journal publications and H-index">
+                                    <ItemTemplate><asp:label runat="server" Text='<%# int.Parse(Eval("HIndex").ToString()) + int.Parse(Eval("NoOfJournals").ToString()) %>'></asp:label></ItemTemplate>                                    
+                                </asp:TemplateField>
+                </Columns>
+                <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+                <EditRowStyle BackColor="#999999" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle BackColor="#007D40" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+            </asp:GridView>
+        </td>
+        <td style="vertical-align: top">
+            <asp:DetailsView ID="dvExtReviewers" runat="server" Height="50px" Width="125px" CellPadding="4" class="table-condensed"
+                 DataSourceID="odsSuggestedExtReviewers" EnableModelValidation="True" ForeColor="#333333" GridLines="None" AutoGenerateRows="False">
+                <Fields>
+                    <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+                    <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+
+                    <asp:BoundField DataField="MailingAddress" HeaderText="MailingAddress" SortExpression="MailingAddress" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+                    <asp:BoundField DataField="Major" HeaderText="Major" SortExpression="Major" />
+                    <asp:BoundField DataField="Speciality" HeaderText="Speciality" SortExpression="Speciality" />
+                    <asp:BoundField DataField="PhoneAndFax" HeaderText="PhoneAndFax" SortExpression="PhoneAndFax" />
+                    <asp:BoundField DataField="ActiveAreaOfResearch" HeaderText="ActiveAreaOfResearch"
+                        SortExpression="ActiveAreaOfResearch" />
+                    <asp:BoundField DataField="PrevAreaOfResearch" HeaderText="PrevAreaOfResearch" SortExpression="PrevAreaOfResearch" />
+                    <asp:BoundField DataField="Webpage" HeaderText="Webpage" ReadOnly="True" SortExpression="Webpage" />
+                    <asp:BoundField DataField="Comments" HeaderText="Comments" ReadOnly="True" SortExpression="Comments" />
+                </Fields>
+                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+                <EditRowStyle BackColor="#999999" />
+                <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+            <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+            </asp:DetailsView>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Button ID="btnSelectNew" class="btn btn-primary btn-md"  runat="server" Text="Show Panel for New Selection" OnClick="btnSelectNew_Click" />
+            <asp:Button ID="btnSelectNewHide" class="btn btn-primary btn-md" runat="server" Visible="false" CausesValidation="false" Text="Hide Panel for New Selection" OnClick="btnSelectNewHide_Click" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Panel ID="pnlSelectNewExtRev" runat="server" Visible="false" BorderStyle="Inset" Style="background-color: #CCDDFF">
+                <table class="table-condensed">
+                    <tr>
+                        <td colspan="2">
+                            <h3>New Selection of External Reviewers</h3>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width: 7px"></td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Name</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbName" runat="server" ValidationGroup="SelectNewExtRev"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbName" runat="server" ErrorMessage="*" ControlToValidate="tbName"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Rank</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbRank" runat="server" ValidationGroup="SelectNewExtRev"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbRank" runat="server" ErrorMessage="*" ControlToValidate="tbRank"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Mailing Address</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbMailingAddress" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbMailingAddress" runat="server" ErrorMessage="*" ControlToValidate="tbMailingAddress"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Email</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbEmail" runat="server" ValidationGroup="SelectNewExtRev" TextMode="multiLine" ToolTip="Only one Email Address and Make sure there is no space"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbEmail" runat="server" ErrorMessage="*" ControlToValidate="tbEmail"></asp:RequiredFieldValidator>
+                            <asp:RegularExpressionValidator ID="regEmailTo" ControlToValidate="tbEmail" Text="(Invalid email)"
+                                ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" runat="server" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Major</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbMajor" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbMajor" runat="server" ErrorMessage="*" ControlToValidate="tbMajor"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Speciality</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbSpeciality" runat="server" ValidationGroup="SelectNewExtRev"
+                                TextMode="MultiLine" onDrop="return false;"
+                                onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);">
+                            </asp:TextBox><asp:RequiredFieldValidator ID="rfvtbSpeciality" runat="server" ErrorMessage="*"
+                                ControlToValidate="tbSpeciality"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Active Area of Research</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbActiveAreaofResearch" runat="server" ValidationGroup="SelectNewExtRev"
+                                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);"
+                                onPaste="return limitClipBoard(this,4000);"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvtbActiveAreaofResearch" runat="server" ErrorMessage="*"
+                                ControlToValidate="tbActiveAreaofResearch"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Previous Area of Research</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbPrevAreaOfResearch" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);"></asp:TextBox></td>
+
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Phone and fax</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbPhoneFax" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);"></asp:TextBox></td>
+
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Webpage</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbWebpageNew" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);"></asp:TextBox></td>
+
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Comments</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbCommentsNew" runat="server" ValidationGroup="SelectNewExtRev" TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" onPaste="return limitClipBoard(this,500);"></asp:TextBox></td>
+
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Total Publications</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbTotalPublicationsNew" runat="server" TextMode="SingleLine">0</asp:TextBox>
+                            <asp:RangeValidator ID="RangeValidatorTotPub" runat="server"
+                                ControlToValidate="tbTotalPublicationsNew" ErrorMessage="*"
+                                MaximumValue="1000000" MinimumValue="0" SetFocusOnError="True" Type="Integer"
+                                ToolTip="Enter an Integer Value"></asp:RangeValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">No Of Journals</th>
+                        <td style="height: 31px">
+
+                            <asp:TextBox ID="tbNoOfJournalsNew" runat="server" TextMode="SingleLine">0</asp:TextBox>
+                            <asp:RangeValidator ID="RangeValidatorNoOfJour" runat="server"
+                                ControlToValidate="tbNoOfJournalsNew" ErrorMessage="*"
+                                MaximumValue="1000000" MinimumValue="0" SetFocusOnError="True" Type="Integer"
+                                ToolTip="Enter an Integer Value"></asp:RangeValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">H-Index</th>
+                        <td style="height: 31px">
+
+                            <asp:TextBox ID="tbHIndexNew" runat="server" TextMode="SingleLine">0</asp:TextBox>
+                            <asp:RangeValidator ID="rvHIndexNew" runat="server"
+                                ControlToValidate="tbHIndexNew" ErrorMessage="*"
+                                MaximumValue="1000000" MinimumValue="0" SetFocusOnError="True" Type="Integer"
+                                ToolTip="Enter an Integer Value"></asp:RangeValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="PointsHeader">Citations</th>
+                        <td style="height: 31px">
+                            <asp:TextBox ID="tbCitationsNew" runat="server" TextMode="SingleLine">0</asp:TextBox>
+                            <asp:RangeValidator ID="rvCitationsNew" runat="server"
+                                ControlToValidate="tbCitationsNew" ErrorMessage="*"
+                                MaximumValue="1000000" MinimumValue="0" SetFocusOnError="True" Type="Integer"
+                                ToolTip="Enter an Integer Value"></asp:RangeValidator></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Button ID="ButtonSelectNewExtReviewer" runat="server" class="btn btn-primary btn-md"  OnClick="ButtonSelectNew_Click"
+                                Text="Select" /></td>
+                    </tr>
+
+
+                </table>
+            </asp:Panel>
+        </td>
+    </tr>
+
+    
+   
+    <tr>
+        <td style="vertical-align: top">
+            <asp:Button ID="ButtonSaveRankedSelection" runat="server" class="btn btn-primary btn-md" 
+                Text="Save Ranked Selection" Visible="False" /></td>
+        <td></td>
+    </tr>
+</table>
+
+<asp:ObjectDataSource ID="odsSuggestedExtReviewers" runat="server" DeleteMethod="DeleteRefree"
+    SelectMethod="GetRefree"
+    TypeName="BAL" UpdateMethod="UpdateRefree">
+    <DeleteParameters>
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="Byte" />
+        <asp:Parameter Name="Serial" Type="Byte" />
+    </DeleteParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="Name" Type="String" />
+        <asp:Parameter Name="Rank" Type="String" />
+        <asp:Parameter Name="MailingAddress" Type="String" />
+        <asp:Parameter Name="Email" Type="String" />
+        <asp:Parameter Name="Major" Type="String" />
+        <asp:Parameter Name="Speciality" Type="String" />
+        <asp:Parameter Name="PhoneAndFax" Type="String" />
+        <asp:Parameter Name="ActiveAreaOfResearch" Type="String" />
+        <asp:Parameter Name="PrevAreaOfResearch" Type="String" />
+        <asp:Parameter Name="Webpage" Type="String" />
+        <asp:Parameter Name="Comments" Type="String" />
+        <asp:Parameter Name="TotalPublications" Type="Int32" />
+        <asp:Parameter Name="NoOfJournals" Type="Int32" />
+        <asp:Parameter Name="HIndex" Type="Int32" />
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="Byte" />
+        <asp:Parameter Name="Serial" Type="Byte" />
+    </UpdateParameters>
+    <SelectParameters>
+            <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" 
+                QueryStringField="applicationID" Type="Int32" />
+    </SelectParameters>
+
+</asp:ObjectDataSource>
+<%--<asp:ObjectDataSource ID="ObjectDataSourceFinalExtReviewers" runat="server" DeleteMethod="DeleteQuery" SelectMethod="GetData"
+    TypeName="FormTableAdapters.Form_FinalRefreeTableAdapter" OldValuesParameterFormatString="original_{0}" UpdateMethod="Update">
+    <DeleteParameters>
+        <asp:Parameter Name="RefreeID" Type="Int32" />
+    </DeleteParameters>
+    <SelectParameters>
+        <asp:SessionParameter DefaultValue="1" Name="ApplicationID" SessionField="ApplicationIDGlobal"
+            Type="Int32" />
+    </SelectParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="Byte" />
+        <asp:Parameter Name="Serial" Type="Byte" />
+        <asp:Parameter Name="Name" Type="String" />
+        <asp:Parameter Name="Rank" Type="String" />
+        <asp:Parameter Name="MailingAddress" Type="String" />
+        <asp:Parameter Name="Email" Type="String" />
+        <asp:Parameter Name="Major" Type="String" />
+        <asp:Parameter Name="Speciality" Type="String" />
+        <asp:Parameter Name="PhoneAndFax" Type="String" />
+        <asp:Parameter Name="ActiveAreaOfResearch" Type="String" />
+        <asp:Parameter Name="PrevAreaOfResearch" Type="String" />
+        <asp:Parameter Name="PCComments" Type="String" />
+        <asp:Parameter Name="WLStatus" Type="String" />
+        <asp:Parameter Name="CommentsWithWL" Type="String" />
+        <asp:Parameter Name="UserAccess" Type="Boolean" />
+        <asp:Parameter Name="HardCopySent" Type="Boolean" />
+        <asp:Parameter Name="EvaluationRecieved" Type="Boolean" />
+        <asp:Parameter Name="ForwardToPC" Type="Boolean" />
+        <asp:Parameter Name="UserName" Type="String" />
+        <asp:Parameter Name="Password" Type="String" />
+        <asp:Parameter Name="PCCommentsSubmit" Type="Boolean" />
+        <asp:Parameter Name="PermitPC" Type="Boolean" />
+        <asp:Parameter Name="Webpage" Type="String" />
+        <asp:Parameter Name="Comments" Type="String" />
+        <asp:Parameter Name="DateWL" Type="DateTime" />
+        <asp:Parameter Name="TotalPublications" Type="Int32" />
+        <asp:Parameter Name="NoOfJournals" Type="Int32" />
+        <asp:Parameter Name="HIndex" Type="Int32" />
+        <asp:Parameter Name="SWIFTCode" Type="String" />
+        <asp:Parameter Name="IBAN" Type="String" />
+        <asp:Parameter Name="Citations" Type="Int32" />
+        <asp:Parameter Name="Original_RefreeID" Type="Int32" />
+    </UpdateParameters>
+</asp:ObjectDataSource>--%>
+<asp:ObjectDataSource ID="odsFinalRefreeBAL" runat="server" DeleteMethod="DeleteFinalRefree"
+    SelectMethod="GetFinalReferee" TypeName="BAL" UpdateMethod="UpdateFinalRefreeBySCSubCom">
+    <DeleteParameters>
+        <asp:Parameter Name="RefreeID" Type="Int32" />
+    </DeleteParameters>
+    <SelectParameters>
+        <asp:QueryStringParameter DefaultValue="-1" Name="applicationID" QueryStringField="applicationID" Type="Int32" />
+    </SelectParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="Name" Type="String" />
+        <asp:Parameter Name="TotalPublications" Type="Int32" />
+        <asp:Parameter Name="NoOfJournals" Type="Int32" />
+        <asp:Parameter Name="HIndex" Type="Int32" />
+        <asp:Parameter Name="Citations" Type="Int32" />
+        <asp:Parameter Name="MailingAddress" Type="String" />
+        <asp:Parameter Name="Email" Type="String" />
+        <asp:Parameter Name="Speciality" Type="String" />
+        <asp:Parameter Name="RefreeID" Type="Int32" />
+        <asp:Parameter Name="Serial" Type="Byte" />
+
+    </UpdateParameters>
+</asp:ObjectDataSource>
+
+<asp:Button runat="server" ID="hiddenTargetControlForModalPopup0" Style="display: none" class="btn btn-primary btn-md" />
+<asp:ModalPopupExtender runat="server" ID="programmaticModalPopup0" BehaviorID="programmaticModalPopupBehavior0"
+    TargetControlID="hiddenTargetControlForModalPopup0" PopupControlID="programmaticPopup0"
+    BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle0"
+    RepositionMode="RepositionOnWindowScroll">
+</asp:ModalPopupExtender>
+<asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup0" Style="display: none; width: 300px; padding: 10px">
+    <asp:Panel runat="Server" ID="programmaticPopupDragHandle0" Style="cursor: move; background-color: #DDDDDD; border: solid 1px Gray; color: Black; text-align: center;">
+        Message
+    </asp:Panel>
+    <asp:Label ID="labelProgrammaticPopup0" runat="server"></asp:Label>
+    <br />
+    <div align="center">
+        <asp:LinkButton runat="server" ValidationGroup="OKBtn" ID="hideModalPopupViaServer0" Text="OK" OnClick="hideModalPopupViaServer0_Click" />
+    </div>
+</asp:Panel>
+
+
+
+
+
+
+
+

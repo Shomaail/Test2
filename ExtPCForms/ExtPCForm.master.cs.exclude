@@ -1,0 +1,362 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms : System.Web.UI.MasterPage
+{
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+        if (IsPostBack) return;
+
+        try
+        {            
+            if (Session["pcMem"] == null)
+                throw new Exception("Invalid Session. Please login again!");
+
+            ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter extfrmInsAdapter = new ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter();
+            ExternalForms.ExtFormInstructionsDataTable extfrmInsTable= extfrmInsAdapter.GetData("Non-KFUPM Promotion Committee Members");
+            
+            formInstructions = new Hashtable();
+            formIDs          = new Hashtable();
+            string cuurentItemURL = "";
+            foreach (ExternalForms.ExtFormInstructionsRow row in extfrmInsTable)
+            {
+                string itemURL = row.Page;
+                formInstructions[row.Page] = row.IsInstructionNull() ? "" : row.Instruction;
+                formIDs[row.Page] = row.FormID;
+                /* header page-title */
+                if (row.Page == CurrentPageName)
+                {
+                    lblPageTitle.Text = row.Title;
+                    cuurentItemURL = itemURL;
+                }
+
+            }
+
+            Session["applicationFormInstruction" + ApplicationID] = formInstructions;
+            Session["applicationFormIDs" + ApplicationID] = formIDs;
+
+            if (IsPostBack) return;
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            Promotion.PromotionCommitteeTempRow myRow = adapter.GetDataByAutoNumberPK(int.Parse(Session["pcID"].ToString()))[0];
+         
+            lblApplicantEmail.Text = myRow.Name;
+            lblEmployee.Text = myRow.Name;
+            /* printer friendly */
+            if (Utils.IsPrintMode())
+            {
+                tdLeftMenu.Visible = false;
+                lnkPrint.Visible = false;
+            }
+            lnkPrint.NavigateUrl = cuurentItemURL + "?print=1";            
+            
+            
+        }
+        catch (Exception ex)
+        {
+           FormsAuthentication.SignOut();
+           FormsAuthentication.RedirectToLoginPage();
+//           Response.Write(ex.ToString());          
+        }
+    }
+    protected void Page_PreRender(object sender, EventArgs e)
+{
+
+            FormMenu.Items.Clear();
+
+            FormMenu.Items.Add(new MenuItem("Home", "", null, "ExtPCMain.aspx"));
+            FormMenu.Items.Add(new MenuItem("Post Busy Schedule", "", null, "Form_BusyScheduleMember.aspx"));
+            FormMenu.Items.Add(new MenuItem("Promotion Report", "", null, "Form_PromotionReportPCMem.aspx"));
+            FormMenu.Items.Add(new MenuItem("External Reviewers", "", null, "Form_ExtReviewerList.aspx"));
+            FormMenu.Items.Add(new MenuItem("Summary of External <br>Reviewers Forms","",null,"Form_SummaryReviewersForm.aspx"));
+            FormMenu.Items.Add(new MenuItem("Action", "", null, "Form_ExtPCAction.aspx"));                       
+            MenuItem blank = new MenuItem("&nbsp;");
+            blank.Selectable = false;
+            FormMenu.Items.Add(blank);
+            FormMenu.Items.Add(new MenuItem("Logout", "", null, "~/ExtPCLogout.aspx"));
+            //Session["applicationFormInstruction" + ApplicationID] = formInstructions;
+            //Session["applicationFormIDs" + ApplicationID] = formIDs;
+
+            
+            lblRole.Text = "Promotion Committee Member";
+            //lblAppOf.Text = "Application of";
+            
+}
+
+
+
+    /* check if a task is completed */
+    //refactor: return list of tasks
+//    public FormStatusStruct CheckFormTask(Promotion.TaskFormsRow form)
+//    {
+//        foreach (Promotion.ApplicationTaskFormRow row in FormsStatus)
+//        {
+//            if (row.FormID == form.FormID)
+//                return new FormStatusStruct(form.Title, row.Completed, row.Message.Length > 0 ? row.Message : "InComplete!");
+//        }
+//        return new FormStatusStruct();
+//    }
+
+
+//    private void ReportFormStatus(bool isComplete, string message)
+//    {
+//        PromotionTableAdapters.ApplicationTaskFormTableAdapter adapter = new PromotionTableAdapters.ApplicationTaskFormTableAdapter();
+//        try
+//        {
+//            adapter.InsertQuery(ApplicationID, TaskID, CurrentFormID, isComplete, message);
+//        }
+//        catch { }
+//        FormsStatus = null;
+//    }
+
+//    public void ReportSuccess()
+//    {
+//        ReportFormStatus(true, "");
+//    }
+
+//    public void ReportFailure(string errorMessage)
+//    {
+//        ReportFormStatus(false, errorMessage);
+//    }
+
+
+//    private Promotion.ActiveTasksRow activeTask = null;
+//    public Promotion.ActiveTasksRow ActiveTask
+//    {
+//        get
+//        {
+//            if (activeTask == null)
+//                if (Session["applicationTask" + ApplicationID] != null)
+//                    activeTask = (Promotion.ActiveTasksRow)Session["applicationTask" + ApplicationID];
+//                else
+//                {
+//                    PromotionTableAdapters.ActiveTasksTableAdapter adapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+//                    activeTask = adapter.GetActiveTaskByEmployee(ApplicationID, Employee.EmployeeID)[0];
+//                }
+
+//            return activeTask;
+//        }
+//    }
+
+//    private int taskID = -1;
+//    public int TaskID
+//    {
+//        get
+//        {
+//            if (taskID == -1)
+//                taskID = ActiveTask.TaskID;
+//            return taskID;
+//        }
+//    }
+
+//    private int roleID = -1;
+//    public int RoleID
+//    {
+//        get
+//        {   return ActiveTask.RoleID; }
+//    }
+
+//    private Hashtable formLevels = null;
+//    public Hashtable FormLevels
+//    {
+//        get
+//        {
+//            if (formLevels == null)
+//            {
+//                if (Session["applicationFormLevel" + ApplicationID] != null)
+//                    formLevels = (Hashtable)Session["applicationFormLevel" + ApplicationID];
+//                else
+//                    formLevels = new Hashtable();
+//            }
+//            return formLevels;
+//        }
+//    }
+
+
+    private int applicationID = -1;
+    public int ApplicationID
+    {
+        get
+        {
+            if (applicationID == -1)
+                try
+                {
+                    applicationID = int.Parse(Session["applicationID"].ToString());
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/ExtPCLogout.aspx");
+                }
+            
+            return applicationID;
+        }
+    }
+
+//    private Promotion.EmployeeRow employee = null;
+//    public Promotion.EmployeeRow Employee
+//    {
+//        get
+//        {
+//            if (employee == null)
+//                employee = (Promotion.EmployeeRow) Session["user"];
+//            return employee;
+//        }
+//    }
+
+//    private Promotion.TaskFormsDataTable taskForms = null;
+//    public Promotion.TaskFormsDataTable TaskForms
+//    {
+//        get
+//        {
+//            if (taskForms == null)
+//                taskForms = (Promotion.TaskFormsDataTable)Session["forms"];
+//            return taskForms;
+//        }
+//    }
+
+    string currPageName = null;
+    public string CurrentPageName
+    {
+        get
+        {
+            if (currPageName == null)
+            {
+                currPageName = Page.Request.ServerVariables["SCRIPT_NAME"];
+                currPageName = currPageName.Substring(currPageName.LastIndexOf("/") + 1);
+            }
+            return currPageName;
+        }
+    }
+//    public int CurrentFormLevel
+//    {
+//        get
+//        {
+//            if (FormLevels[CurrentPageName] == null)
+//                return -1;
+//            else
+//                return (int)FormLevels[CurrentPageName];
+//        }
+//    }
+
+
+    private Hashtable formInstructions = null;
+    public Hashtable FormInstructions
+    {
+        get
+        {
+            if (formInstructions == null)
+            {
+                if (Session["applicationFormInstruction" + ApplicationID] != null)
+                    formInstructions = (Hashtable)Session["applicationFormInstruction" + ApplicationID];
+                else
+                    formInstructions = new Hashtable();
+            }
+            return formInstructions;
+        }
+    }
+
+    private Hashtable formIDs = null;
+    public Hashtable FormIDs
+    {
+        get
+        {
+            if (formIDs == null)
+            {
+                if (Session["applicationFormIDs" + ApplicationID] != null)
+                    formIDs = (Hashtable)Session["applicationFormIDs" + ApplicationID];
+                else
+                    formIDs = new Hashtable();
+            }
+            return formIDs;
+        }
+    }
+
+
+    public string CurrentFormInstruction
+    {
+        get
+        {
+            if (FormInstructions[CurrentPageName] == null)
+                return null;
+            else
+                return FormInstructions[CurrentPageName].ToString();
+        }
+    }
+    public byte CurrentFormID
+    {
+        get
+        {
+            if (FormIDs[CurrentPageName] == null)
+                return byte.Parse("-1");
+            else
+                return (byte)FormIDs[CurrentPageName];
+        }
+    }
+
+
+//    private Promotion.ApplicationTaskFormDataTable formsStatus = null;
+//    public Promotion.ApplicationTaskFormDataTable FormsStatus
+//    {
+//        get
+//        {
+//            if (formsStatus == null)
+//            {
+//                if (Session["applicationFormsStatus" + ApplicationID] != null)
+//                    formsStatus = (Promotion.ApplicationTaskFormDataTable)Session["applicationFormsStatus" + ApplicationID];
+//                else
+//                {
+//                    formsStatus = new PromotionTableAdapters.ApplicationTaskFormTableAdapter().GetDataByApplication(ApplicationID, TaskID);
+//                    Session["applicationFormsStatus" + ApplicationID] = formsStatus;
+//                }
+
+//            }
+//            return formsStatus;
+//        }
+//        set
+//        {
+//            formsStatus = value;
+//            Session["applicationFormsStatus" + ApplicationID] = value;
+//        }
+//    }
+	
+//}
+
+
+//public struct FormStatusStruct
+//{
+
+//    public string task;
+//    public string Task
+//    {
+//        get { return task; }
+//    }
+//    private bool status;
+//    public bool Status
+//    {
+//        get { return status; }
+//    }
+//    private string message;
+
+//    public string Message
+//    {
+//        get { return message; }
+//        set { message = value; }
+//    }
+
+
+//    public FormStatusStruct(string t, bool s, string m)
+//    {
+//        task = t;
+//        status = s;
+//        message = m;
+//    }
+}

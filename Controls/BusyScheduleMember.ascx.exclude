@@ -1,0 +1,209 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="BusyScheduleMember.ascx.cs" Inherits="Controls_BusyScheduleMember" %>
+&nbsp; &nbsp;&nbsp;<br />
+&nbsp; &nbsp; <br />
+<asp:Label ID="Label2" runat="server"  Text="Week #"></asp:Label>
+<asp:TextBox ID="TextBoxWeekNo" runat="server" Enabled="false" BorderColor="White"></asp:TextBox>
+<br />
+<br />
+<asp:Label ID="Label1" runat="server"></asp:Label><br />
+<br />
+
+<table class="table-condensed">
+    <tr class="PointsHeader">
+        <td style="width: 187px; text-align: center">
+            Periods</td>
+        <td style="width: 111px; text-align: center">
+            Sunday
+        </td>
+        <td style="width: 100px; text-align: center">
+            Monday</td>
+        <td style="width: 100px; text-align: center">
+            Tuesday</td>
+        <td style="width: 100px; text-align: center">
+            Wednesday</td>
+        <td style="width: 110px; text-align: center">
+            Thursday</td>
+
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            7:00 - 8:00 AM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox1" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox2" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox3" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox4" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox5" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR1" runat="server" onclick="LinkButtonR1_Click">Select this row</asp:LinkButton> </td>
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            8:00 - 9:00 AM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox6" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox7" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox8" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox9" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox10" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR2" runat="server" onclick="LinkButtonR2_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            9:00 - 10:00 AM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox11" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox12" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox13" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox14" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox15" runat="server" /></td>
+        <td>
+                <asp:LinkButton ID="LinkButtonR3" runat="server" onclick="LinkButtonR3_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            10:00 - 11:00 AM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox16" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox17" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox18" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox19" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox20" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR4" runat="server" onclick="LinkButtonR4_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            11:00 - 12:00 Noon
+        </td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox21" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox22" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox23" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox24" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox25" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR5" runat="server" onclick="LinkButtonR5_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            12:00 - 1:00 PM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox26" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox27" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox28" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox29" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox30" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR6" runat="server" onclick="LinkButtonR6_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            1:00 - 2:00 PM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox31" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox32" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox33" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox34" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox35" runat="server" /></td>
+            <td>
+                <asp:LinkButton ID="LinkButtonR7" runat="server" onclick="LinkButtonR7_Click">Select this row</asp:LinkButton> </td>
+            
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            2:00 - 3:00 PM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox36" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox37" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox38" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox39" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox40" runat="server" /></td>
+        <td>
+                <asp:LinkButton ID="LinkButtonR8" runat="server" onclick="LinkButtonR8_Click">Select this row</asp:LinkButton> </td>
+                        
+    </tr>
+    <tr>
+        <td style="width: 187px">
+            3:00 - 4:00 PM</td>
+        <td style="width: 110px; text-align: center;">
+            <asp:CheckBox ID="CheckBox41" runat="server" /></td>
+        <td style="width: 111px; text-align: center;">
+            <asp:CheckBox ID="CheckBox42" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox43" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox44" runat="server" /></td>
+        <td style="width: 100px; text-align: center;">
+            <asp:CheckBox ID="CheckBox45" runat="server" /></td>
+        <td>
+                <asp:LinkButton ID="LinkButtonR9" runat="server" onclick="LinkButtonR9_Click">Select this row</asp:LinkButton> </td>
+                        
+            
+    </tr>
+    <tr>
+    <td></td>
+    <td>                <asp:LinkButton ID="LinkButtonC1" runat="server" onclick="LinkButtonC1_Click">Select this Column</asp:LinkButton> </td>
+    <td>                <asp:LinkButton ID="LinkButtonC2" runat="server" onclick="LinkButtonC2_Click">Select this Column</asp:LinkButton> </td>
+    <td>                <asp:LinkButton ID="LinkButtonC3" runat="server" onclick="LinkButtonC3_Click">Select this Column</asp:LinkButton> </td>
+    <td>                <asp:LinkButton ID="LinkButtonC4" runat="server" onclick="LinkButtonC4_Click">Select this Column</asp:LinkButton> </td>
+    <td>                <asp:LinkButton ID="LinkButtonC5" runat="server" onclick="LinkButtonC5_Click">Select this Column</asp:LinkButton> </td>
+    <td>                <asp:LinkButton ID="LinkButtonClearAll" runat="server" onclick="LinkButtonCA_Click">Clear All Selection</asp:LinkButton> </td>
+    
+    
+    
+    </tr>
+</table>
+<br />
+<asp:Button ID="ButtonPost" runat="server" OnClick="ButtonPost_Click" Text="Post" Width="137px" class="btn btn-primary btn-md" />
+<br />
+<br />
+<asp:Label ID="LabelAfterPost" runat="server"></asp:Label>
+<p>
+    &nbsp;</p>
+<asp:SqlDataSource ID="SqlDataSourcePC" runat="server" 
+    ConnectionString="<%$ ConnectionStrings:FPSDBConnectionString %>" 
+    SelectCommand="SELECT Form_FinalPromotionCommittee.Name, Form_FinalPromotionCommittee.Department, Form_MeetingMembers.PostingDateTime AS [Posting Time], Form_MeetingMembers.SchedulePostStatus AS [Busy Schedule] FROM Form_Meetings INNER JOIN Form_MeetingMembers ON Form_Meetings.MeetingID = Form_MeetingMembers.MeetingID LEFT OUTER JOIN Form_FinalPromotionCommittee ON Form_MeetingMembers.MembersID = Form_FinalPromotionCommittee.AutoNumberPK WHERE (Form_Meetings.MeetingStatus &lt;&gt; 0) AND (Form_Meetings.ApplicationID = @ApplicationID) ORDER BY Form_FinalPromotionCommittee.Position">
+    <SelectParameters>
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+    </SelectParameters>
+</asp:SqlDataSource><uc10:Alert ID="Alert1" runat="server" />
+

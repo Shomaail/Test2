@@ -1,0 +1,11 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtPCForms/ExtPCForm.master" AutoEventWireup="true" CodeFile="Form_ExtPCAction.aspx.cs" Inherits="ExtPCForms_Form_ExtPCAction" Title="KFUPM Online Faculty Promotion System" %>
+<%@ mastertype virtualpath="ExtPCForm.master" %>
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <asp:Button ID="ButtonDigitalSignature" runat="server" OnClick="ButtonDigitalSignature_Click"
+        Text="Digital Signature " /><br />
+    <asp:Label ID="LabelDS" runat="server"></asp:Label>
+</asp:Content>
+

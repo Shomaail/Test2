@@ -1,0 +1,40 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class ExtMain : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session != null)
+        {
+            if (Session["login"] == null)
+                Response.Redirect("~/ExtPCLogin.aspx");
+        }
+
+
+    }
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+
+        Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+        HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        HR.EmployeeRow applicant = empAdapter.GetApplicant(Int32.Parse(Session["applicationID"].ToString()))[0];
+
+        TextBoxMessage.Text =
+@"Dear Dr." + user.Name + ",Member Promotion Committee for the promotion case of Dr." + applicant.Name + @",
+A Promotion request of Dr." + applicant.Name + " of " + applicant.Department + @" Department, has been recieved in the Vice Rector office. Please go through the applicant's detail and with the coordination of other promotion committee members work out a promotion report.
+thanks 
+Dr. Nasser Al-Aqeeli
+Vice Rector for Research";
+
+
+    }
+}

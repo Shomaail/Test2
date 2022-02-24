@@ -1,0 +1,235 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using BL.Data;
+
+public partial class Forms_FormFinalExtRev : System.Web.UI.Page
+{
+    ExtRevBAL erBAL = new ExtRevBAL();
+    BAL bal = new BAL();         
+    private enum Mode { InputByCandidate = 1, ViewApp = 2, InputByDept = 3, ViewAppDept = 4, ViewAppDeptInputCollege = 5, ViewAppDeptCollege = 6 }
+    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        if (IsPostBack)
+            return;
+        ReviewerForm1.Visible = false;
+        FormMode = "View";
+        DatabindControls();
+    }
+    #region Properties
+    public string FormMode
+    {
+        set
+        {
+            ViewState["FormMode"] = value;
+        }
+        get
+        {
+            if (ViewState["FormMode"] != null)
+                return (string)ViewState["FormMode"];
+            else
+                return "";
+        }
+    }
+    public int ExternalReviewerID
+    {
+        get
+        {
+            if (hfExtRevID.Value.Length == 0)
+                return -1;
+            return int.Parse(hfExtRevID.Value);
+        }
+        set
+        {
+            hfExtRevID.Value = value.ToString();
+        }
+    }
+    #endregion
+    private void DatabindControls()
+    {
+        divFormFinalExtRev.DataBind();
+        divViewDetail.DataBind();
+        divSendWL.DataBind();
+    }
+
+   
+
+   
+    #region Event Handlers
+    #region Gridview
+    #region GridviewFormFinalExtRev
+     protected void gvFinalExtRev_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        int appID = Master.ApplicationID;
+        ExternalReviewerID = Convert.ToInt32(e.CommandArgument.ToString());
+        
+       
+        if (e.CommandName == "SelectDetail")
+        {
+            odsFormExtRevDet.SelectParameters["ExternalReviewerID"].DefaultValue = ExternalReviewerID.ToString();
+            dvExtReviewers.DataBind();
+            FormMode = "ExtRevDetail";
+            DatabindControls();
+
+        }
+        else if (e.CommandName == "SendWL")
+        {
+            Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(appID)
+                .Where(er => er.ExternalReviewerID == ExternalReviewerID).ToList()[0];
+            string messageBody = bal.GetTaskExtMessage(3)[0].Message;
+
+            messageBody = messageBody.Replace("(Selected Reviewers)", ffer.ExternalReviewer.Name);
+            messageBody = messageBody.Replace("refreeID=", "refreeID=" + ffer.EvaluationID);
+            messageBody = messageBody.Replace("@@ApplicantCollege@@", Master.Applicant.College);
+            messageBody = messageBody.Replace("@@Applicant@@", Master.Applicant.Name);
+            messageBody = messageBody.Replace("@@ApplicantDept@@", Master.Applicant.Department);
+            messageBody = messageBody.Replace("@@ApplicantRank@@", Master.Applicant.Rank);
+            messageBody = messageBody.Replace("@@ApplicantAreaOfSp@@", Adapters.FrmArSpAdapter.GetDataByAppId(appID)[0].AreaOfSpecialization);
+            Email.ComposeEmailDataTable email = new Email.ComposeEmailDataTable();
+            email.NewComposeEmailRow();
+            email.AddComposeEmailRow(ffer.ExternalReviewer.Email, "Request for willingness", messageBody);
+            ComposeEmail1.LoadData(email);
+            ComposeEmail1.Visible = true;
+            FormMode = "SendWL";
+            DatabindControls();
+        }
+        /*
+* Form_ReviewersForm
+* 
+* Status = 4 -- Submitted 
+* Status = 3 -- Updated
+* Status = 2 -- Saved Succesfully
+* Status = 1 -- Saved Unsuccesfully
+* Status = 0 -- Not saved (New)
+* 
+*/
+        if (e.CommandName == "ShowForm")
+        {
+            int evaluationID = int.Parse(e.CommandArgument.ToString());
+            ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapterRevForm = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+
+            Form.Form_FinalRefreeRow refreeRow = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(evaluationID)[0];
+
+            Session.Add("refreeID", evaluationID);
+            if (ReviewerForm1.GetFormStatus() == 4)
+            {
+                Response.Write(@"<script language=javascript>
+                    window.open ('ReviewersForm.aspx?refreeID=" + evaluationID + @"',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 700, width = 900, left = 200, top= 200, screenx=10,screeny=600,menubar=no');                   
+                    </script>");
+            }
+            else if ((ReviewerForm1.GetFormStatus() == 0 || ReviewerForm1.GetFormStatus() == 1 || ReviewerForm1.GetFormStatus() == 2) && refreeRow.UserAccess == false)
+            {
+                ReviewerForm1.Visible = true;
+                ReviewerForm1.LoadReviewerForm(true);
+
+                try
+                {
+                    ReviewerForm.Form_ReviewersFormDataTable reviewerForm = adapterRevForm.GetDataByPK(evaluationID);
+                    if (reviewerForm.Count != 0)
+                    {
+                        adapterRevForm.UpdateStatus(4, evaluationID);
+                        Adapters.FrmFnlRefAdapter.UpdateEvaluationRecieved(true, evaluationID);
+                    }
+                }
+                catch (Exception)
+                {
+
+
+                }
+
+                gvFinalExtRev.DataBind();
+
+
+
+            }
+            else
+            {
+                ReviewerForm1.Visible = false;
+            }
+        }   
+        gvFinalExtRev.DataBind();
+    }
+
+    protected void gvFinalExtRev_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+       
+    }    
+    #endregion
+  
+    
+    #endregion
+    #region Button Event Handlers
+
+
+    protected void btnHideDetail_Click(object sender, EventArgs e)
+    {
+        FormMode = "View";
+        DatabindControls();
+    }
+  
+    protected void hideModalPopupViaServer0_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup0.Hide();
+    }
+    #endregion
+    #region ComposeEmail
+    protected void ComposeEmail_OnEmailSent(object sender, EventArgs e)
+    {
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(Master.ApplicationID)
+            .Where(er => er.ExternalReviewerID == ExternalReviewerID).ToList()[0];
+        erBAL.DeleteFormFinalExtRev(ffer.ApplicationID, ffer.ExternalReviewerID);
+        erBAL.InsertFormFinalExtRev(ffer.ApplicationID, ffer.ExternalReviewerID, ffer.Serial,
+            "waiting",
+            DateTime.Now,
+            ffer.CommentsWithWL,
+            ffer.MaterialSentStatus,
+            ffer.MaterialSentDate,
+            ffer.EvaluationStatus,
+            ffer.EvaluationDate,
+            ffer.CommentsWithEval,
+            ffer.ShowExtRev2PC,
+            ffer.ShowEval2PC,
+            ffer.UserName,
+            ffer.Password,
+            ffer.Source,
+            ffer.EvaluationID
+            );
+        labelProgrammaticPopup0.Text = "Email has been successfully sent.";
+        this.programmaticModalPopup0.Show();
+        FormMode = "View";
+        DatabindControls();
+
+    }
+    protected void ComposeEmail_OnEmailNotSent(object sender, EventArgs e)
+    {
+        FormMode = "View";
+        DatabindControls();
+
+    }
+    #endregion
+    #endregion
+    public System.Drawing.Color GetColor(string status)
+    {
+        if (status == "Recieved") 
+            return System.Drawing.Color.Green;
+        else if (status == "Not Recieved") 
+            return System.Drawing.Color.Red;
+        else if (status == "Accepted")
+            return System.Drawing.Color.Green;
+        else if (status == "Declined")
+            return System.Drawing.Color.Red;
+        else if (status == "Withdrawn")
+            return System.Drawing.Color.Red;
+        return System.Drawing.Color.Black;
+
+    }
+
+    
+}

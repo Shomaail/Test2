@@ -1,0 +1,26 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/WillingnessLetter.master" AutoEventWireup="true" CodeFile="ShowWillingnessPC.aspx.cs" Inherits="Forms_ShowWillingnessPC" Title="Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/ShowWillingnessPC.ascx" TagName="ShowWillingnessPC"
+    TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:ShowWillingnessPC ID="ShowWillingnessPC1" runat="server" />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+</asp:Content>
+

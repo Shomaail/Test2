@@ -1,0 +1,609 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ReviewerForm.ascx.cs"
+    Inherits="Controls_ReviewerForm" %>
+
+<style type="text/css">
+    .style4
+    {
+        text-align: justify;
+    }
+    .auto-style1 {
+        color: #FF003A;
+    }
+</style>
+<asp:UpdatePanel ID="UpdatePanel1" runat="server"  UpdateMode="Conditional" ChildrenAsTriggers="false">
+
+    <Triggers>
+        <asp:PostBackTrigger ControlID="lbtnEvaluationAttachment" />
+        <asp:PostBackTrigger ControlID="lbtnDelEvaluationAttachment" />
+        <asp:PostBackTrigger ControlID="lbtnAdd" />
+       <%-- <asp:PostBackTrigger ControlID="LinkButtonSuppDoc" />
+        <asp:PostBackTrigger ControlID="ImageButtonDelSupDoc" />--%>
+    </Triggers>
+    <ContentTemplate>
+        <%--     window.scrollTo = function (x, y) {
+        return true;
+    }--%>
+        <script type="text/javascript">
+
+            function limitCharsLength(Object, MaxLen) {
+                if (Object.value.toString().indexOf(';') > -1 || Object.value.toString().indexOf('\'') > -1)
+                {
+                    Object.value = Object.value.toString().replace(";", ",").replace("'", " ");
+                    alert("Semicolon is not allowed. It is replaced by comma");
+                }
+                Object.value = Object.value.toString().replace(";", ",").replace("'", " ");
+                if (Object.value.length > MaxLen - 1) {
+                    Object.value = Object.value.substring(0, MaxLen);
+                    alert("Only "+ MaxLen +" Characters with spaces are allowed.");
+                }
+            }
+            function limitClipBoard(Object, MaxLen) {
+                if (window.clipboardData != null) {
+                    //alert("clipboardData  is not null");
+                    if (window.clipboardData.getData("Text").length > MaxLen - 1 - Object.value.length) {
+                        //  alert("clipboardData  is very big");
+                        window.clipboardData.setData("Text", window.clipboardData.getData("Text").toString().substring(0, (MaxLen - Object.value.length)));
+                        alert("Your copy/paste text size  is quite big. Only " + MaxLen + " characters with spaces are allowed.");
+                    }
+                }
+            }
+            function ValidateTextLength(oSrc, args) {
+                args.IsValid = args.Value.length > 20;
+            }
+
+        </script>
+        <%-- <script type="text/javascript">
+       //This function calls the web service    
+       function SaveUserInput() {
+           var fName = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_tbJustification1");
+           var lName = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_tbJustification2");
+           var draft = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_tbJustification3");
+           //Saving all input in a single value         
+           var input = fName.value + "+" + lName.value + "+" + draft.value;
+
+           //ProjName.WebServiceName.WebMethod         
+           Samples.AspNet.AsynchronousRevFormSave.SaveInput(input, SucceededCallback);
+       }
+       // This is the callback function that processes the Web Service return value.     
+       function SucceededCallback(result) {
+           var divPreview = document.getElementById("Preview");
+           divPreview.innerHTML = result;
+       }
+       // execute SaveUserInput for every 10 sec, timeout value is in miliseconds
+       window.setInterval('SaveUserInput()', 10000); 
+    
+</script>--%>
+        <div id="Preview">
+        </div>
+        <div style="text-align: center">
+            <h3>
+                Research Performance Evaluation Form For Promotion to the Rank of
+                <asp:Label ID="lblRank" runat="server"></asp:Label>
+            </h3>
+        </div>
+        <br />
+        <asp:Button ID="btnSaveCopy" runat="server" OnClick="btnSave_Click" Text="Save" Visible="False" class="btn btn-primary btn-md" >
+        </asp:Button>
+        <asp:Button ID="btnUpdateCopy" runat="server" OnClick="btnUpdate_Click" Text="Update" class="btn btn-primary btn-md" 
+            Visible="False"></asp:Button>
+        <table style="font-size: 12pt" class="table-condensed">
+            <tr>
+                <td style="width: 658px;">
+                    <br />
+                    <table>
+                        <tr runat="server">
+                            <td>
+                                <label>
+                                    Name of Reviewer:
+                                </label>
+                            </td>
+                            <td>                                
+                                <asp:TextBox ID="tbName" onKeyPress="return limitCharsLength(this,100);" onPaste="return limitClipBoard(this,100);" runat="server"></asp:TextBox><asp:Label ID="lblRankReviewer" runat="server" ></asp:Label>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator_tbName" ControlToValidate="tbName"
+                                    runat="server" ErrorMessage="*" ToolTip="Must Enter a Name"></asp:RequiredFieldValidator>
+                               
+                                <span class="auto-style1">
+                                <br />
+                                *Please write your complete Name (as per passport)</span> 
+                            </td>
+                        </tr>
+                        <tr runat="server">
+                            <td runat="server">
+                                <label>
+                                    University/Institute Name and Address:</label>
+                            </td>
+                            <td runat="server">
+                                <asp:TextBox ID="tbMailingAddress" runat="server" Font-Bold="True" AutoPostBack="True"
+                                    onKeyPress="return limitCharsLength(this,250);" onPaste="return limitClipBoard(this,250);"
+                                    OnTextChanged="tbMailingAddress_TextChanged" CssClass="unwatermarked" Height="50px"
+                                    TextMode="MultiLine" Width="518px"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvtbMailingAddress" ControlToValidate="tbMailingAddress"
+                                    runat="server" ErrorMessage="*" ToolTip="Must Enter an address"></asp:RequiredFieldValidator>
+                                <span class="auto-style1">*Please write your postal address with bank details for sending honorarium in your account </span>
+                  
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Passport No. :
+                            </td>
+                            <td>
+                                <asp:TextBox ID="tbSWIFTCode" runat="server" AutoPostBack="True" OnTextChanged="tbSWIFTCode_TextChanged"
+                                  onKeyPress="return limitCharsLength(this,50);" onPaste="return limitClipBoard(this,50);"
+                                      CssClass="unwatermarked" Height="25px" Width="344px"></asp:TextBox>
+                                <%--                    <asp:RegularExpressionValidator ID="revtbSWIFTCode" runat="server" 
+                        ValidationExpression="^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$"
+                        ErrorMessage="*" ControlToValidate="tbSWIFTCode"
+                        ToolTip="The SWIFT code entered is not in the correct format. However, it is saved"
+                        ></asp:RegularExpressionValidator>--%>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                IBAN/SWIFT CODE:
+                            </td>
+                            <td>
+                                <asp:TextBox ID="tbIBAN" runat="server" AutoPostBack="True" OnTextChanged="tbIBAN_TextChanged"
+                                    onKeyPress="return limitCharsLength(this,50);" onPaste="return limitClipBoard(this,50);"
+                                    CssClass="unwatermarked" Height="29px" Width="344px"></asp:TextBox>
+                                <%-- <asp:RegularExpressionValidator
+                        ValidationExpression="[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}"
+                        ID="revtbIBAN" runat="server" ErrorMessage="*" ControlToValidate="tbIBAN"
+                        ToolTip="The IBAN code entered is not in the correct format. However, it is saved"
+                        ></asp:RegularExpressionValidator>--%>
+                                
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </td>
+            </tr>
+        </table>
+        <table style="font-size: 12pt" class="table-condensed">
+            <tr>
+                <td style="width: 658px">
+                    <span style="color: #000000; font-family: Georgia">Please indicate how familiar you
+                        are with the area of specialization of applicant:<br />
+                    </span>
+                    <br />
+                    <asp:RadioButtonList ID="rblFamiliarity" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblFamiliarity_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="I am actively engaged in research in the  specific area of applicant."/>
+                        <asp:ListItem Value="2" Text="I have carried out research in the past in the specific area of applicant." />
+                        <asp:ListItem Value="3" Text="My experience is in the general area but I have not worked in the specific area of applicant." />
+                        <asp:ListItem Value="4" Text="Others:" />
+                    </asp:RadioButtonList>
+                    <asp:TextBox ID="TextBoxOthers" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,500);"
+                        AutoPostBack="True" OnTextChanged="TextBoxOthers_TextChanged"></asp:TextBox>
+                    <asp:Label ID="LabelOthers" runat="server" Visible="False" BorderStyle="Solid" BorderWidth="1px"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 658px" class="style4">
+                    
+                        <br />
+                        <span style="font-size: 15pt; font-family:Gisha">Questions 1 through 8 deal with the attributes of candidate 
+                            concerning his research achievements through his publications. For each of these
+                            attributes, please provide rating and justification of that rating.</span>
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        1. How would you rate the </span>
+                    <strong><i>
+                    productivity</i></strong> of the work of Candidate  in 
+                    terms of publication frequency and quantity?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ1" runat="server"   AutoPostBack="true" OnSelectedIndexChanged="rblQ1_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" />
+                        <asp:ListItem Value="2" Text="Very Good" />
+                        <asp:ListItem Value="3" Text="Good" />
+                        <asp:ListItem Value="4" Text="Fair" />
+                        <asp:ListItem Value="5" Text="Poor" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust1" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification1" ErrorMessage="Justification of Question #1 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator1"
+                            runat="server" ErrorMessage="Justification of Question #1 is too short" Text="(Please write one or two sentences)"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification1"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification1" runat="server" Height="85px" Width="658px" TextMode="MultiLine" 
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="true" OnTextChanged="tbJustification1_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                              
+                    <asp:Label ID="LabelJust1" runat="server" Visible="False" BorderStyle="Solid" BorderWidth="1px"></asp:Label>
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        2. How would you rate the overall <strong>quality of the journals </strong>in which
+                        the applicant has published?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ2" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ2_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" />
+                        <asp:ListItem Value="2" Text="Very Good" />
+                        <asp:ListItem Value="3" Text="Good" />
+                        <asp:ListItem Value="4" Text="Fair" />
+                        <asp:ListItem Value="5" Text="Poor" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust2" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification2" ErrorMessage="Justification of Question #2 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator2"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #2 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification2"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification2" runat="server" Height="85px" Width="658px" TextMode="MultiLine" 
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification2_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                   
+                    <asp:Label ID="LabelJustification2" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label>
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        3. How would you rate the overall <strong>quality of conferences</strong>?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ3" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ3_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource15" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource16" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource17" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource18" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource19" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator EnableClientScript="true" ID="rfvJust3" runat="server"
+                        ControlToValidate="tbJustification3" ErrorMessage="Justification of Question #3 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator3"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #3 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification3"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification3" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification3_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification3" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label>
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        4. How would you rate the <strong>originality</strong> of the publications of Candidate ?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ4" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ4_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource20" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource21" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource22" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource23" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource24" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator EnableClientScript="true" ID="rfvJust4" runat="server"
+                        ControlToValidate="tbJustification4" ErrorMessage="Justification of Question #4 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator4"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #4 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification4"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification4" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification4_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification4" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px; height: 17px">
+                    <span>
+                        <br />
+                        5. How would you rate the <strong>significance</strong> of the publications of Candidate?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ5" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ5_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource25" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource26" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource27" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource28" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource29" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust5" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification5" ErrorMessage="Justification of Question #5 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator5"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #5 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification5"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification5" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification5_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification5" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        6. How would rate the <strong>independence in research</strong>of candidate?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ6" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ6_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource30" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource31" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource32" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource33" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource34" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust6" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification6" ErrorMessage="Justification of Question #6 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator6"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #6 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification6"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification6" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification6_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification6" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        7. How would you rate the <strong>citations </strong>received by the work of Candidate?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ7" runat="server" OnSelectedIndexChanged="rblQ7_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource35" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource36" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource37" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource38" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource39" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust7" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification7" ErrorMessage="Justification of Question #7 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator7"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #7 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification7"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification7" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification7_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification7" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        8. To what degree you think the applicant has achieved <strong>scholarly stature</strong>
+                        ?</span><br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ8" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ8_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Text="Excellent" Selected="True" meta:resourcekey="ListItemResource40" />
+                        <asp:ListItem Value="2" Text="Very Good" meta:resourcekey="ListItemResource41" />
+                        <asp:ListItem Value="3" Text="Good" meta:resourcekey="ListItemResource42" />
+                        <asp:ListItem Value="4" Text="Fair" meta:resourcekey="ListItemResource43" />
+                        <asp:ListItem Value="5" Text="Poor" meta:resourcekey="ListItemResource44" />
+                    </asp:RadioButtonList>
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust8" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification8" ErrorMessage="Justification of Question #8 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator8"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #8 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification8"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification8" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification8_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                    <asp:Label ID="LabelJustification8" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        9. Please indicate your assessment of the promotability of the applicant </span>
+                    <br />
+                    <br />
+                    <asp:RadioButtonList ID="rblQ9" runat="server" AutoPostBack="True" Visible='<%# GetFormStatus() == 4 %>'>
+                        <asp:ListItem Value="1" Text="Promotable" Selected="True" meta:resourcekey="ListItemResource45" />
+                        <asp:ListItem Value="2" Text="Marginally Promotable" meta:resourcekey="ListItemResource46" />
+                        <asp:ListItem Value="3" Text="Unpromotable" meta:resourcekey="ListItemResource47" />
+                    </asp:RadioButtonList>
+                    <asp:RadioButtonList ID="rblQ9New" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblQ9New_SelectedIndexChanged" 
+                        Visible='<%# GetFormStatus() != 4 %>'>
+                        <asp:ListItem Value="1" Text="Promotable" Selected="True" meta:resourcekey="ListItemResource45" />                        
+                        <asp:ListItem Value="3" Text="Unpromotable" meta:resourcekey="ListItemResource47" />
+                    </asp:RadioButtonList>
+
+                    <br />
+                    <span>Justification</span>
+                    <asp:RequiredFieldValidator ID="rfvJust9" EnableClientScript="true" runat="server"
+                        ControlToValidate="tbJustification9" ErrorMessage="Justification of Question #9 is required"
+                        Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator9"
+                            runat="server" Text="(Please write one or two sentences)" ErrorMessage="Justification of Question #9 is too short"
+                            OnServerValidate="ValidateTextLength" ClientValidationFunction="ValidateTextLength"
+                            ControlToValidate="tbJustification9"></asp:CustomValidator>
+                    <br />
+                    <asp:TextBox ID="tbJustification9" runat="server" Height="85px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,4000);" onPaste="return limitClipBoard(this,4000);"
+                        AutoPostBack="True" OnTextChanged="tbJustification9_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                   
+                    <asp:Label ID="LabelJustification9" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                </td>
+            </tr>
+            <tr style="font-size: 12pt">
+                <td style="width: 658px">
+                    <span>
+                        <br />
+                        <br />
+                        Comments</span>
+                    <br />
+                    <asp:TextBox ID="tbComments" runat="server" Height="108px" Width="658px" TextMode="MultiLine"
+                        onDrop="return false;" onKeyPress="return limitCharsLength(this,2000);" onPaste="return limitClipBoard(this,2000);"
+                        AutoPostBack="True" OnTextChanged="tbComments_TextChanged" CssClass="unwatermarked"></asp:TextBox>
+                   
+                    <asp:Label ID="lblComments" runat="server" Visible="False" BorderStyle="Solid"
+                        BorderWidth="1px"></asp:Label><br />
+                    <br />
+                     <div id="divEvaluationAttachment" runat="server" style="border:dotted; float: left; width: inherit; padding-top: 10px; padding-bottom: 10px; width: 100%">
+                            <table class="table-condensed">
+                                <tr>
+                                    <td><span class="glyphicon glyphicon-paperclip">Attachment</span> <br /> Attach Scanned copy of your Passport along with any supporting or additional documents, if any</td>
+                                    <td>
+                                        <asp:LinkButton ID="lbtnEvaluationAttachment" runat="server" 
+                                            OnPreRender="lbtnEvaluationAttachment_PreRender"
+                                            ></asp:LinkButton></td>
+                                    <td>
+                                        <asp:LinkButton ID="lbtnDelEvaluationAttachment" runat="server" CausesValidation="False" ToolTip="Delete" CssClass="btn btn-default" 
+                                            OnClick="lbtnDelEvaluationAttachment_Click">
+                                            Delete <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
+                                        </asp:LinkButton>
+                                          
+                                    </td>
+                                    <td><asp:LinkButton ID="lbtnAdd" runat="server" CausesValidation="False" ToolTip="Add" CssClass="btn btn-default" OnClick="lbtnAdd_Click">
+                                            Add <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+                                        </asp:LinkButton>
+                        
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="file" id="EvaluationAttachment" runat="server" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    <%--<asp:Panel ID="PanelUploadSupDoc" runat="server">
+                        <fieldset style="width: 658px; background-color: #f0f0f0; border: 1px solid #007d40;
+                            padding: 5px; text-align: center;">
+                            <legend style="font-style: italic; font-weight: bold; background-color: #007d40;
+                                color: white">Supporting Document</legend>
+                            Attach Scanned copy of your Passport along with any supporting or additional documents, if any
+                            <br>
+                            </br>
+                            <asp:LinkButton ID="LinkButtonSuppDoc" runat="server" OnClick="LinkButtonSuppDoc_Click"></asp:LinkButton>
+                            <asp:Label ID="lblSize" runat="server"></asp:Label>
+                            <asp:ImageButton runat="server" ID="ImageButtonDelSupDoc" ImageUrl="~/images/delete_black.JPG"
+                                OnClick="ImageButtonDelSupDoc_Click" ToolTip="Click here to delete teh Uploaded Document"
+                                ValidationGroup="SuppDoc"></asp:ImageButton>
+                            &nbsp;<br />
+                            <asp:FileUpload ID="FileUploadSuppDoc" runat="server" Width="327px" />
+                            <asp:Button ID="ButtonUpload" CausesValidation="false" runat="server" Text="Upload" class="btn btn-primary btn-md" 
+                                OnClick="ButtonUpload_Click" ToolTip="Press this button to upload any Supporting Document" /></fieldset>
+                    </asp:Panel>--%>
+                    &nbsp;&nbsp;
+                </td>
+            </tr>
+        </table>
+     
+        <asp:ValidationSummary ShowSummary="true" ID="vsRevForm" runat="server" HeaderText="Incomplete:"
+            DisplayMode="BulletList" ShowMessageBox="true" />
+        <br />
+        Please click on the Update button and then click on ACTION in the menu items and submit the form
+        <br />
+        <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="Save" Visible="False" class="btn btn-primary btn-md" >
+        </asp:Button>
+        <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update" class="btn btn-primary btn-md" 
+            Visible="False"></asp:Button>
+        <asp:ObjectDataSource ID="odsRevForm" runat="server" UpdateMethod="UpdateReviewerForm"
+            TypeName="ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter" SelectMethod="GetReviewerFormByApplication"
+            OldValuesParameterFormatString="original_{0}" InsertMethod="InsertReviewerForm"
+            DeleteMethod="DeleteReviewerForm">
+            <DeleteParameters>
+                <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+                <asp:Parameter Name="Original_Type" Type="Int32" />
+                <asp:Parameter Name="Original_Serial" Type="Int32" />
+            </DeleteParameters>
+            <UpdateParameters>
+                <asp:Parameter Name="ApplicationID" Type="Int32" />
+                <asp:Parameter Name="Type" Type="Int32" />
+                <asp:Parameter Name="Serial" Type="Int32" />
+                <asp:Parameter Name="familiarity" Type="String" />
+                <asp:Parameter Name="Q1" Type="Int32" />
+                <asp:Parameter Name="Q1Justification" Type="Object" />
+                <asp:Parameter Name="Q2" Type="Int32" />
+                <asp:Parameter Name="Q2Justification" Type="String" />
+                <asp:Parameter Name="Q3" Type="Int32" />
+                <asp:Parameter Name="Q3Justification" Type="String" />
+                <asp:Parameter Name="Q4" Type="Int32" />
+                <asp:Parameter Name="Q4Justification" Type="String" />
+                <asp:Parameter Name="Q5" Type="Int32" />
+                <asp:Parameter Name="Q5Justification" Type="String" />
+                <asp:Parameter Name="Q6" Type="Int32" />
+                <asp:Parameter Name="Q6Justification" Type="String" />
+                <asp:Parameter Name="Q7" Type="Int32" />
+                <asp:Parameter Name="Q7Justification" Type="String" />
+                <asp:Parameter Name="Q8" Type="Int32" />
+                <asp:Parameter Name="Q8Justification" Type="String" />
+                <asp:Parameter Name="Q9" Type="Int32" />
+                <asp:Parameter Name="Q9Justification" Type="String" />
+                <asp:Parameter Name="Comments" Type="String" />
+                <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+                <asp:Parameter Name="Original_Type" Type="Int32" />
+                <asp:Parameter Name="Original_Serial" Type="Int32" />
+            </UpdateParameters>
+            <SelectParameters>
+                <asp:SessionParameter DefaultValue="1" Name="ApplicationID" SessionField="ApplicationID"
+                    Type="Int32" />
+                <asp:SessionParameter DefaultValue="1" Name="Type" SessionField="Type" Type="Int32" />
+                <asp:SessionParameter DefaultValue="1" Name="Serial" SessionField="Serial" Type="Int32" />
+            </SelectParameters>
+            <InsertParameters>
+                <asp:Parameter Name="ApplicationID" Type="Int32" />
+                <asp:Parameter Name="Type" Type="Int32" />
+                <asp:Parameter Name="Serial" Type="Int32" />
+                <asp:Parameter Name="familiarity" Type="String" />
+                <asp:Parameter Name="Q1" Type="Int32" />
+                <asp:Parameter Name="Q1Justification" Type="Object" />
+                <asp:Parameter Name="Q2" Type="Int32" />
+                <asp:Parameter Name="Q2Justification" Type="String" />
+                <asp:Parameter Name="Q3" Type="Int32" />
+                <asp:Parameter Name="Q3Justification" Type="String" />
+                <asp:Parameter Name="Q4" Type="Int32" />
+                <asp:Parameter Name="Q4Justification" Type="String" />
+                <asp:Parameter Name="Q5" Type="Int32" />
+                <asp:Parameter Name="Q5Justification" Type="String" />
+                <asp:Parameter Name="Q6" Type="Int32" />
+                <asp:Parameter Name="Q6Justification" Type="String" />
+                <asp:Parameter Name="Q7" Type="Int32" />
+                <asp:Parameter Name="Q7Justification" Type="String" />
+                <asp:Parameter Name="Q8" Type="Int32" />
+                <asp:Parameter Name="Q8Justification" Type="String" />
+                <asp:Parameter Name="Q9" Type="Int32" />
+                <asp:Parameter Name="Q9Justification" Type="String" />
+                <asp:Parameter Name="Comments" Type="String" />
+            </InsertParameters>
+        </asp:ObjectDataSource>
+        <asp:HiddenField ID="HiddenFieldSupDoc" runat="server" />
+        <asp:HiddenField ID="HiddenFieldSize" runat="server" />
+    </ContentTemplate>
+</asp:UpdatePanel>
+

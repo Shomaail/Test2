@@ -1,0 +1,436 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using BL.Data;
+public partial class Tasks : System.Web.UI.Page
+{
+    BAL bal = new BAL();
+
+    public List<byte> leri = new List<byte>();
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        try
+        {
+
+            if (Session["user"] != null && Request.QueryString["applicationID"] != null)
+            {
+                int applicationID = int.Parse(Request.QueryString["applicationID"]);
+                leri = bal.GetNameExclusion(CurRoleID).Select(ne => ne.ExcludedRoleID).ToList();
+                Employee emp = new Employee();
+                ExternalEmployee eEmp = new ExternalEmployee();
+                if (!(bool)Session["ExtEmp"])
+                {
+                    emp = Session["user"] as Employee;
+                    if (!Request.Url.ToString().Contains("localhost") && Request.QueryString["spaccess"] == null)
+                    {
+                        bal.InsertActionLog(emp.NameString + " (Email: " + emp.Email+ ")"
+                            + ((bool)Session["IsDeputy"] ? "(Deputy)" : "")
+                            + Session["userInfo"], DateTime.Now);
+                    }
+                }
+                else
+                {
+                    eEmp = Session["user"] as ExternalEmployee;
+                    if (!Request.Url.ToString().Contains("localhost") && Request.QueryString["spaccess"] == null)
+                    {
+                        bal.InsertActionLog(eEmp.NameString + " (email: " + eEmp.Email + ")"
+                            + ((bool)Session["IsDeputy"] ? "(Deputy)" : "")
+                            + Session["userInfo"], DateTime.Now);
+                    }
+                }
+                Session["ApplicationID"] = applicationID;
+                gvActiveTasks.DataSource = bal.GetAppTaskLog(applicationID)
+                    .Where(atl => !atl.Completed)
+                    .GroupBy(atl => atl.TaskID)
+                    .Select(group => group.First());
+                //.OrderBy(atl => atl.);
+
+
+                gvActiveTasks.DataBind();
+                //int curUserRole = int.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));          
+                //   string curUserRole = Cryptography.Decrypt(Request.QueryString["RoleID"].ToString());
+                //HR.EmployeeRow user = Session["user"] as HR.EmployeeRow;
+                
+                emp = Session["user"] as Employee;
+                ObjectDataSourceAppDetails.SelectParameters["EmployeeID"].DefaultValue = emp.EmployeeID;
+                PromotionTableAdapters.ApplicationsListTableAdapter adapter = new PromotionTableAdapters.ApplicationsListTableAdapter();                
+                Session["ApplicationID"] = applicationID; emp = Session["user"] as Employee;
+                Promotion.ApplicationsListRow application = adapter.GetDataByApplication(applicationID, emp.EmployeeID)[0];
+                ObjectDataSourceHistory.SelectParameters["ApplicationID"].DefaultValue = application.ApplicationID.ToString(); ;            
+                ObjectDataSourceHistory.SelectParameters["RoleID"].DefaultValue = CurRoleID.ToString();
+                ObjectDataSourceActiveTasks.SelectParameters["ApplicationID"].DefaultValue = application.ApplicationID.ToString(); ;
+                ObjectDataSourceActiveTasks.SelectParameters["RoleID"].DefaultValue = CurRoleID.ToString();
+                PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+                Promotion.ApplicationRow applicant = appAdapter.GetApplication(applicationID)[0];
+                WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter aAdapter = new WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter();
+                WorkflowDynamic.Application_TaskLogDataTable aTable = aAdapter.IsPCForumulated(applicationID);         
+                if (!Request.Url.ToString().Contains("localhost") && Request.QueryString["spaccess"] == null)
+                {
+                    bal.InsertActionLog(emp.Name + " " + emp.Email + " " + ((bool)Session["IsDeputy"] ? "(Deputy)" : ""), DateTime.Now);
+                }
+                //using (StreamWriter _testData = new StreamWriter(Server.MapPath("~/data.txt"), true))
+                //{
+                //    _testData.WriteLine(user.Name+" "+user.Email+""+DateTime.Now+" "); // Write the file.
+                //}
+                if (aTable.Count > 0)
+                {
+                      //if (curUserRole == 10 || curUserRole == 11 || curUserRole == 12 || curUserRole == 13 || curUserRole == 14)
+                        {
+                            PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapterPC = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+                            Promotion.PromotionCommitteeTempDataTable tablePC = adapterPC.GetData(applicationID);
+                            for (int i = 0; i < 5; i++)
+                            {
+                                try
+                                {
+                                    if (tablePC[i].EmployeeID == emp.EmployeeID)
+                                    {
+                                        Session["pcMem"] = tablePC[i];
+                                        break;
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                
+                                
+                                }
+                            }
+                        }
+                }
+             //   BAL bal = new BAL();
+                bool deptFlag = false, collegeFlag = false;
+                // bal.GetApplicationRole(applicationID).ForEach(Action<Application_Role1> action)
+                foreach (Application_Role ar in bal.GetApplicationRole(applicationID))
+                {
+                    if (ar.RoleID == 2)
+                    {
+                        deptFlag = true;
+                        continue;
+                    }
+                    if (ar.RoleID == 4)
+                    {
+                        collegeFlag = true;
+                        continue;
+                    }
+
+                }
+
+                    if (deptFlag == false || collegeFlag == false)
+                    {
+                        Emailer.Send("facpromote@kfupm.edu.sa", "Incomplete Promotion Application", @"The following user's promotion application has missing Chairman or Dean roles:
+
+                        Dr. " + emp.Name + " (" + emp.EmployeeID + "), email: " + emp.Email + @"
+                        Dept:" + emp.Department1.Name + @"
+                        College: " + emp.College + @"
+                        ApplicationID: " + applicationID, "Auto Mailer", -1);
+                        gvActiveTasks.Enabled = false;
+                        labelProgrammaticPopup0.Text = @"The promotion application for the user " + emp.Name + ", is incomplete with incorrect assignment of Dept Chairman or Dean . Please contact ITC or call the System Administrator at 7545. An Email is also sent to the Administrator.";
+                        this.programmaticModalPopup0.Show();
+                    }
+
+                }
+                else
+                {
+                    FormsAuthentication.SignOut();
+                  //  FormsAuthentication.RedirectToLoginPage();
+                    Response.Redirect("https://login.kfupm.edu.sa:8447/cas-web/logout?url=http://facultypromotion.kfupm.edu.sa/Login.aspx");
+                }
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+    }
+    public bool CheckTask(string employeeID, int eEmployeeID, string roleID)
+    {
+        //   int curUserRole = int.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));
+        if (Session["user"] != null)
+        {
+            Employee emp = new Employee();
+            ExternalEmployee eEmp = new ExternalEmployee();
+            if (!(bool)Session["ExtEmp"])
+            {
+                emp = Session["user"] as Employee;
+
+                if (employeeID == emp.EmployeeID && roleID == CurRoleID.ToString())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                eEmp = Session["user"] as ExternalEmployee;
+                if (eEmployeeID == eEmp.ExternalEmployeeID && roleID == CurRoleID.ToString())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    public bool CheckTask(string appID, string employeeID, int eEmployeeID, string roleID)
+    {
+        //var scMemRoleID = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38};
+        // int curUserRole = int.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));
+        if (Session["user"] != null)
+        {
+            Employee emp = new Employee();
+            ExternalEmployee eEmp = new ExternalEmployee();
+            if (!(bool)Session["ExtEmp"])
+            {
+                emp = Session["user"] as Employee;
+                if (employeeID == emp.EmployeeID && roleID == CurRoleID.ToString())
+                {
+                    if (emp.EmployeeID == appID && roleID != "1")
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                eEmp = Session["user"] as ExternalEmployee;
+                if (eEmployeeID == eEmp.ExternalEmployeeID && roleID == CurRoleID.ToString())
+                {
+                    if (emp.EmployeeID == appID && roleID != "1")
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+
+
+        }
+        return false;
+    }
+
+    //public bool CheckTask(string appID, string employeeID, int eEmployeeID, string roleID)
+    //{
+    //    //var scMemRoleID = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38};
+    //    //int curUserRole = int.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));
+    //    int curUserRole = int.Parse(Cryptography.Decrypt(Request.QueryString["RoleID"]));        
+    //    if (Session["user"] != null)
+    //    {
+    //        Employee emp = new Employee();
+    //        ExternalEmployee eEmp = new ExternalEmployee();
+    //        if (!(bool)Session["ExtEmp"])
+    //        {
+    //            emp = Session["user"] as Employee;
+    //            if (employeeID == emp.EmployeeID && roleID == curUserRole.ToString())
+    //            {
+    //                if (emp.EmployeeID == appID && roleID != "1")
+    //                {
+    //                    return false;
+    //                }
+    //                else
+    //                {
+    //                    return true;
+    //                }
+
+    //            }
+    //            else
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            eEmp = Session["user"] as ExternalEmployee;
+    //            if (eEmployeeID == eEmp.ExternalEmployeeID && roleID == curUserRole.ToString())
+    //            {
+    //                if (emp.EmployeeID == appID && roleID != "1")
+    //                {
+    //                    return false;
+    //                }
+    //                else
+    //                {
+    //                    return true;
+    //                }
+
+    //            }
+    //            else
+    //            {
+    //                return false;
+    //            }
+    //        }
+
+
+
+    //    }
+    //    return false;
+    //}
+    //public bool CheckTask(string employeeID, int eEmployeeID, string roleID)
+    //{
+    //    int curUserRole = int.Parse(Cryptography.Decrypt(Request.QueryString["RoleID"]));
+    //    if (Session["user"] != null)
+    //    {
+    //        Employee emp = new Employee();
+    //        ExternalEmployee eEmp = new ExternalEmployee();
+    //        if (!(bool)Session["ExtEmp"])
+    //        {
+    //            emp = Session["user"] as Employee;
+
+    //            if (employeeID == emp.EmployeeID && roleID == curUserRole.ToString())
+    //            {
+    //                return true;
+    //            }
+    //            else
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            eEmp = Session["user"] as ExternalEmployee;
+    //            if (eEmployeeID == eEmp.ExternalEmployeeID && roleID == curUserRole.ToString())
+    //            {
+    //                return true;
+    //            }
+    //            else
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //    }
+    //    return false;
+    //}
+    #region Properties
+    private byte curRoleID = 0;
+    public byte CurRoleID
+    {
+        get
+        {
+            if (curRoleID == 0)
+            {
+                try
+                {
+                    //       curRoleID = byte.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));
+                    curRoleID = byte.Parse(Cryptography.Decrypt(Request.QueryString["roleID"].Replace(" ", "+")));
+            //        curRoleID = byte.Parse(Cryptography.Decrypt(Request.QueryString["RoleID"].ToString()));
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/Main.aspx");
+
+                }
+            }
+            return curRoleID;
+        }
+    }
+    #endregion
+    public bool CheckTask(string employeeID, string roleID)
+    {
+        Employee emp = new Employee();
+
+        if (Session["user"] != null)
+        {
+            emp = Session["user"] as Employee;
+
+            if (employeeID == emp.EmployeeID && roleID == Cryptography.Decrypt(Request.QueryString["RoleID"]))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        return false;
+    }
+    public bool CheckTask(string appID, string employeeID, string roleID)
+    {
+        Employee emp = new Employee();
+        //var scMemRoleID = new List<int> { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38};
+        if (Session["user"] != null)
+        {
+            //HR.EmployeeRow user = Session["user"] as HR.EmployeeRow;
+            emp = Session["user"] as Employee;
+            //int curUserRole = int.Parse(Request.QueryString["RoleID"].Replace("ae54sdafaas5313qw", "").Replace("f98poj64lsks98336hujm9811336fsdf", ""));
+            if (employeeID == emp.EmployeeID && roleID == Cryptography.Decrypt(Request.QueryString["RoleID"]))
+            {
+                if (emp.EmployeeID == appID && roleID != "1")
+                { 
+                    return false; 
+                }
+                else
+                {
+
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+    public string GetStatus(string appID)
+    {
+        string status;
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow appRow = appAdapter.GetApplication(int.Parse(appID))[0];
+        if (appRow.ApplicationClosed == true)
+        { 
+            status = "(Closed)"; 
+        }
+        else
+        {
+            status = "(Pending)";
+        }
+        return status;
+    }
+    public string GetRole(byte RoleID)
+    {
+        PromotionTableAdapters.RoleTableAdapter roleAdapter = new PromotionTableAdapters.RoleTableAdapter();
+        return roleAdapter.GetDataByRoleID(RoleID)[0].Title;
+        
+    }
+    protected void hideModalPopupViaServer0_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup0.Hide();
+    }
+}

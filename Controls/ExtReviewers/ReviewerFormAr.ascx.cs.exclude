@@ -1,0 +1,712 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.IO;
+
+public partial class Controls_ReviewerFormAr : System.Web.UI.UserControl
+{
+    public int state;
+    /*
+     * Form_ReviewersForm
+     * 
+     * Status = 4 -- Submitted 
+     * Status = 3 -- Updated
+     * Status = 2 -- Saved Succesfully
+     * Status = 1 -- Saved Unsuccesfully
+     * Status = 0 -- Not saved (New)
+     * 
+     */
+    public Adapters adapters;
+    public Controls_ReviewerFormAr()
+    {
+        adapters = new Adapters();
+    }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        //    Page.Validate();    
+     //   Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "Javascript", "<script language=javascript src='JScript.aspx.js'>");
+    }
+   
+    public void LoadReviewerForm(bool isCalledFromForm)
+    {
+        if (Page.IsPostBack && !isCalledFromForm) 
+        { 
+
+            return; 
+        }
+        rblQ9.DataBind();
+        rblQ9New.DataBind();
+
+            if (Request["ACTION_TYPE"] != null)
+            {
+                string action_type = Request["ACTION_TYPE"].ToString();
+
+                if (action_type != null)
+                {
+                    if (action_type.ToUpper() == "VIEW")
+                    {
+                        LoadReviewerFormToView();
+                    }
+                    else if (action_type.ToUpper() == "UPDATE")
+                    {
+                        LoadReviewerFormToUpdate();
+                    }
+                    else if (action_type.ToUpper() == "CREATE")
+                    {
+                        btnSave.Visible = true;
+                        btnSaveCopy.Visible = true;
+                    }
+                }
+            }
+            else
+            {
+                if (GetFormStatus() == 3)
+                {
+                    LoadReviewerFormToView();
+                }
+                else if (GetFormStatus() == 1 || GetFormStatus() == 2)
+                {
+                    LoadReviewerFormToUpdate();
+                }
+                else if (GetFormStatus() == 0)
+                {
+                    LoadReviewerFormToInsert();
+                    
+                }
+            }
+            LoadInformation();
+
+            Session.Timeout = 100;
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        InsertReviewerForm();
+//        LoadReviewerForm(true);
+    }
+
+    protected void btnUpdate_Click(object sender, EventArgs e)
+    {
+        UpdateReviewerForm();
+    }
+
+    private void LoadInformation()
+    {
+        int rowNo = 0;
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+
+        Form.Form_FinalRefreeDataTable refreeTable = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(refreeID);
+        lblName.Text = refreeTable[rowNo].Name.ToString() + "(" + GetRankInArabic(refreeTable[rowNo].Rank.ToString()) + ")";
+        lblAddress.Text = refreeTable[rowNo].MailingAddress.ToString();
+        
+        int appId = refreeTable[rowNo].ApplicationID;
+        WorkflowDynamicTableAdapters.ApplicationTableAdapter appAdapter = new WorkflowDynamicTableAdapters.ApplicationTableAdapter();
+        WorkflowDynamic.ApplicationDataTable appTable = appAdapter.GetApplication(appId);
+        lblRank.Text =  GetRankInArabic(appTable[rowNo].ForRank.ToString());
+       // LabelRank.Text = appTable[rowNo].Rank.ToString();
+    }
+
+    private string GetRankInArabic(string p)
+    {
+        switch (p)
+        {
+            case "Associate Professor":
+                return "أستاذ مشارك";
+            case "Professor":
+                return "أستاذ";
+            default: return "";
+        }
+    }
+
+    public int GetFormStatus()
+    {
+        int rowNo = 0;
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+        ReviewerForm.Form_ReviewersFormDataTable table = Adapters.FrmRevFrmAdapter.GetDataByPK(refreeID);
+        int status = 0;
+        if (table.Count > 0)
+        {
+            status = table[rowNo].Status;
+        }
+        return status;
+    }
+
+    private void InsertReviewerForm()
+    {
+        
+        
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+
+        int familiarityValue = int.Parse(rblFamiliarity.SelectedValue);
+        string familiarityText = rblFamiliarity.SelectedItem.Text;
+        if (familiarityValue == 4)
+        {
+            familiarityText = TextBoxOthers.Text;
+        }
+        
+        int q1Value = int.Parse(rblQ1.SelectedValue);
+        string q1Text = TextBoxJustification1.Text;
+
+        int q2Value = int.Parse(rblQ2.SelectedValue);
+        string q2Text = TextBoxJustification2.Text;
+
+        int q3Value = int.Parse(rblQ3.SelectedValue);
+        string q3Text = TextBoxJustification3.Text;
+
+        int q4Value = int.Parse(rblQ4.SelectedValue);
+        string q4Text = TextBoxJustification4.Text;
+
+        int q5Value = int.Parse(rblQ5.SelectedValue);
+        string q5Text = TextBoxJustification5.Text;
+
+        int q6Value = int.Parse(rblQ6.SelectedValue);
+        string q6Text = TextBoxJustification6.Text;
+
+        int q7Value = int.Parse(rblQ7.SelectedValue);
+        string q7Text = TextBoxJustification7.Text;
+
+        int q8Value = int.Parse(rblQ8.SelectedValue);
+        string q8Text = TextBoxJustification8.Text;
+
+        int q9Value = int.Parse(rblQ9New.SelectedValue);
+        string q9Text = TextBoxJustification9.Text;
+
+        string commentsText = TextBoxComments.Text;
+
+        string supDoc = SupDoc;
+        string size = Size;
+        
+        //if (Page.IsValid)
+        //{
+        //    Adapters.FrmRevFrmAdapter.InsertQuery(refreeID, familiarityText, q1Value, q1Text, q2Value, q2Text, q3Value, q4Text, q4Value, q4Text, q5Value, q5Text, q6Value, q6Text, q7Value, q7Text, q8Value, q8Text, q9Value, q9Text, commentsText, supDoc, size,2);
+        //    Adapters.FrmRevFrmAdapter.UpdateStatus(2, refreeID);
+        //}
+        //else 
+        //{
+        
+            Adapters.FrmRevFrmAdapter.InsertQuery(refreeID, familiarityText, q1Value, q1Text, q2Value, q2Text, q3Value, q4Text, q4Value, q4Text, q5Value, q5Text, q6Value, q6Text, q7Value, q7Text, q8Value, q8Text, q9Value, q9Text, commentsText, supDoc, size, 1, familiarityValue);
+            Adapters.FrmRevFrmAdapter.UpdateStatus(1, refreeID);       
+        //}
+        
+        btnSave.Visible = false;
+        btnSaveCopy.Visible = false;
+        btnUpdate.Visible = true;
+        btnUpdateCopy.Visible = true;
+
+    }
+
+    private void UpdateReviewerForm()
+    {        
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+
+        int familiarityValue = int.Parse(rblFamiliarity.SelectedValue);
+        string familiarityText = rblFamiliarity.SelectedItem.Text;
+        if (familiarityValue == 4)
+        {
+            familiarityText = TextBoxOthers.Text;
+        }
+
+        int q1Value = int.Parse(rblQ1.SelectedValue);
+        string q1Text = TextBoxJustification1.Text;
+
+        int q2Value = int.Parse(rblQ2.SelectedValue);
+        string q2Text = TextBoxJustification2.Text;
+
+        int q3Value = int.Parse(rblQ3.SelectedValue);
+        string q3Text = TextBoxJustification3.Text;
+
+        int q4Value = int.Parse(rblQ4.SelectedValue);
+        string q4Text = TextBoxJustification4.Text;
+
+        int q5Value = int.Parse(rblQ5.SelectedValue);
+        string q5Text = TextBoxJustification5.Text;
+
+        int q6Value = int.Parse(rblQ6.SelectedValue);
+        string q6Text = TextBoxJustification6.Text;
+
+        int q7Value = int.Parse(rblQ7.SelectedValue);
+        string q7Text = TextBoxJustification7.Text;
+
+        int q8Value = int.Parse(rblQ8.SelectedValue);
+        string q8Text = TextBoxJustification8.Text;
+
+        int q9Value = int.Parse(rblQ9New.SelectedValue);
+        string q9Text = TextBoxJustification9.Text;
+
+        string commentsText = TextBoxComments.Text;
+
+        string supDocument = SupDoc;
+        string size = Size;
+       // if (Page.IsValid)
+       // {
+       //     //if (Adapters.frmRevFrmAdapter == null)
+       //     //{
+       //     //    Adapters.Adapters();
+            
+       //     //}
+       //     Adapters.FrmRevFrmAdapter.UpdateQuery(refreeID, familiarityText, q1Value, q1Text, q2Value, q2Text, q3Value, q3Text, q4Value, q4Text, q5Value, q5Text, q6Value, q6Text, q7Value, q7Text, q8Value, q8Text, q9Value, q9Text, commentsText, supDocument, size, refreeID);
+       //     Adapters.FrmRevFrmAdapter.UpdateStatus(2, refreeID);
+       // }
+       // else
+       // {
+            Adapters.FrmRevFrmAdapter.UpdateQuery(refreeID, familiarityText, q1Value, q1Text, q2Value, q2Text, q3Value, q3Text, q4Value, q4Text, q5Value, q5Text, q6Value, q6Text, q7Value, q7Text, q8Value, q8Text, q9Value, q9Text, commentsText, supDocument, size, familiarityValue, refreeID);
+            Adapters.FrmRevFrmAdapter.UpdateStatus(3, refreeID);
+       // }
+    }
+
+    private void LoadReviewerFormToView()
+    {
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+
+        int rowNo = 0;
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapter = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+        ReviewerForm.Form_ReviewersFormDataTable table = adapter.GetDataByPK(refreeID);
+        if (table.Count > 0)
+        {
+            rblFamiliarity.Enabled = true;
+            TextBoxOthers.ReadOnly = false;
+            rblFamiliarity.SelectedIndex = table[rowNo].FamiliarityNo -1;
+            if (rblFamiliarity.SelectedIndex == 3)
+                LabelOthers.Text = table[rowNo].familiarity;
+
+            rblQ1.Enabled = true;
+            rblQ1.SelectedIndex = table[rowNo].Q1 - 1;
+
+            rblQ2.Enabled = true;
+            rblQ2.SelectedIndex = table[rowNo].Q2 - 1;
+
+            rblQ3.Enabled = true;
+            rblQ3.SelectedIndex = table[rowNo].Q3 - 1;
+
+            rblQ4.Enabled = true;
+            rblQ4.SelectedIndex = table[rowNo].Q4 - 1;
+
+            rblQ5.Enabled = true;
+            rblQ5.SelectedIndex = table[rowNo].Q5 - 1;
+
+            rblQ6.Enabled = true;
+            rblQ6.SelectedIndex = table[rowNo].Q6 - 1;
+
+            rblQ7.Enabled = true;
+            rblQ7.SelectedIndex = table[rowNo].Q7 - 1;
+
+            rblQ8.Enabled = true;
+            rblQ8.SelectedIndex = table[rowNo].Q8 - 1;
+
+            rblQ9.Enabled = true;
+            rblQ9.SelectedIndex = table[rowNo].Q9 - 1;
+            rblQ9New.Enabled = true;
+            if (table[rowNo].Q9 == 3)
+                rblQ9New.SelectedIndex = 1;
+            else
+                rblQ9New.SelectedIndex = table[rowNo].Q9 - 1;                       
+
+            TextBoxJustification1.Enabled = true;
+            TextBoxJustification1.Text = table[rowNo].Q1Justification;
+            LabelJust1.Text = table[rowNo].Q1Justification;
+
+            TextBoxJustification2.Enabled = true;
+            TextBoxJustification2.Text = table[rowNo].Q2Justification;
+            LabelJustification2.Text = table[rowNo].Q2Justification;
+
+            TextBoxJustification3.Enabled = true;
+            TextBoxJustification3.Text = table[rowNo].Q3Justification;
+            LabelJustification3.Text = table[rowNo].Q3Justification;
+
+            TextBoxJustification4.Enabled = true;
+            TextBoxJustification4.Text = table[rowNo].Q4Justification;
+            LabelJustification4.Text = table[rowNo].Q4Justification;            
+
+            TextBoxJustification5.Enabled = true;
+            TextBoxJustification5.Text = table[rowNo].Q5Justification;
+            LabelJustification5.Text = table[rowNo].Q5Justification;
+            
+
+            TextBoxJustification6.Enabled = true;
+            TextBoxJustification6.Text = table[rowNo].Q6Justification;
+            LabelJustification6.Text = table[rowNo].Q6Justification;
+            
+
+            TextBoxJustification7.Enabled = true;
+            TextBoxJustification7.Text = table[rowNo].Q7Justification;
+            LabelJustification7.Text = table[rowNo].Q7Justification;
+
+            TextBoxJustification8.Enabled = true;
+            TextBoxJustification8.Text = table[rowNo].Q8Justification;
+            LabelJustification8.Text = table[rowNo].Q8Justification;
+
+            TextBoxJustification9.Enabled = true;
+            TextBoxJustification9.Text = table[rowNo].Q9Justification;
+            LabelJustification9.Text = table[rowNo].Q9Justification;
+
+            TextBoxComments.Enabled = true;
+            TextBoxComments.Text = table[rowNo].Comments;
+            LabelComments.Text = table[rowNo].Comments;
+
+            if (table[rowNo].IsSupDocumentNull())
+            {
+                PanelUploadSupDoc.Visible = false ;
+            }
+            else 
+            {
+                LinkButtonSuppDoc.Text = table [rowNo ].SupDocument ;
+                LabelSize.Text  = table [rowNo ].Size;
+                FileUploadSuppDoc.Visible  = false ;
+                ButtonUploadAr.Visible  = false ;
+            }
+
+
+            btnSave.Visible = false;
+            btnSaveCopy.Visible = false;
+            btnUpdate.Visible = false;
+            btnUpdateCopy.Visible = false;
+        }
+    }
+
+    private void LoadReviewerFormToUpdate()
+    {
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+
+        int rowNo = 0;
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapter = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+        ReviewerForm.Form_ReviewersFormDataTable table = adapter.GetDataByPK(refreeID);
+        if (table.Count > 0)
+        {            
+            rblFamiliarity.SelectedIndex = table[rowNo].FamiliarityNo -1;
+            if (rblFamiliarity.SelectedIndex == 3)
+            {
+                LabelOthers.Text = table[rowNo].familiarity;
+                TextBoxOthers.Text = table[rowNo].familiarity;
+            }          
+            rblQ1.SelectedIndex = table[rowNo].Q1 - 1;
+            rblQ2.SelectedIndex = table[rowNo].Q2 - 1;
+            rblQ3.SelectedIndex = table[rowNo].Q3 - 1;
+            rblQ4.SelectedIndex = table[rowNo].Q4 - 1;
+            rblQ5.SelectedIndex = table[rowNo].Q5 - 1;
+            rblQ6.SelectedIndex = table[rowNo].Q6 - 1;
+            rblQ7.SelectedIndex = table[rowNo].Q7 - 1;
+            rblQ8.SelectedIndex = table[rowNo].Q8 - 1;
+           // rblQ9.SelectedIndex = table[rowNo].Q9 - 1;
+            if (table[rowNo].Q9 == 3)
+                rblQ9New.SelectedIndex = 1;
+            else
+                rblQ9New.SelectedIndex = table[rowNo].Q9 - 1; TextBoxJustification1.Text = table[rowNo].Q1Justification;
+            TextBoxJustification2.Text = table[rowNo].Q2Justification;
+            TextBoxJustification3.Text = table[rowNo].Q3Justification;
+            TextBoxJustification4.Text = table[rowNo].Q4Justification;
+            TextBoxJustification5.Text = table[rowNo].Q5Justification;
+            TextBoxJustification6.Text = table[rowNo].Q6Justification;
+            TextBoxJustification7.Text = table[rowNo].Q7Justification;
+            TextBoxJustification8.Text = table[rowNo].Q8Justification;
+            TextBoxJustification9.Text = table[rowNo].Q9Justification;
+            TextBoxComments.Text = table[rowNo].Comments;
+            LinkButtonSuppDoc.Text = table[rowNo].SupDocument;
+            LabelSize.Text = table[rowNo].Size;
+            
+            if (table[rowNo].SupDocument == "")
+            {
+                ImageButtonDelSupDoc.Visible = false;
+            }
+            else
+            {                
+                ImageButtonDelSupDoc.Visible = true;
+            }
+            btnSave.Visible = false;
+            btnSaveCopy.Visible = false;
+            btnUpdate.Visible = true;
+            btnUpdateCopy.Visible = true;
+        }
+    }
+    private void LoadReviewerFormToInsert()
+    {
+        rblFamiliarity.Enabled = true;
+        TextBoxOthers.ReadOnly = false;
+
+        rblFamiliarity.SelectedIndex = 0;
+
+        rblQ1.Enabled = true;
+        rblQ1.SelectedIndex = 0;
+
+        rblQ2.Enabled = true;
+        rblQ2.SelectedIndex = 0;
+
+        rblQ3.Enabled = true;
+        rblQ3.SelectedIndex = 0;
+
+        rblQ4.Enabled = true;
+        rblQ4.SelectedIndex = 0;
+
+        rblQ5.Enabled = true;
+        rblQ5.SelectedIndex = 0;
+
+        rblQ6.Enabled = true;
+        rblQ6.SelectedIndex = 0;
+
+        rblQ7.Enabled = true;
+        rblQ7.SelectedIndex = 0;
+
+        rblQ8.Enabled = true;
+        rblQ8.SelectedIndex = 0;
+
+        rblQ9.Enabled = true;
+        rblQ9.SelectedIndex = 0;
+
+        rblQ9New.Enabled = true;
+        rblQ9New.SelectedIndex = 0;
+
+        TextBoxJustification1.Enabled = true;
+        TextBoxJustification1.Text = "";
+
+        TextBoxJustification2.Enabled = true;
+        TextBoxJustification2.Text = "";
+
+        TextBoxJustification3.Enabled = true;
+        TextBoxJustification3.Text = "";
+
+        TextBoxJustification4.Enabled = true;
+        TextBoxJustification4.Text = "";
+
+        TextBoxJustification5.Enabled = true;
+        TextBoxJustification5.Text = "";
+
+        TextBoxJustification6.Enabled = true;
+        TextBoxJustification6.Text = "";
+
+        TextBoxJustification7.Enabled = true;
+        TextBoxJustification7.Text = "";
+
+        TextBoxJustification8.Enabled = true;
+        TextBoxJustification8.Text = "";
+
+        TextBoxJustification9.Enabled = true;
+        TextBoxJustification9.Text = "";
+
+        TextBoxComments.Enabled = true;
+        TextBoxComments.Text = "";
+
+        PanelUploadSupDoc.Visible = true;
+
+        btnUpdate.Visible = false;
+        btnUpdateCopy.Visible = false;
+        btnSave.Visible = true;
+        btnSaveCopy.Visible = true;
+    }
+
+
+    protected void ButtonUploadAr_Click(object sender, EventArgs e)
+    {
+        string dataPath = Server.MapPath("~\\App_LocalResources") + "\\";
+        if (FileUploadSuppDoc.HasFile)
+        {
+            int refreeID = int.Parse(Session["refreeID"].ToString());
+            SupDoc = refreeID.ToString()+FileUploadSuppDoc.FileName;
+            Size = "(" + ( FileUploadSuppDoc.PostedFile.ContentLength /1000) + " Kilo Bytes)";
+            LabelSize.Text  = Size ;        
+            LinkButtonSuppDoc.Text = SupDoc;
+            FileUploadSuppDoc.PostedFile.SaveAs(dataPath + refreeID.ToString() + FileUploadSuppDoc.FileName);
+            Adapters.FrmRevFrmAdapter.UpdateSupDoc(Size, SupDoc, refreeID);
+            ImageButtonDelSupDoc.Visible = true;
+        }
+    }
+    string SupDoc 
+    {
+        get
+        {
+            if (HiddenFieldSupDoc.Value.Length == 0)
+                return "";
+            else
+                return HiddenFieldSupDoc.Value.ToString();
+        }
+        set
+        {
+            HiddenFieldSupDoc.Value = value.ToString();
+        }    
+    }
+    string Size
+    {
+        get
+        {
+            if (HiddenFieldSize.Value.Length == 0)
+                return "";
+            else
+                return HiddenFieldSize.Value.ToString();
+        }
+        set
+        {
+            HiddenFieldSize.Value = value.ToString();
+        }
+    }
+    protected void ImageButtonDelSupDoc_Click(object sender, ImageClickEventArgs e)
+    {
+        string dataPath = Server.MapPath("~\\App_LocalResources") + "\\";
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapterRevForm = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+        string fileName = adapterRevForm.GetDataByPK(refreeID)[0].SupDocument;
+        File.Delete(dataPath + refreeID + fileName);
+        adapterRevForm.UpdateSupDoc("", "", refreeID);
+    }
+    protected void LinkButtonSuppDoc_Click(object sender, EventArgs e)
+    {
+        string dataPath = Server.MapPath("~\\App_LocalResources") + "\\";
+        int refreeID = int.Parse(Session["refreeID"].ToString());
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapterRevForm = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+        string fileName = adapterRevForm.GetDataByPK(refreeID)[0].SupDocument;
+        string filePath = dataPath + fileName;
+        if (!File.Exists(filePath))
+            return;
+        FileStream stream = File.OpenRead(filePath);
+        long length = stream.Length;
+        stream.Close();
+        Response.Clear();
+        try
+        {
+            Response.Charset = "UTF-8";
+            Response.AddHeader("Content-Disposition", "attachment; filename= " + fileName);
+            Response.AddHeader("Content-Length", "" + length);
+            Response.WriteFile(dataPath + fileName);
+            Response.Flush();
+            Response.Close();
+        }
+        catch
+        {
+        }
+    }
+    public void SetPrinterFriendly(bool status)
+    {
+        TextBoxOthers.Visible = !status;
+        TextBoxJustification1.Visible = !status;
+        TextBoxJustification2.Visible = !status;
+        TextBoxJustification3.Visible = !status;
+        TextBoxJustification4.Visible = !status;
+        TextBoxJustification5.Visible = !status;
+        TextBoxJustification6.Visible = !status;
+        TextBoxJustification7.Visible = !status;
+        TextBoxJustification8.Visible = !status;
+        TextBoxJustification9.Visible = !status;
+        TextBoxComments.Visible = !status;
+
+        LabelOthers.Visible = status;
+        LabelJust1.Visible = status;
+        LabelJustification2.Visible = status;
+        LabelJustification3.Visible = status;
+        LabelJustification4.Visible = status;
+        LabelJustification5.Visible = status;
+        LabelJustification6.Visible = status;
+        LabelJustification7.Visible = status;
+        LabelJustification8.Visible = status;
+        LabelJustification9.Visible = status;
+        LabelComments.Visible = status;
+    }
+    public void ValidateTextLength(object source, ServerValidateEventArgs args)
+    {
+        args.IsValid = args.Value.Length > 20;
+    }
+
+    private void TemporarySave()
+    {
+        if (btnSave.Visible == true)
+            InsertReviewerForm();
+        else
+        {
+            UpdateReviewerForm();
+            Adapters.FrmRevFrmAdapter.UpdateStatus(2, int.Parse(Session["refreeID"].ToString()));
+        }
+        Page.Validate();
+    }
+    protected void ImageButtonTempSave_Click(object sender, ImageClickEventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblFamiliarity_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxOthers_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification1_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ2_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification2_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ3_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification3_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ4_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification4_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ5_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification5_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ6_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification6_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ7_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification7_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ8_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification8_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void rblQ9New_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxJustification9_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+    protected void TextBoxComments_TextChanged(object sender, EventArgs e)
+    {
+        TemporarySave();
+    }
+}
+

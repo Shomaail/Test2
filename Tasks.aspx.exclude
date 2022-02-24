@@ -1,0 +1,355 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Tasks.aspx.cs" Inherits="Tasks" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head1" runat="server">
+    <title>Faculty Promotion System</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="images/favicon.png">
+    <link rel="SHORTCUT ICON" href="favicon.png" />
+    <!-- Bootstrap Core CSS -->
+    <link href="App_Themes/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="App_Themes/3-col-portfolio.css" rel="stylesheet">
+</head>
+<body dir="ltr" >
+
+    <form id="form1" runat="server">
+             <asp:ToolkitScriptManager ID="Toolkitscriptmanager1" runat="server">
+        </asp:ToolkitScriptManager>
+ <div style="border-style: solid; border-color: inherit; border-width: 0px; margin-left: 20px; margin-top: 20px; margin-right:20px; 
+            height:93px; background-color: #F8F8F8;" id="divTop" runat="server">
+          
+                <div style="float:left"><img alt="KFUPM Logo" style="width: 405px; height: 93px;" src="images/logo.png" />   </div><div style="float:left; padding-left:20px "><h1>Faculty Promotion System</h1></div>
+        </div>
+    <div style="padding-left:15px; padding-top:5px; padding-right:20px">
+        
+        <ul class="list">
+            <li><asp:HyperLink ID="lnkMain" runat="server" Font-Italic="True" Font-Bold="true" Font-Size="12pt"
+                NavigateUrl="~/Main.aspx">Main Menu</asp:HyperLink></li>
+            <li><asp:HyperLink ID="lnkLogout" runat="server" Font-Italic="True" Font-Bold="true" Font-Size="12pt"
+                NavigateUrl="~/Logout.aspx">Logout</asp:HyperLink></li>
+        </ul>
+        <h3 style="text-align: left">
+            Selected Application's Summary:</h3>
+        <p>
+            <asp:DetailsView ID="ApplicationDetails" runat="server" AutoGenerateRows="False" CellPadding="4" class="table-condensed"
+                DataKeyNames="ApplicationID" DataSourceID="ObjectDataSourceAppDetails" ForeColor="#333333"
+                GridLines="None" Height="50px" Width="125px" EnableModelValidation="True">
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+                <EditRowStyle BackColor="#999999" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <Fields>
+                    <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" ReadOnly="True"
+                        SortExpression="ApplicationID" Visible="False" />
+                    <asp:BoundField DataField="Employee" HeaderText="Employee" SortExpression="Employee" Visible="False" >
+                        <ItemStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="Name" HeaderText="Application of:" SortExpression="Name" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="Department" HeaderText="Department:" SortExpression="Department" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="Rank" HeaderText="Current Rank:" SortExpression="Rank" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="ToRank" HeaderText="Applying for:" SortExpression="ToRank" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="Status" HeaderText="Application Status:" ReadOnly="True" SortExpression="Status" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="AppDate" DataFormatString="{0:d} at {0:t}" HeaderText="Application Date:"
+                        HtmlEncode="False" SortExpression="AppDate" >
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Wrap="False" />
+                    </asp:BoundField>
+                    <asp:TemplateField HeaderText="Your Role:" SortExpression="Role">
+                        <ItemStyle Wrap="False" />
+                        <HeaderStyle Font-Bold="True" />
+                        <ItemTemplate>
+                            <asp:Label ID="lblDeputy" runat="server" Font-Italic="True" Text="Deputy Of " 
+                                Visible='<%# (bool)Session["IsDeputy"] %>'></asp:Label>
+                                
+                            <asp:Label ID="Label1" runat="server" Text='<%# GetRole(byte.Parse(Cryptography.Decrypt(Request.QueryString["RoleID"]))) %>'></asp:Label>
+                            <%--<asp:Label ID="Label1" runat="server" Text='<%# GetRole(1) %>'></asp:Label>--%>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Fields>
+                <FieldHeaderStyle   BackColor="#E9ECF1" Font-Bold="True" HorizontalAlign="Right" />
+            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+            </asp:DetailsView>
+            <asp:ObjectDataSource ID="ObjectDataSourceAppDetails" runat="server" OldValuesParameterFormatString="original_{0}"
+                SelectMethod="GetDataByApplication" TypeName="PromotionTableAdapters.ApplicationsListTableAdapter">
+                <SelectParameters>
+                    <asp:QueryStringParameter Name="ApplicationID" QueryStringField="applicationID" Type="Int32" DefaultValue="-1" />
+                    <asp:Parameter Name="EmployeeID" Type="String" DefaultValue="-1" />
+                </SelectParameters>
+            </asp:ObjectDataSource>
+        </p>
+        <h3>
+            Application's
+            Active Tasks:</h3>
+         <asp:GridView ID="gvActiveTasks" runat="server" CellPadding="4" ForeColor="Black" class="table" ItemType="BL.Data.Application_TaskLog"
+                GridLines="Vertical" BorderColor="#719ade" AutoGenerateColumns="False">
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle BackColor="#007D40" ForeColor="#ffffff" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+                <EditRowStyle BackColor="#999999" />
+                <Columns>
+                    <asp:TemplateField>
+                        <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+                    </asp:TemplateField>
+                    <%--<asp:TemplateField HeaderText="Applicant">
+                        <ItemTemplate>
+                            <asp:Label ID="lblApplicant" runat="server" Text='<%# Item.Application.Employee.NameString%>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Applicant's Email" SortExpression="AppEmail">
+                        <ItemTemplate>
+                            <asp:Label Font-Names="Verdana,Arial" Font-Size="10pt"
+                                ID="lblEmail" runat="server" Text='<%# Item.Application.Employee.EmailID + ConfigurationManager.AppSettings["OrganizationEmail"]  %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>--%>
+                    <asp:TemplateField HeaderText="Assigned To">
+                        <ItemTemplate>
+                            <strong>
+                                <asp:Label ID="lblAssignedTo" runat="server" Text='<%# 
+                                    leri.Count > 0 && leri.Contains(Item.Task.RoleID)? "-" :
+                                    Item.Task.Role.Application_Role
+                                    .Where(ar=>ar.ApplicationID == Item.ApplicationID)
+                                    .Select(ar=>ar.Employee).First().EmployeeID != "0" ? 
+                                     Item.Task.Role.Application_Role
+                                    .Where(ar=>ar.ApplicationID == Item.ApplicationID)
+                                    .Select(ar=>ar.Employee).First().NameString :
+                                    ""%>'></asp:Label></strong>
+                            <br />
+                            <asp:Label ID="lblRole" runat="server" Text='<%# Item.Task.Role.Title %>'></asp:Label>
+                            <br />
+                            <asp:Label Font-Names="Verdana,Arial" Font-Size="10pt"
+                                ID="lblEmail" runat="server" Text='<%# 
+                                leri.Count > 0 && leri.Contains(Item.Task.RoleID)? "-" :
+                                Item.Task.Role.Application_Role.Where(ar=>ar.ApplicationID == Item.ApplicationID).Select(ar=>ar.Employee).First().EmployeeID != "0" ?
+                                Item.Task.Role.Application_Role.Where(ar=>ar.ApplicationID == Item.ApplicationID).Select(ar=>ar.Employee).First().Email  
+                              : "" %>'></asp:Label>
+
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <%-- <asp:TemplateField HeaderText="Email" SortExpression="Email">
+                        <ItemTemplate>
+                            <asp:Label Font-Names="Verdana,Arial" Font-Size="10pt"
+                                ID="lblEmail" runat="server" Text='<%# 
+                                Item.Task.Role.Application_Role.Where(ar=>ar.ApplicationID == Item.ApplicationID).Select(ar=>ar.Employee).First().EmployeeID != "0" ?
+                                Item.Task.Role.Application_Role.Where(ar=>ar.ApplicationID == Item.ApplicationID).Select(ar=>ar.Employee).First().EmailID + ConfigurationManager.AppSettings["OrganizationEmail"] 
+                              : Item.Task.Role.Application_Role.Where(ar=>ar.ApplicationID == Item.ApplicationID).Select(ar=>ar.ExternalEmployee).First().Email %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>--%>
+                    <%--                 <asp:TemplateField HeaderText="Role">
+                        <ItemTemplate>
+                            <asp:Label ID="lblRole" runat="server" Text='<%# Item.Task.Role.Title %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>--%>
+                    <asp:TemplateField HeaderText="Task Name">
+                        <ItemTemplate>
+                            <asp:Label Font-Names="Verdana,Arial" Font-Size="10pt"
+                                ID="lblTask" runat="server" Text='<%# Item.Task.Title
+                                    .Replace("@@TopAuthority_TitleShort@@",ConfigurationManager.AppSettings["TopAuthority_TitleShort"])
+                                    .Replace("@@TopLowAuthority_TitleShort@@",ConfigurationManager.AppSettings["TopLowAuthority_TitleShort"])
+                                    .Replace("@@TopMostAuthority_TitleShort@@",ConfigurationManager.AppSettings["TopMostAuthority_TitleShort"])
+                                    %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField SortExpression="ApplicationID" HeaderText="Status">
+                        <ItemTemplate>
+                            <asp:Image ID="Image1" runat="server" Height="48px"
+                                ImageUrl="~/images/noEntry.jpg" Width="73px"
+                                Visible='<%#  Item.Application.ApplicationClosed ? true : false %>'
+                                ToolTip="The Promotion Application has been Closed" />
+                            <asp:HyperLink ID="lnkApplication" runat="server"
+                                Text="Open" NavigateUrl='<%# "Forms/Message.aspx?applicationID=" + Item.ApplicationID.ToString()+"&roleID="+CurRoleID %>'
+                                Enabled='<%# CheckTask(Item.ApplicationID.ToString(), Item.Task.Role.Application_Role
+                                            .Where(ar=>ar.ApplicationID == Item.ApplicationID)
+                                            .Select(ar=>ar.Employee)
+                                            .First().EmployeeID,
+                                             0,
+                                            Item.Task.Role.RoleID.ToString())  %>'
+                                Visible='<%# CheckTask(Item.Task.Role.Application_Role
+    .Where(ar=>ar.ApplicationID == Item.ApplicationID)
+    .Select(ar=>ar.Employee).First().EmployeeID,    
+    0,
+    Item.Task.Role.RoleID.ToString()) %>'
+                                Font-Bold="True" ForeColor="#00CF00"></asp:HyperLink>
+                            <asp:Label ID="Label1" runat="server" Font-Italic="True"
+                                Text='<%# GetStatus(Item.ApplicationID.ToString()) %>'
+                                Visible='<%# !CheckTask(Item.Task.Role.Application_Role
+    .Where(ar=>ar.ApplicationID == Item.ApplicationID)
+    .Select(ar=>ar.Employee).First().EmployeeID, 0, Item.Task.Role.RoleID.ToString()) %>'
+                                ForeColor="Red"></asp:Label>
+                            <asp:Label ID="lblReminders" runat="server" ToolTip="Autogenerated Email Reminders Sent"
+                                Text='<%# "Reminders: " + Item.Reminders.ToString() %>'
+                                Visible='<%# Item.Reminders > 0 %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <EmptyDataTemplate>
+                    [<em>Currently no active tasks are available for this application</em>]
+                </EmptyDataTemplate>
+            </asp:GridView>
+      <%--  <asp:GridView ID="ActiveTasksGrid" runat="server" CellPadding="4" DataSourceID="ObjectDataSourceActiveTasks" ForeColor="Black" class="table"
+                GridLines="Vertical" BorderColor="#3062AF" AutoGenerateColumns="False">
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+                <EditRowStyle BackColor="#999999" />
+                <Columns >
+                <asp:TemplateField SortExpression="ApplicationID">
+                    <ItemTemplate>
+                            <asp:Image ID="Image1" runat="server" Height="48px" 
+                            ImageUrl="~/images/noEntry.jpg" Width="73px"  
+                                Visible ='<%# GetStatus(Eval("ApplicationID").ToString()).Equals("(Closed)") ? true : false %>' 
+                                ToolTip="The Promotion Application has been Closed" />
+                        <asp:HyperLink ID="lnkApplication" runat="server"
+                            Text="Open"  NavigateUrl='<%# "Forms/Message.aspx?applicationID=" + Eval("ApplicationID").ToString()+"&roleID="+CurRoleID %>'
+                              Enabled ='<%# CheckTask(Eval("AppID").ToString(), Eval("EmployeeID").ToString(),Eval("RoleID").ToString())  %>'
+                                Visible='<%# CheckTask(Eval("EmployeeID").ToString(),Eval("RoleID").ToString()) %>' 
+                                Font-Bold="True" ForeColor="#00CF00"></asp:HyperLink>
+                        <asp:Label ID="Label1" runat="server" Font-Italic="True" 
+                                Text='<%# GetStatus(Eval("ApplicationID").ToString()) %>' 
+                                Visible='<%# !CheckTask(Eval("EmployeeID").ToString(),Eval("RoleID").ToString()) %>' 
+                                ForeColor="Red"></asp:Label>
+                        <asp:Label ID="lblReminders" runat="server" ToolTip="Autogenerated Email Reminders Sent"
+                                Text='<%# "Reminders: " + Eval("Reminders").ToString() %>' 
+                            Visible='<%# Int32.Parse(Eval("Reminders").ToString()) > 0 %>' 
+                                ></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" InsertVisible="False"
+                    ReadOnly="True" SortExpression="ApplicationID" Visible="False" />
+                <asp:BoundField DataField="AppID" HeaderText="AppID" SortExpression="AppID" Visible="False" />
+                <asp:BoundField DataField="Applicant" HeaderText="Applicant" SortExpression="Applicant" />
+                <asp:BoundField DataField="AppEmail" HeaderText="Applicant's Email" SortExpression="AppEmail" DataFormatString="{0}@kfupm.edu.sa" >
+                    <ItemStyle Font-Names="Verdana,Arial" Font-Size="10pt" />
+                </asp:BoundField>
+                <asp:BoundField DataField="EmployeeID" HeaderText="EmployeeID" SortExpression="EmployeeID" Visible="False" />
+                <asp:BoundField DataField="Employee" HeaderText="Assigned To" SortExpression="EmployeeID" />
+                <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" DataFormatString="{0}@kfupm.edu.sa" >                    
+                    <ItemStyle Font-Names="Verdana,Arial" Font-Size="10pt" />
+                </asp:BoundField>
+
+                <asp:BoundField DataField="Role" HeaderText="Role" SortExpression="Role" />
+                <asp:BoundField DataField="Task" HeaderText="Task Name" SortExpression="Task" />
+            </Columns>
+            <EmptyDataTemplate>
+                [<em>Currently no active tasks are available for this application</em>]
+            </EmptyDataTemplate>
+        </asp:GridView>--%>
+        <asp:ObjectDataSource ID="ObjectDataSourceActiveTasks" runat="server" OldValuesParameterFormatString="original_{0}"
+            SelectMethod="GetDataByApplication" TypeName="PromotionTableAdapters.ActiveTasksTableAdapter">
+            <SelectParameters>
+                <asp:Parameter DefaultValue="-1" Name="RoleID" Type="Byte" />
+                <asp:Parameter DefaultValue="-1" Name="ApplicationID" Type="Int32" />
+            </SelectParameters>
+        </asp:ObjectDataSource>
+        <br />
+        <asp:Label ID="lblConfi" runat="server" Text="The application is in confidential state. Therefore no active tasks will be visible" Visible="False" ForeColor="Blue"></asp:Label>
+        <br />
+        <h3>
+            Application Tracking:</h3>
+        <p>
+            <asp:GridView ID="ApplicatonsGrid" runat="server" CellPadding="4" ForeColor="Black" class="table"
+                BorderColor="#3062AF" AutoGenerateColumns="False" DataKeyNames="LogID" DataSourceID="ObjectDataSourceHistory" AllowSorting="True">
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White"  />
+                <RowStyle BackColor="#F7F6F3" ForeColor="Black" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="Black" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+            <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+                <AlternatingRowStyle BackColor="White" ForeColor="#333333" />
+                <Columns>
+                    <asp:BoundField DataField="LogID" HeaderText="LogID" InsertVisible="False" ReadOnly="True"
+                        SortExpression="LogID" Visible="False" />
+                    <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" SortExpression="ApplicationID" Visible="False" />
+                    <asp:BoundField DataField="Task" HeaderText="Task" SortExpression="Task" >
+                        <ItemStyle Wrap="False" Font-Bold="True" Font-Size="10pt" />
+                    </asp:BoundField>
+                    <asp:TemplateField HeaderText="Person" SortExpression="Role">
+                        <ItemStyle Wrap="False" />
+                        <ItemTemplate>
+                            <asp:Label ID="Label1" runat="server" Text='<%# Bind("Person") %>'></asp:Label><br />
+                            <span style="font-size:10pt; color: Maroon"><em>(<asp:Label ID="Label2" runat="server" Text='<%# Bind("Role") %>'></asp:Label>)</em></span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Action" HeaderText="Action" SortExpression="Action" >
+                        <ItemStyle Font-Bold="True" Font-Italic="True" Font-Names="Arial,Verdana" Font-Size="10pt" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="ActionTime" HeaderText="Action Time" SortExpression="ActionTime" DataFormatString="{0:MMMM d, yyyy &lt;i&gt; h:mm tt &lt;/i&gt;}" HtmlEncode="False" >
+                        <ItemStyle Wrap="False" Font-Names="Verdana,Arial" Font-Size="10pt" />
+                    </asp:BoundField>
+                    
+                </Columns>
+                <EmptyDataTemplate>
+                    [<em>No further tasks have been done after the initiation</em>]
+                </EmptyDataTemplate>
+                <EditRowStyle BackColor="#999999" />
+            </asp:GridView>
+            <asp:ObjectDataSource ID="ObjectDataSourceHistory" runat="server" OldValuesParameterFormatString="original_{0}"
+                SelectMethod="GetDataByApplication" TypeName="PromotionTableAdapters.ApplicationHistoryListTableAdapter">
+                <SelectParameters>
+                    <asp:Parameter Name="RoleID" Type="Int32" DefaultValue="0" />
+                    <asp:Parameter DefaultValue="-1" Name="ApplicationID" Type="Int32" />
+                </SelectParameters>
+            </asp:ObjectDataSource>
+        </p>
+        </div>
+               <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12" align="center">
+                    <p>All Rights Reserved Copyright &copy; 2009 </p>
+                    <p>
+                        Faculty Promotion System, Office of the Vice Rector for Research
+                        <br>
+                        King Fahd University of Petroleum &amp; Minerals| Dhahran, 31261 | Saudi Arabia | +966 (3) 860 0000.
+                    </p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+         <asp:Button runat="server" ID="hiddenTargetControlForModalPopup0" Style="display: none" />
+        <asp:ModalPopupExtender runat="server" ID="programmaticModalPopup0" BehaviorID="programmaticModalPopupBehavior0"
+            TargetControlID="hiddenTargetControlForModalPopup0" PopupControlID="programmaticPopup0"
+            BackgroundCssClass="modalBackground" DropShadow="True" PopupDragHandleControlID="programmaticPopupDragHandle0"
+            RepositionMode="RepositionOnWindowScroll">
+        </asp:ModalPopupExtender>
+        <asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup0" Style="display: none; width: 300px; padding: 10px">
+            <asp:Panel runat="Server" ID="programmaticPopupDragHandle0" Style="cursor: move; background-color: #DDDDDD; border: solid 1px Gray; color: Black; text-align: center;">
+                Message
+            </asp:Panel>
+            <asp:Label ID="labelProgrammaticPopup0" runat="server"></asp:Label>
+            <br />
+            <div align="center">
+                <asp:LinkButton runat="server" ID="hideModalPopupViaServer0" Text="OK" OnClick="hideModalPopupViaServer0_Click" />
+            </div>
+        </asp:Panel>
+    </form>
+</body>
+</html>

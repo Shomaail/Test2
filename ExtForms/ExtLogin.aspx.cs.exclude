@@ -1,0 +1,55 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class _ExtLogin : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Response.Cookies["langCookie"].Value = "en";
+        Response.Cookies["langCookie"].Expires = DateTime.Now.AddDays(1);
+        //if (Session != null)
+        //{
+        //    if (Session["login"] != null && Session["login"].ToString().Equals("true"))
+        //        Response.Redirect("ExtMain.aspx");
+        //}
+        //else
+        Response.Redirect("ExtLogin.aspx");
+    }
+    
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetUser(txtUserName.Text.ToString(), txtPassword.Text.ToString());
+        if (table.Count > 0)
+        {
+            Session["refree"] = table[0];
+            Session["refreeID"] = table[0].RefreeID;
+            Session["applicationID"] = table[0].ApplicationID;
+            Session["login"] = "true";
+            Session["user"] = table[0];
+            Session["IsDeputy"] = false;
+            Session["IsAdmin"] = false;
+            /*
+            Session["refreeID"] = table[0].RefreeID;
+            Session["applicationID"] = table[0].ApplicationID;
+            Session["login"] = "true";
+            */
+            Response.Redirect("ExtMain.aspx");
+        }
+        else
+        {
+            lblEx.Text = "Invalid UserName or Password. Please try again";
+            lblEx.Visible = true;
+            txtPassword.Text = "";
+            txtUserName.Text = "";
+        }
+
+    }
+}

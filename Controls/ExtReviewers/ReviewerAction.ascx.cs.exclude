@@ -1,0 +1,186 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ReviewerAction : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        if (Page.IsPostBack)
+            return;
+
+        LoadControls();
+    }
+    protected void btnApply_Click(object sender, EventArgs e)
+    {
+        int refreeID;
+        try
+        {
+            refreeID = int.Parse(Session["refreeID"].ToString());
+        }
+        catch (Exception)
+        {
+            Response.Redirect("~/ExtLogout.aspx"); 
+            return;
+
+        }
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapter = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+       
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        ExternalRemindersTableAdapters.Application_LogExtTableAdapter appLogExtAdaptper = new ExternalRemindersTableAdapters.Application_LogExtTableAdapter();
+        HRTableAdapters.EmployeeTableAdapter empAdapter = new HRTableAdapters.EmployeeTableAdapter();
+
+
+
+
+        ReviewerForm.Form_ReviewersFormDataTable table = adapter.GetDataByPK(refreeID);
+        Form.Form_FinalRefreeDataTable refreeTable = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(refreeID);
+        
+        if (rblActions.SelectedIndex == 0)
+        {
+            if (table.Count != 0)
+            {
+                try
+                {
+                    /*
+                     * Form_ReviewersForm
+                     * 
+                     * Status = 4 -- Submitted 
+                     * Status = 3 -- Updated
+                     * Status = 2 -- Saved Succesfully
+                     * Status = 1 -- Saved Unsuccesfully
+                     * Status = 0 -- Not saved (New)
+                     * 
+                     */
+                    adapter.UpdateStatus(4, refreeID);
+                    btnApply.Enabled = false;
+                    LabelGoodBye.ForeColor = System.Drawing.Color.Blue;
+                    LabelGoodBye.Text = @"
+The Reviewer's Form is successfully forwarded to the Vice Rector for Research. 
+Thank you for your cooperation in using Faculty Promotion System.";
+                    string emailText = @"Dear Dr. " + refreeTable[0].Name + @",
+
+Thank you for your evaluation report in respect of Dr. " + empAdapter.GetApplicant(refreeTable[0].ApplicationID)[0].Name + @" for his promotion. Your evaluation is successfully submitted. We are advising our Accounts Department to send a cheque to you for the honorarium which we hope you will receive when the promotion application is closed in a normal process time. Thank you again for your cooperation.
+
+With Best Regards.
+
+Dr. Nasser Al-Aqeeli
+Vice Rector for Research
+King Fahd University of Petroleum and Minerals
+
+سعادة الدكتور/ " + refreeTable[0].Name + @"،
+
+نشكر سعادتكم على إعداد تقرير التقييم الخاص بسعادة الدكتور/ " + empAdapter.GetApplicant(refreeTable[0].ApplicationID)[0].Name + @" - المعد من أجل ترقية سعادته -حيث تم استلامنا لهذا التقرير التقييم الذي أعددته بنجاح. وقد أوصينا قسم الحسابات لدينا بإرسال شيك بنكي لسعادتكم بقيمة المكافأة الفخرية التي نأمل أن يصلكم بعد الانتهاء من دراسة طلب الترقية في الزمن المعتاد لمثل هذه الأمور. ومرة أخرى نتقدم لسعادتكم بالشكر على تعاونكم.
+
+
+وتفضلوا بقبول وافر التحية والاحترام،
+
+
+                                                             الدكتور ناصر العقيلي
+                                                            وكيل الجامعة للدراسات العلیا  والبحث العلمي 
+                                                            جامعة الملك فهد للبترول والمعادن
+
+
+";
+                    Emailer.Send(refreeTable[0].Email+",promotion@kfupm.edu.sa", "Acknowledgement",emailText , "AutoEmailer", refreeTable[0].ApplicationID);
+
+                    Adapters.FrmFnlRefAdapter.UpdateLoginInfo("", "", refreeID);
+                    Adapters.FrmFnlRefAdapter.UpdateEvaluationRecieved(true, refreeID);
+
+                    appTskLgExtAdapter.UpdateExtTskComplete(true
+                                , refreeTable[0].ApplicationID
+                                , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                                , refreeID);
+                    appLogExtAdaptper.Insert(refreeTable[0].ApplicationID
+                                , "External Evaluation Finish"
+                                , DateTime.Now
+                                , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                                , refreeTable[0].Name
+                                , emailText);
+
+                }
+                catch (Exception)
+                {
+                    
+                }
+            }
+            else 
+            {
+                LabelGoodBye.ForeColor = System.Drawing.Color.Red;
+                LabelGoodBye.Text = "Please save the Reviewer's Form first. The selected action is not applied";
+                return;
+            }
+        }
+        else if (rblActions.SelectedIndex == 1)
+        {
+            Adapters.FrmFnlRefAdapter.UpdateLoginInfo("", "", refreeID);
+            Adapters.FrmFnlRefAdapter.UpdateWLStatus("Withdrawn", TextBoxWithdraw.Text, DateTime.Now, refreeID);
+            
+            btnApply.Enabled = false;
+            LabelGoodBye.ForeColor = System.Drawing.Color.Green;
+            LabelGoodBye.Text = "Thank you for using Faculty Promotion System.";
+            appTskLgExtAdapter.UpdateExtTskComplete(true
+                        , refreeTable[0].ApplicationID
+                        , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                        , refreeID);
+            appLogExtAdaptper.Insert(refreeTable[0].ApplicationID
+                        , "External Evaluation Withdrawn"
+                        , DateTime.Now
+                        , tskExtAdapter.GetDataByTitle("External Evaluation")[0].TaskID
+                        , refreeTable[0].Name
+                        , TextBoxWithdraw.Text);
+        }
+    }
+    protected void rblActions_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadControls();
+    }
+
+    private void LoadControls()
+    {
+        ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapter = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+        ReviewerForm.Form_ReviewersFormDataTable form_RevFrmTable;
+        try
+        {
+            form_RevFrmTable = adapter.GetDataByPK(int.Parse(Session["refreeID"].ToString()));
+
+        }
+        catch (Exception)
+        {
+            Response.Redirect("~/ExtLogout.aspx");
+            return;
+        }
+        /*
+         * Form_ReviewersForm
+         * 
+         * Status = 4 -- Submitted 
+         * Status = 3 -- Updated
+         * Status = 2 -- Saved Succesfully
+         * Status = 1 -- Saved Unsuccesfully
+         * Status = 0 -- Not saved (New)
+         * 
+         */
+        LabelGoodBye.Text = "";
+
+
+        if (rblActions.SelectedIndex == 0)
+        {
+            btnApply.Enabled = form_RevFrmTable.Count != 0 && form_RevFrmTable[0].Status == 3;
+            PanelWithdrawalComments.Visible = false;
+        }
+        else// A reviewer can withdraw any time 
+        {
+            btnApply.Enabled = true;
+            PanelWithdrawalComments.Visible = true;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class ExtPCForms_Form_PromotionReport : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Instruction1.Text = Master.CurrentFormInstruction;
+        Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+        ButtonDS.Enabled = GetStatus(user.AutoNumberPK);
+    }
+    protected void ButtonDS_Click(object sender, EventArgs e)
+    {
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter finalPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        ////Promotion.PromotionCommitteeTempRow pcRow = adapter.GetByApplication(Master.ApplicationID, "V", 10)[0];
+        //Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(Master.ApplicationID);
+        //Master.fi
+        Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+        ViewsTableAdapters.vw_PCChairReportTableAdapter adapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();
+        Views.vw_PCChairReportDataTable table = adapter.GetDataByAppID(user.ApplicationID);
+        if (table.Count == 0)
+        {
+            LabelDSExtPCMem.Text = "There is no Promotion Report uploaded.";
+            LabelDSExtPCMem.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+
+        finalPCAdapter.UpdateDS(true, DateTime.Now, user.AutoNumberPK);
+        LabelDSExtPCMem.Text = "The promotion report is successfully signed";
+        LabelDSExtPCMem.ForeColor = System.Drawing.Color.Blue;
+        ButtonDS.Enabled = false;
+
+    }
+    public bool GetStatus(int pcID)
+    {
+
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempRow pcRow = adapter.GetDataByAutoNumberPK(pcID)[0];
+        if (pcRow.DigitalSignature == true)
+            return false;
+        else
+            return true;
+
+    }
+}

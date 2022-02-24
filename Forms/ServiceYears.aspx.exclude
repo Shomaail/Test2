@@ -1,0 +1,14 @@
+<%@ Page Language="C#" MasterPageFile="Forms.master" AutoEventWireup="true" CodeFile="ServiceYears.aspx.cs" Inherits="Forms_ServiceYears" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Src="../Controls/ServiceYears.ascx" TagName="ServiceYears" TagPrefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label><br />
+    <uc1:ServiceYears ID="ServiceYears1" runat="server" /><br />
+    <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="Save Service Years"  class="btn btn-primary btn-md"   />
+    <asp:Button ID="btnSaveFA" runat="server" OnClick="btnSaveFA_Click" Text="Save Service Years"  class="btn btn-primary btn-md"  />
+</asp:Content>
+

@@ -1,0 +1,4 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PromotionReportVRGSSR.aspx.cs" Inherits="Forms_PromotionReportVRGSSR" Title="Untitled Page" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+</asp:Content>
+

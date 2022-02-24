@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+//using System.Linq;
+using System.Web;
+using System.Web.Services;
+using System.Web.Script.Services;
+
+namespace Samples.AspNet
+{ 
+/// <summary>
+/// Summary description for AsynchronousRevFormSave
+/// </summary>
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+// To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
+[ScriptService]
+public class AsynchronousRevFormSave : System.Web.Services.WebService
+{
+
+    public AsynchronousRevFormSave()
+    {
+
+        //Uncomment the following line if using designed components 
+        //InitializeComponent(); 
+    }
+
+    [WebMethod]
+    public string HelloWorld()
+    {
+        return "Hello World";
+    }
+    [WebMethod]
+    public string SaveInput(String input)
+    {
+        string StrInput = Server.HtmlEncode(input); if (!String.IsNullOrEmpty(StrInput))
+        {
+
+            string[] strFields = StrInput.Split('+');
+
+            //code to save all input values
+            // you can easily savethese values to temp DB table, temp file or xml file
+            //Dispaly last saved values
+
+            return String.Format("Last saved text: FirstName {0} ,<br/> Last name {1} <br/> Last "
+
+            + "saved draft {2} at {3}.", strFields[0], strFields[1], strFields[2], DateTime.Now);
+
+        }
+
+        else
+        {
+
+            return ""; //if input values are empty..retrun empty string
+        }
+    }
+}
+}

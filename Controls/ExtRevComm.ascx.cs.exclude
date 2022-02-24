@@ -1,0 +1,616 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ExtRevComm : System.Web.UI.UserControl
+{
+    private bool isEditMode = false;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        ButtonUpdateFinalExtRev.Visible = false;
+        ButtonCancelFinalExtRev.Visible = false;
+        LabelFinalExtReviewer.Text = "";
+        ReviewerForm1.Visible = false;
+        //GridViewFinalExtReviewers.DataBind();
+        //if (ReviewerForm1.state == 1)
+        //{
+        //    LabelReviewerForm.Text = "Reviewer Form is Saved but not forwarded to Promotion Committee. </br> Open the form again and click Update to Save and forward the form to the Promotion Committee.";
+        //    LabelReviewerForm.ForeColor = System.Drawing.Color.Blue;
+        //}
+        //else if (ReviewerForm1.state == 2)
+        //{
+        //    LabelReviewerForm.Text = "Reviewer Form is Saved and forwarded to Promotion Committee.";
+        //    LabelReviewerForm.ForeColor = System.Drawing.Color.Blue;
+        //}
+
+         if (Page.IsPostBack)
+        {
+            return;            
+        }
+    }
+    public void Load_ExtReviewers()
+    {
+
+    }
+
+
+    public string GetStatus()
+    {
+        string value = Eval("Type").ToString();
+        switch (value)
+        {
+            case "0":
+                return "Candidate";
+            case "1":
+                return "Department";
+            case "2":
+                return "College";
+            default:
+                return "VRGSSR";
+
+        }
+    }
+    public string GetStatusEvaluationRecievedStatus()
+    {
+        string value = Eval("EvaluationRecieved").ToString();
+        switch (value)
+        {
+            case "True":
+                return "Received";
+            case "False":
+                return "Not Received";
+            default:
+                return "Not Received";
+
+        }
+
+    }
+
+    public string GetStatusWLSend()
+    {
+        string value = Eval("WLStatus").ToString();
+        switch (value)
+        {
+            case "not send":
+                return "True";
+            default:
+                return "False";
+
+        }
+
+    }
+
+    protected void GridViewFinalExtReviewers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DetailsViewFinalExtReviewers.PageIndex = GridViewFinalExtReviewers.SelectedIndex;
+    }
+    protected void GirdViewExtReviewers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(int.Parse(Session["ApplicationIDGlobal"].ToString()));
+        GridViewRow row = GirdViewExtReviewers.SelectedRow;
+        
+        for (int rowNo = 0; rowNo < table.Count; rowNo++)
+        {
+            if (table[rowNo].Name.Equals(row.Cells[5].Text))
+            {
+
+                //LabelFinalExtReviewer.Text = "This selection is already present in the Selected External Reviewers.";
+                //LabelFinalExtReviewer.ForeColor = System.Drawing.Color.Red;
+                Alert1.Message("This selection is already present in the Selected External Reviewers.");
+                return;
+            }
+
+        }
+        if (table.Count == 15)
+        {
+            //LabelFinalExtReviewer.Text = "There cannot be more than ten selection.";
+            //LabelFinalExtReviewer.ForeColor = System.Drawing.Color.Red;
+            Alert1.Message("There cannot be more than 15 selections.");
+            return;
+        }
+        BAL bal = new BAL();
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        Adapters.FrmFnlRefAdapter.InsertQuery(bal.GetSourceForFinalRefree(GirdViewExtReviewers.Rows[GirdViewExtReviewers.SelectedIndex].Cells[6].Text, appID),
+            appID,
+            Byte.Parse(GirdViewExtReviewers.DataKeys[GirdViewExtReviewers.SelectedIndex].Values[1].ToString()), 
+            Byte.Parse(GirdViewExtReviewers.DataKeys[GirdViewExtReviewers.SelectedIndex].Values[2].ToString()));
+        GridViewFinalExtReviewers.DataBind();
+    }
+    protected void ButtonSendWLReviwer_Click(object sender, EventArgs e)
+    {
+        int noOfRecipients = 0;
+        string recipientName = "";
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        if (ButtonUpdateFinalExtRev.Visible == true)
+            return;
+        //HyperLinkPrintWL.NavigateUrl = HttpContext.Current.Request.Url.AbsolutePath + "?applicationID=" + appID + "&print=1";
+        String SelectedReviewersEmailAddresses = "";       
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();                       
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        
+        Form.Form_AreaOfSpRow arOfSpRow = Adapters.FrmArSpAdapter.GetDataByAppId(int.Parse(Session["ApplicationIDGlobal"].ToString()))[0];
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+        foreach (GridViewRow row in GridViewFinalExtReviewers.Rows)
+        {
+            CheckBox CheckBoxSendWLReviewer = row.FindControl("CheckBoxSendWLReviewer") as CheckBox;
+            CheckBox CheckBoxForwardPC = row.FindControl("CheckBoxForwardPC") as CheckBox;
+            RadioButtonList RadioButtonUserAccess = row.FindControl("RadioButtonUserAccess") as RadioButtonList;
+            if (CheckBoxSendWLReviewer.Checked == true && CheckBoxSendWLReviewer.Enabled == true)
+            {
+                    //if (CheckBoxForwardPC.Checked == true)
+                    //{
+                        if (RadioButtonUserAccess.SelectedValue == "False")
+                        {
+                            LabelSendWLManual.ForeColor = System.Drawing.Color.Red;
+                            LabelSendWLManual.Text = @"
+One or more of the selected External Reviewers do not have electronic access.  
+<br />
+Hence, willingness letter in the form of email cannot be sent. 
+<br /><br />
+You can copy the willingness letter text from the following template, print it out and send it through postal mail.";
+                            TextBoxEmailAddress.Text = "";
+                            PanelSendEmail.Visible = true;
+                            ButtonSendEmail.Enabled = false;
+                            break;
+                            
+                        }
+                        else
+                        {
+                            Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(Int32.Parse(GridViewFinalExtReviewers.DataKeys[row.RowIndex].Values[0].ToString()));
+                            SelectedReviewersEmailAddresses = SelectedReviewersEmailAddresses + table[0].Email + ",";
+                            PanelSendEmail.Visible = true;
+                            TextBoxEmailAddress.Text = SelectedReviewersEmailAddresses;
+                            noOfRecipients++;
+                            recipientName = table[0].Name;
+                        }                    
+                    //}
+                    //else
+                    //{
+//                        AlertMessage("The External Reviewer must be forwarded to the Promotion Committee before the willingness letter is send to the external reviewer.");
+//                        PanelSendEmail.Visible = false;
+//                        TextBoxEmailAddress.Text = "";
+                        
+
+//                        return;
+                    //}
+            }
+        }
+
+        EmailTableAdapters.Task_ExtMessagesTableAdapter adapterTskExtMsg = new EmailTableAdapters.Task_ExtMessagesTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter adapterTskExt = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        string emailTemplate = adapterTskExtMsg.GetDataByTaskID(adapterTskExt.GetDataByTitle("Willingness Letter for External Reviewers")[0].TaskID)[0].Message;
+        emailTemplate = emailTemplate.Replace("@@ApplicantCollege@@", employeeRow.College);
+        emailTemplate = emailTemplate.Replace("@@Applicant@@", employeeRow.Name);
+        emailTemplate = emailTemplate.Replace("@@ApplicantDept@@", employeeRow.Department);
+        emailTemplate = emailTemplate.Replace("@@ApplicantRank@@", applicationRow.ForRank);
+        emailTemplate = emailTemplate.Replace("@@ApplicantAreaOfSp@@", arOfSpRow.AreaOfSpecialization);
+
+        TextBoxEmailAddress.ReadOnly = true;
+        LabelSendEmail.Text = "";
+        TextBoxSubject.Text = "Request for willingness";
+        TextBoxSubject.ReadOnly = true;
+        TextBoxBody.Text = emailTemplate;
+        if (noOfRecipients == 1)
+        {
+            TextBoxBody.Text = TextBoxBody.Text.Replace("(Selected Reviewers)", recipientName);
+        }
+
+    }
+    protected void btnSendWLReviwerAr_Click(object sender, EventArgs e)
+    {
+        int noOfRecipients = 0;
+        string recipientName = "";
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        if (ButtonUpdateFinalExtRev.Visible == true)
+            return;
+        //HyperLinkPrintWL.NavigateUrl = HttpContext.Current.Request.Url.AbsolutePath + "?applicationID=" + appID + "&print=1";
+        String SelectedReviewersEmailAddresses = "";
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+
+        Form.Form_AreaOfSpRow arOfSpRow = Adapters.FrmArSpAdapter.GetDataByAppId(int.Parse(Session["ApplicationIDGlobal"].ToString()))[0];
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+        foreach (GridViewRow row in GridViewFinalExtReviewers.Rows)
+        {
+            CheckBox CheckBoxSendWLReviewer = row.FindControl("CheckBoxSendWLReviewer") as CheckBox;
+            CheckBox CheckBoxForwardPC = row.FindControl("CheckBoxForwardPC") as CheckBox;
+            RadioButtonList RadioButtonUserAccess = row.FindControl("RadioButtonUserAccess") as RadioButtonList;
+            if (CheckBoxSendWLReviewer.Checked == true && CheckBoxSendWLReviewer.Enabled == true)
+            {
+                //if (CheckBoxForwardPC.Checked == true)
+                //{
+                if (RadioButtonUserAccess.SelectedValue == "False")
+                {
+                    LabelSendWLManual.ForeColor = System.Drawing.Color.Red;
+                    LabelSendWLManual.Text = @"
+One or more of the selected External Reviewers do not have electronic access.  
+<br />
+Hence, willingness letter in the form of email cannot be sent. 
+<br /><br />
+You can copy the willingness letter text from the following template, print it out and send it through postal mail.";
+                    TextBoxEmailAddress.Text = "";
+                    PanelSendEmail.Visible = true;
+                    ButtonSendEmail.Enabled = false;
+                    break;
+
+                }
+                else
+                {
+                    Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(Int32.Parse(GridViewFinalExtReviewers.DataKeys[row.RowIndex].Values[0].ToString()));
+                    SelectedReviewersEmailAddresses = SelectedReviewersEmailAddresses + table[0].Email + ",";
+                    PanelSendEmail.Visible = true;
+                    TextBoxEmailAddress.Text = SelectedReviewersEmailAddresses;
+                    noOfRecipients++;
+                    recipientName = table[0].Name;
+                }
+                //}
+                //else
+                //{
+                //                        AlertMessage("The External Reviewer must be forwarded to the Promotion Committee before the willingness letter is send to the external reviewer.");
+                //                        PanelSendEmail.Visible = false;
+                //                        TextBoxEmailAddress.Text = "";
+
+
+                //                        return;
+                //}
+            }
+        }
+
+        EmailTableAdapters.Task_ExtMessagesTableAdapter adapterTskExtMsg = new EmailTableAdapters.Task_ExtMessagesTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter adapterTskExt = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        string emailTemplate = adapterTskExtMsg.GetDataByTaskID(adapterTskExt.GetDataByTitle("Willingness Letter for External Reviewers in Arabic")[0].TaskID)[0].Message;
+        emailTemplate = emailTemplate.Replace("@@ApplicantCollege@@", employeeRow.College);
+        emailTemplate = emailTemplate.Replace("@@Applicant@@", employeeRow.Name);
+        emailTemplate = emailTemplate.Replace("@@ApplicantDept@@", employeeRow.Department);
+        emailTemplate = emailTemplate.Replace("@@ApplicantRank@@", applicationRow.ForRank);
+        emailTemplate = emailTemplate.Replace("@@ApplicantAreaOfSp@@", arOfSpRow.AreaOfSpecialization);
+
+        TextBoxEmailAddress.ReadOnly = true;
+        LabelSendEmail.Text = "";
+        TextBoxSubject.Text = "Willingness Letter";
+        TextBoxSubject.ReadOnly = true;
+        TextBoxBody.Text = emailTemplate;
+
+        if (noOfRecipients == 1)
+        {
+            TextBoxBody.Text = TextBoxBody.Text.Replace("(Selected Reviewers)", recipientName);
+        }
+
+    }
+    protected void ButtonForwardPC_Click(object sender, EventArgs e)
+    {
+       
+        
+    }
+    protected void ButtonSendEmail_Click(object sender, EventArgs e)
+    {
+        string KFUPMUserID = "";
+        try
+        {
+            HR.EmployeeRow employee = (HR.EmployeeRow)Session["user"];
+            KFUPMUserID = employee.KFUPMUserID;
+        }
+        catch
+        {
+
+        }
+        string backupTextBoxBody = "";
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        backupTextBoxBody = TextBoxBody.Text;
+
+        Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(appID);
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+
+        if (TextBoxBody.Text.Length >= 3000)
+        {
+            LabelSendEmail.ForeColor = System.Drawing.Color.Red;
+            LabelSendEmail.Text = "The email is not sent. Email size cannot exceed 3000 characters";
+            Alert1.Message("The email is not sent. Email size cannot exceed 3000 characters");
+            return;
+        }
+        foreach (GridViewRow row in GridViewFinalExtReviewers.Rows)
+        {
+            CheckBox CheckBoxSendWLReviewer = row.FindControl("CheckBoxSendWLReviewer") as CheckBox;
+            RadioButtonList RadioButtonUserAccess = row.FindControl("RadioButtonUserAccess") as RadioButtonList;            
+            if (CheckBoxSendWLReviewer.Checked == true && CheckBoxSendWLReviewer.Enabled == true)
+            {
+                if (RadioButtonUserAccess.SelectedValue == "False")
+                {
+                    //table[row.RowIndex].Name;
+                }
+                else
+                {
+                    try
+                    {
+                        TextBoxSubject.Text = "Request for willingness";
+                        TextBoxBody.Text = TextBoxBody.Text.Replace("(Selected Reviewers)", table[row.RowIndex].Name);
+                        TextBoxBody.Text = TextBoxBody.Text.Replace("refreeID=", "refreeID=" + table[row.RowIndex].RefreeID);
+
+                        Emailer.Send(table[row.RowIndex].Email, TextBoxSubject.Text, TextBoxBody.Text, KFUPMUserID, appID);
+                        appTskLgExtAdapter.InsertQuery(appID
+                                                        , tskExtAdapter.GetDataByTitle("Willingness Letter for External Reviewers")[0].TaskID
+                                                        , Cryptography.Encrypt(TextBoxBody.Text)
+                                                        , table[row.RowIndex].Email
+                                                        , table[row.RowIndex].RefreeID);
+                        Adapters.FrmFnlRefAdapter.UpdateWLStatus("waiting", "", DateTime.Now, int.Parse(GridViewFinalExtReviewers.DataKeys[row.RowIndex].Values[0].ToString()));
+                        GridViewFinalExtReviewers.DataBind();
+                        CheckBoxSendWLReviewer.Checked = true;
+                        CheckBoxSendWLReviewer.Enabled = false;
+                        TextBoxBody.Text = backupTextBoxBody;
+                    }
+                    catch (Exception)
+                    {
+                        Alert1.Message("The email is not sent.");
+                        return;
+                    }
+                }
+
+            }
+        }
+        LabelSendEmail.ForeColor = System.Drawing.Color.Green;
+        LabelSendEmail.Text = "The email has been succesfully sent.";
+        Alert1.Message("The email has been successfully sent.");
+        PanelSendEmail.Visible = false;
+        
+
+    }
+    protected void ButtonCancel_Click(object sender, EventArgs e)
+    {
+        LabelSendEmail.ForeColor = System.Drawing.Color.Red;
+        LabelSendEmail.Text = "The email is not sent.";
+        Alert1.Message("The email is not sent.");
+        //AlertMessage("The email is not sent.");
+        LabelSendWLManual.Text = "";
+        PanelSendEmail.Visible = false;
+    }
+    protected void ButtonSaveRankedSelection_Click(object sender, EventArgs e)
+    {
+
+    }
+    protected void ButtonSelectNewExtReviewer_Click(object sender, EventArgs e)
+    {
+
+    }
+    protected void ButtonSendEmailPC_Click(object sender, EventArgs e)
+    {
+        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable table = adapter.GetData(appID);
+        PromotionTableAdapters.OldPromotionCommitteeTableAdapter adapterOldPC = new PromotionTableAdapters.OldPromotionCommitteeTableAdapter();
+        int ackSend = Int32.Parse(adapterOldPC.ScalarQuery(appID).ToString());
+        if (ackSend != 5)
+        {
+            //LabelSendEmail.ForeColor = System.Drawing.Color.Red;
+            //LabelSendEmail.Text = "The Promotion Committee is not formed and acknowledged yet. Hence, the email cannot be sent";
+             Alert1.Message("The Promotion Committee is not formed and acknowledged yet. Hence, the email cannot be sent");
+            return;
+        }
+
+        HRTableAdapters.EmployeeTableAdapter employeeAdapter = new HRTableAdapters.EmployeeTableAdapter();        
+        PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        Promotion.ApplicationRow applicationRow = appAdapter.GetApplication(appID)[0];
+        HR.EmployeeRow employeeRow = employeeAdapter.GetApplicant(appID)[0];
+        TextBoxEmailAddress.Text = table[0].Email + "," + table[1].Email + "," + table[2].Email + "," + table[3].Email + "," + table[4].Email;
+        PanelSendEmail.Visible = true;
+        TextBoxSubject.Text = "Request for Comments";
+        TextBoxBody.Text = 
+@"Dear Promotion Committee Chairman and Members,
+Considering the promotion case of Dr. "+employeeRow.Name+ @" , I have forwarded you the name of 3 external reviewers for evaluating the case. Every Promotion Committee member can view the list of these reviewers on the External Reviewers page when he logon to the Faculty Promotion System. The Chairman can only provide comments. It is required that the Promotion Committee Chairman provide appropriate comments corresponding to each external reviewer after discussing them in meeting with all the members. 
+
+Thank you.
+______________________
+Dr. Nasser Al-Aqeeli
+Vice Rector for Graduate Studies & Scientific Research 
+";
+    }
+    protected void GridViewFinalExtReviewers_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        /*
+ * Form_ReviewersForm
+ * 
+ * Status = 4 -- Submitted 
+ * Status = 3 -- Updated
+ * Status = 2 -- Saved Succesfully
+ * Status = 1 -- Saved Unsuccesfully
+ * Status = 0 -- Not saved (New)
+ * 
+ */
+        if (e.CommandName == "ShowForm")
+        {
+            LabelSendEmail.Text = "";
+            LabelReviewerForm.Text = "";
+
+            int refreeID = int.Parse(GridViewFinalExtReviewers.DataKeys[int.Parse(e.CommandArgument.ToString())].Values[0].ToString());
+            ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter adapterRevForm = new ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter();
+
+            Form.Form_FinalRefreeRow refreeRow = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(refreeID)[0];
+            
+            Session.Add("refreeID", refreeID);
+            if (ReviewerForm1.GetFormStatus() == 4)
+            {
+                Response.Write(@"<script language=javascript>
+                    window.open ('ReviewersForm.aspx?refreeID=" + refreeID + @"',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 700, width = 900, left = 200, top= 200, screenx=10,screeny=600,menubar=no');                   
+                    </script>");
+
+
+                LabelReviewerForm.Text = "";
+            }
+            else if ((ReviewerForm1.GetFormStatus() == 0 || ReviewerForm1.GetFormStatus() == 1 || ReviewerForm1.GetFormStatus() == 2) && refreeRow.UserAccess == false)
+            {
+                ReviewerForm1.Visible = true;
+                ReviewerForm1.LoadReviewerForm(true);
+
+                try
+                {
+                    ReviewerForm.Form_ReviewersFormDataTable reviewerForm = adapterRevForm.GetDataByPK(refreeID);
+                    if (reviewerForm.Count != 0)
+                    {
+                        adapterRevForm.UpdateStatus(4, refreeID);
+                        Adapters.FrmFnlRefAdapter.UpdateEvaluationRecieved(true, refreeID);
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                    
+                }
+                
+                GridViewFinalExtReviewers.DataBind();
+
+                
+                
+            }
+            else
+            {
+                ReviewerForm1.Visible = false;
+                Alert1.Message("Reviewer Form is not available");
+                LabelReviewerForm.Text = "Reviewer Form is not available";
+                LabelReviewerForm.ForeColor = System.Drawing.Color.Red;
+            }
+
+        }
+    }
+//    protected void ButtonSelectNew_Click(object sender, EventArgs e)
+//    {
+//        int appID = int.Parse(Session["ApplicationIDGlobal"].ToString());
+        
+//        //Form.Form_FinalRefreeDataTable table = Adapters.FrmFnlRefAdapter.GetDataByApplicationIDorderbySerial(int.Parse(Session["ApplicationIDGlobal"].ToString()));        
+//        //if (table.Count == 10)
+//        //{
+//        //    //LabelFinalExtReviewer.Text = "There cannot be more than ten selection.";
+//        //    //LabelFinalExtReviewer.ForeColor = System.Drawing.Color.Red;
+//        //    Alert1.Message("There cannot be more than ten selection.");
+//        //    return;
+//        //}
+        
+//        Adapters.FrmRefAdapter.Insert(
+//            appID, 3, (byte) (Adapters.FrmRefAdapter.GetByApplication(appID, 3).Count + 1)
+//            , TextBoxName.Text, TextBoxRank.Text, TextBoxMailingAddress.Text, TextBoxEmail.Text, 
+//            TextBoxMajor.Text, TextBoxSpeciality.Text, TextBoxPhoneFax.Text, TextBoxActiveAreaofResearch.Text, 
+//            TextBoxPrevAreaOfResearch.Text ,TextBoxWebpageNew.Text ,TextBoxCommentsNew.Text
+//            , Int32.Parse(TextBoxTotalPublicationsNew.Text)
+//            , Int32.Parse(TextBoxNoOfJournalsNew.Text)
+//            , Int32.Parse(TextBoxHIndexNew.Text)
+//            , Int32.Parse(TextBoxCitationsNew.Text));
+//        GirdViewExtReviewers.DataBind(); 
+//        //Adapters.FrmFnlRefAdapter.Insert(appID, 2, 10, TextBoxName.Text, TextBoxRank.Text, TextBoxMailingAddress.Text, TextBoxEmail.Text, TextBoxMajor.Text, TextBoxSpeciality.Text, TextBoxPhoneFax.Text, TextBoxActiveAreaofResearch.Text, TextBoxPrevAreaOfResearch.Text, "", "not send", "", true, false, false, false, "", "", false, false
+//        //    ,TextBoxWebpageNew.Text
+//        //    ,TextBoxCommentsNew.Text
+//        //    ,null
+//        //    , Int32.Parse(TextBoxTotalPublicationsNew.Text)
+//        //    , Int32.Parse(TextBoxNoOfJournalsNew.Text)
+//        //    , Int32.Parse(TextBoxHIndexNew.Text));
+////        GridViewFinalExtReviewers.DataBind();
+//    }
+    protected void GridViewFinalExtReviewers_DataBound(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in GridViewFinalExtReviewers.Rows)
+        {
+            LinkButton linkbuttondelete = row.FindControl("LinkButtonDelete") as LinkButton;
+            linkbuttondelete.Attributes.Add("OnClick", "return confirm_delete();");
+        }
+    }
+    protected void ButtonEditFinalExtRev_Click(object sender, EventArgs e)
+    {
+        ButtonEditFinalExtRev.Visible = false;
+        ButtonUpdateFinalExtRev.Visible = true;
+        ButtonCancelFinalExtRev.Visible = true;
+        isEditMode = true;
+        GridViewFinalExtReviewers.DataBind();
+
+    }
+    protected void ButtonUpdateFinalExtRev_Click(object sender, EventArgs e)
+    {
+        ButtonEditFinalExtRev.Visible = true;
+        ButtonUpdateFinalExtRev.Visible = false;
+        ButtonCancelFinalExtRev.Visible = false;
+        BindData();
+        isEditMode = false;
+        GridViewFinalExtReviewers.DataBind();
+        
+    }
+    protected void ButtonCancelFinalExtRev_Click(object sender, EventArgs e)
+    {
+        ButtonEditFinalExtRev.Visible = true;
+        ButtonUpdateFinalExtRev.Visible = false;
+        ButtonCancelFinalExtRev.Visible = false;
+        isEditMode = false;
+        GridViewFinalExtReviewers.DataBind();
+    }
+    public void BindData()
+    {
+        foreach (GridViewRow row in GridViewFinalExtReviewers.Rows)
+        {
+            TextBox TextBoxRank = row.FindControl("TextBoxRank") as TextBox;
+            CheckBox CheckBoxForwardPC = row.FindControl("CheckBoxForwardPC") as CheckBox;
+            CheckBox CheckBoxEnablePCComm = row.FindControl("CheckBoxEnablePCComm") as CheckBox;
+            RadioButtonList RadioButtonUserAccess = row.FindControl("RadioButtonUserAccess") as RadioButtonList;
+            CheckBox CheckBoxHardCopySent = row.FindControl("CheckBoxHardCopySent") as CheckBox;
+            TextBox TextBoxWLStatus = row.FindControl("TextBoxWLStatus") as TextBox;
+            CheckBox CheckBoxPermitPC = row.FindControl("CheckBoxPermitPC") as CheckBox;
+            TextBox TextBoxComments = row.FindControl("TextBoxComments") as TextBox;
+            try
+            {
+
+                Adapters.FrmFnlRefAdapter.UpdateQuery(Byte.Parse(TextBoxRank.Text)
+                    , Convert.ToBoolean(CheckBoxForwardPC.Checked)
+                    , Convert.ToBoolean(CheckBoxEnablePCComm.Checked)
+                    , Convert.ToBoolean(RadioButtonUserAccess.SelectedIndex)
+                    , Convert.ToBoolean(CheckBoxHardCopySent.Checked)
+                    , TextBoxWLStatus.Text
+                    , Convert.ToBoolean(CheckBoxPermitPC.Checked)
+                    , TextBoxComments.Text
+                    , int.Parse(GridViewFinalExtReviewers.DataKeys[row.RowIndex].Values[0].ToString()));
+            }
+            catch (Exception exc)
+            {
+                Response.Write(exc.Message);
+
+            }
+        }
+
+    }
+    protected bool IsInEditMode
+    {
+
+        get { return this.isEditMode; }
+
+        set { this.isEditMode = value; }
+
+    }
+    public System.Drawing.Color GetColor(string status)
+    {
+        if (status == "Received" || status == "Not Received")
+        {
+            if (status == "Received") return System.Drawing.Color.Green;
+            else if (status == "Not Received") return System.Drawing.Color.Red;
+        }
+        if (status == "Accepted")
+            return System.Drawing.Color.Green;
+        else if (status == "Declined")
+            return System.Drawing.Color.Red;
+        else if (status == "Withdrawn")
+            return System.Drawing.Color.Red;
+        return System.Drawing.Color.Black;
+
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+}

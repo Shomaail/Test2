@@ -1,0 +1,87 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_ExtReviewerList : System.Web.UI.UserControl
+{
+    public string GetStatusEvaluationRecievedStatus()
+    {
+        string value = Eval("EvaluationRecieved").ToString();
+        switch (value)
+        {
+            case "True":
+                return "Recieved";
+            case "False":
+                return "Not Recieved";
+            default:
+                return "Not Recieved";
+
+        }
+
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        ReviewerForm1.Visible = false;
+       
+    }
+
+    protected void GridViewFinalExtReviewersList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DetailsViewFinalExtReviewersList.PageIndex = GridViewFinalExtReviewersList.SelectedIndex;
+        DetailsViewFinalExtReviewersList.DataBind();
+        ReviewerForm1.Visible = false;
+    }
+
+    protected void GridViewFinalExtReviewersList_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        /*
+ * Form_ReviewersForm
+ * 
+ * Status = 4 -- Submitted 
+ * Status = 3 -- Updated
+ * Status = 2 -- Saved Succesfully
+ * Status = 1 -- Saved Unsuccesfully
+ * Status = 0 -- Not saved (New)
+ * 
+ */
+        if (e.CommandName == "ShowForm")
+        {
+            int refreeID = int.Parse(GridViewFinalExtReviewersList.DataKeys[int.Parse(e.CommandArgument.ToString())].Values[0].ToString());
+
+            Form.Form_FinalRefreeRow refreeRow = Adapters.FrmFnlRefAdapter.GetDataByByRefreeID(refreeID)[0];
+
+            Session.Add("refreeID", refreeID);
+            if (ReviewerForm1.GetFormStatus() == 4 && refreeRow.PermitPC == true)
+            {
+                Response.Write(@"<script language=javascript>
+                    window.open ('ReviewersForm.aspx?refreeID=" + refreeID + @"',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 700, width = 900, left = 200, top= 200, screenx=10,screeny=600,menubar=no');
+                    </script>");
+                //ReviewerForm1.LoadReviewerForm(true);
+                //ReviewerForm1.Visible = true;
+                LabelReviewerForm.Text = "";
+            }
+            else
+            {
+                ReviewerForm1.Visible = false;
+                Alert1.Message("Reviewer Form is not available");
+                LabelReviewerForm.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+}

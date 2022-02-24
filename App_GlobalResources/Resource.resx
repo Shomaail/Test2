@@ -1,0 +1,543 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActiveAreaOfResearch" xml:space="preserve">
+    <value>Active Area Of Research</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Mailing Address</value>
+  </data>
+  <data name="Bank" xml:space="preserve">
+    <value>ACCOUNT NO: 
+IBAN / SWIFT CODE:
+ROUTING NO:
+BANK NAME:
+BRANCH:
+CITY:
+COUNTRY:</value>
+  </data>
+  <data name="Citations" xml:space="preserve">
+    <value>Citations</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DocumentName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="DocumentType" xml:space="preserve">
+    <value>Document Type</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Form_ChairmanInputF1" xml:space="preserve">
+    <value>Teaching</value>
+  </data>
+  <data name="Form_ChairmanInputF1SubHeading" xml:space="preserve">
+    <value>Undergraduate teaching</value>
+  </data>
+  <data name="Form_ChairmanInputF2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF2SubHeading" xml:space="preserve">
+    <value>Graduate teaching</value>
+  </data>
+  <data name="Form_ChairmanInputF3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF3SubHeading" xml:space="preserve">
+    <value>Curriculum development</value>
+  </data>
+  <data name="Form_ChairmanInputF4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF4SubHeading" xml:space="preserve">
+    <value>Student mentoring (advising, supervision, UG research)</value>
+  </data>
+  <data name="Form_ChairmanInputF5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF5SubHeading" xml:space="preserve">
+    <value>Student interaction (virtual and physical office hours, availability)</value>
+  </data>
+  <data name="Form_ChairmanInputF6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF6SubHeading" xml:space="preserve">
+    <value>Self-development (e.g. DAD programs)</value>
+  </data>
+  <data name="Form_ChairmanInputF7" xml:space="preserve">
+    <value>Research</value>
+  </data>
+  <data name="Form_ChairmanInputF7SubHeading" xml:space="preserve">
+    <value>Distinction in the field (e.g. leadership)</value>
+  </data>
+  <data name="Form_ChairmanInputF8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF8SubHeading" xml:space="preserve">
+    <value>Productivity</value>
+  </data>
+  <data name="Form_ChairmanInputF9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF9SubHeading" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="Form_ChairmanInputF10" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF10SubHeading" xml:space="preserve">
+    <value>Collaboration</value>
+  </data>
+  <data name="Form_ChairmanInputF11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF11SubHeading" xml:space="preserve">
+    <value>Capacity building (human and physical resources, research area and group)</value>
+  </data>
+  <data name="Form_ChairmanInputF12" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF12SubHeading" xml:space="preserve">
+    <value>Mentoring (students, junior faculty, …)</value>
+  </data>
+  <data name="Form_ChairmanInputF13" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="Form_ChairmanInputF13SubHeading" xml:space="preserve">
+    <value>Engagement</value>
+  </data>
+  <data name="Form_ChairmanInputF14" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF14SubHeading" xml:space="preserve">
+    <value>Contribution</value>
+  </data>
+  <data name="Form_ChairmanInputF15" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF15SubHeading" xml:space="preserve">
+    <value>Leadership</value>
+  </data>
+  <data name="Form_ChairmanInputF16" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF16SubHeading" xml:space="preserve">
+    <value>Professional service</value>
+  </data>
+  <data name="Form_ChairmanInputF17" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF17SubHeading" xml:space="preserve">
+    <value>Community service</value>
+  </data>
+  <data name="Form_ChairmanInputF18" xml:space="preserve">
+    <value>Recognitions/Awards</value>
+  </data>
+  <data name="Form_ChairmanInputF18SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF19" xml:space="preserve">
+    <value>Special remarks</value>
+  </data>
+  <data name="Form_ChairmanInputF19SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HIndex" xml:space="preserve">
+    <value>H Index</value>
+  </data>
+  <data name="Major" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NoOfJournals" xml:space="preserve">
+    <value>No Of Journals</value>
+  </data>
+  <data name="PassportNo" xml:space="preserve">
+    <value>Passport No.</value>
+  </data>
+  <data name="PhoneNFax" xml:space="preserve">
+    <value>Phone and Fax</value>
+  </data>
+  <data name="PreviousAreaOfResearch" xml:space="preserve">
+    <value>Previous Area Of Research</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+  <data name="SaveButtonText" xml:space="preserve">
+    <value>Save / Update</value>
+  </data>
+  <data name="Specialty" xml:space="preserve">
+    <value>Specialty</value>
+  </data>
+  <data name="TotalPublications" xml:space="preserve">
+    <value>Total Publications</value>
+  </data>
+  <data name="UploadedBy" xml:space="preserve">
+    <value>Uploaded By</value>
+  </data>
+  <data name="Form_ChairmanInputF20" xml:space="preserve">
+    <value>Meeting Number</value>
+  </data>
+  <data name="Form_ChairmanInputF20SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_ChairmanInputF21" xml:space="preserve">
+    <value>Meeting Date</value>
+  </data>
+  <data name="Form_ChairmanInputF21SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Website" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="CorrespondenceM1" xml:space="preserve">
+    <value>All the correspondence emails related to this promotion application are shown below.</value>
+  </data>
+  <data name="MainM1" xml:space="preserve">
+    <value>Promotion Applications you are responsible for:</value>
+  </data>
+  <data name="MainM2" xml:space="preserve">
+    <value>The following are the list of applications that you are participating in and/or assigned to review.</value>
+  </data>
+  <data name="MainM3" xml:space="preserve">
+    <value>There are no promotion applications that you are participating in and/or assigned to you for review.</value>
+  </data>
+  <data name="MainM4" xml:space="preserve">
+    <value>Archived Promotion Applications:</value>
+  </data>
+  <data name="MainM5" xml:space="preserve">
+    <value>The following are the lists of applications that you were participating in and/or were assigned to you to review.</value>
+  </data>
+  <data name="MainM6" xml:space="preserve">
+    <value>There are no promotion application(s) you were participating in and/or were assigned to review.</value>
+  </data>
+  <data name="ScientificCouncilM1" xml:space="preserve">
+    <value>EmployeeID cannot be left empty!.</value>
+  </data>
+  <data name="ScientificCouncilM10" xml:space="preserve">
+    <value>EmployeeID cannot be left empty!.</value>
+  </data>
+  <data name="ScientificCouncilM11" xml:space="preserve">
+    <value>No Employee with this EmployeeID (@@EmployeeID@@) exists.</value>
+  </data>
+  <data name="ScientificCouncilM12" xml:space="preserve">
+    <value>There has to be at least one member in the Scientific Council. You cannot delete this member</value>
+  </data>
+  <data name="ScientificCouncilM13" xml:space="preserve">
+    <value>There has to be at least one member in the Scientific Council Subcommittee. You cannot delete this member</value>
+  </data>
+  <data name="ScientificCouncilM14" xml:space="preserve">
+    <value>Any change in this page will affect all the active promotion applications. You can edit and delete the list as long as the Scientific Council or Scientific Council Subcommittee is not accessing the promotion application. If the promotion application is with them, the list below will become in active un till the application is returned to you.</value>
+  </data>
+  <data name="ScientificCouncilM15" xml:space="preserve">
+    <value>Any change in this page will affect the current promotion application only.</value>
+  </data>
+  <data name="ScientificCouncilM16" xml:space="preserve">
+    <value>This member of Scientific Council cannot be deleted because the Promotion Application is with the Scientific Council. Unshare the promotion application with the scientific council to allow delete operation. </value>
+  </data>
+  <data name="ScientificCouncilM17" xml:space="preserve">
+    <value>This member of Scientific Council cannot be edited because the Promotion Application is with the Scientific Council. Unshare the promotion application with the scientific council to allow edit operation.</value>
+  </data>
+  <data name="ScientificCouncilM18" xml:space="preserve">
+    <value>This member of Scientific Council Subcommittee cannot be deleted because the Promotion Application is with the Scientific Council Subcommittee. Inform the chairman of Scientific Council Subcommittee to return the promotion application to allow delete operation.</value>
+  </data>
+  <data name="ScientificCouncilM19" xml:space="preserve">
+    <value>This member of Scientific Council Subcommittee cannot be edited because the Promotion Application is with the Scientific Council Subcommittee.  Inform the chairman of Scientific Council Subcommittee to return the promotion application to allow edit operation.</value>
+  </data>
+  <data name="ScientificCouncilM2" xml:space="preserve">
+    <value>No Employee with this EmployeeID (@@EmployeeID@@) exists</value>
+  </data>
+  <data name="ScientificCouncilM20" xml:space="preserve">
+    <value>No addition in the Scientific Council be made because the Promotion Application is with the Scientific Council. Unshare the promotion application with the scientific council to allow add operation.</value>
+  </data>
+  <data name="ScientificCouncilM21" xml:space="preserve">
+    <value>No addition in the Scientific Council Subcommittee be made because the Promotion Application is with the Scientific Council Subcommittee.  Inform the chairman of Scientific Council Subcommittee to return the promotion application to allow add operation.</value>
+  </data>
+  <data name="ScientificCouncilM22" xml:space="preserve">
+    <value>No addition in the Scientific Council be made because the Promotion Application is with the Scientific Council. Unshare the promotion application of @@Applicant@@ with the scientific council to allow add operation.</value>
+  </data>
+  <data name="ScientificCouncilM23" xml:space="preserve">
+    <value>No addition in the Scientific Council Subcommittee be made because the Promotion Application is with the Scientific Council Subcommittee.  Inform the chairman of Scientific Council Subcommittee of the promotion application of @@Applicant@@, to return the promotion application to allow add operation.</value>
+  </data>
+  <data name="ScientificCouncilM3" xml:space="preserve">
+    <value>The Scientific Council Subcommittee cannot have more than @@MaxPromotionSubcommitteeMembers@@ members</value>
+  </data>
+  <data name="ScientificCouncilM4" xml:space="preserve">
+    <value>The Scientific Council cannot have more than @@MaxScientificCouncilMembers@@ members</value>
+  </data>
+  <data name="ScientificCouncilM5" xml:space="preserve">
+    <value>The Employee with the EmployeeID (@@EmployeeID@@ ) is already present in the @@PermanentCommittee@@.</value>
+  </data>
+  <data name="ScientificCouncilM6" xml:space="preserve">
+    <value>The Number of Members in Scientific Council has to be at least @@MinScientificCouncilMembers@@. The Scientific Council is not complete.</value>
+  </data>
+  <data name="ScientificCouncilM7" xml:space="preserve">
+    <value>The Number of Members in Scientific Council Subcommittee has to be at least in @@MinPromotionSubcommitteeMembers@@. The Scientific Council Subcommittee is not complete.</value>
+  </data>
+  <data name="ScientificCouncilM8" xml:space="preserve">
+    <value>Scientific Council and Scientific Council Subcommittee are complete</value>
+  </data>
+  <data name="ScientificCouncilM9" xml:space="preserve">
+    <value>No Employee found.</value>
+  </data>
+  <data name="ActionM1" xml:space="preserve">
+    <value>All the actions below are disabled until the promotion application is returned back to you. See the Active Tasks.</value>
+  </data>
+  <data name="ActionM10" xml:space="preserve">
+    <value>All the other active tasks need to be fininshed in order to perform this action. Currently there are @@NoOfActiveTasks@@ Active Task. Go to the Active Tasks Page and contact the task holders to finish their task.</value>
+  </data>
+  <data name="ActionM11" xml:space="preserve">
+    <value>The intented recipients are not finalized. This is because you have not made a committee or council which you are supposed to make</value>
+  </data>
+  <data name="ActionM2" xml:space="preserve">
+    <value>No action is supposed to be taken by you at this task</value>
+  </data>
+  <data name="ActionM3" xml:space="preserve">
+    <value>There are currently @@NoOfActiveTask@@ Active tasks.</value>
+  </data>
+  <data name="ActionM4" xml:space="preserve">
+    <value>This means currently @@NoOfActiveTask@@ users are accessing or can access this promotion application. Click on the Active Task button on the bottom left to see these active tasks</value>
+  </data>
+  <data name="ActionM5" xml:space="preserve">
+    <value>You cannot perform this action since the task is incomplete. See the checklist.</value>
+  </data>
+  <data name="ActionM6" xml:space="preserve">
+    <value>HTML tags are found in the message. Remove HTML tags to send the message</value>
+  </data>
+  <data name="ActionM7" xml:space="preserve">
+    <value>Ooops! Some thing went wrong! Contact Adminstrator.</value>
+  </data>
+  <data name="ActionM8" xml:space="preserve">
+    <value>The Promotion Application cannot be unarchived since the applicant has currently an active application for the same rank. Delete the Current promotion application to archive this application. Deletion can be carried out using Admin Menu. </value>
+  </data>
+  <data name="ActionM9" xml:space="preserve">
+    <value>Attached Action ID of this action is found to be null. Contact the System Admin</value>
+  </data>
+  <data name="Form_CollegeInputF20" xml:space="preserve">
+    <value>Meeting Number</value>
+  </data>
+  <data name="Form_CollegeInputF20SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Form_CollegeInputF21" xml:space="preserve">
+    <value>Meeting Date</value>
+  </data>
+  <data name="Form_CollegeInputF21SubHeading" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ActionM12" xml:space="preserve">
+    <value>This action will allow you and the recipent(s) to access the application however it will not allow you to perform any further action unless the application is returned back.</value>
+  </data>
+  <data name="AnnualEvaluation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AnnualEvaluationM1" xml:space="preserve">
+    <value>The Annual Evaluation is now complete</value>
+  </data>
+  <data name="AnnualEvaluationM2" xml:space="preserve">
+    <value>Form Incomplete, Annual Evaluation Field need to have at least two characters to complete</value>
+  </data>
+  <data name="AnnualEvaluationM3" xml:space="preserve">
+    <value>Form Incomplete</value>
+  </data>
+  <data name="AnnualEvaluationSubHeading" xml:space="preserve">
+    <value>Please enter the annual evaluation</value>
+  </data>
+  <data name="ScientificCouncilM24" xml:space="preserve">
+    <value>There has to be at least one employee as Scientific Council Coordinator. You cannot delete</value>
+  </data>
+  <data name="ScientificCouncilM25" xml:space="preserve">
+    <value>This Scientific Council Coordinator cannot be edited because the Promotion Application is with the Scientific Council. Unshare the promotion application with the scientific council to allow edit operation.</value>
+  </data>
+  <data name="ExternalReviewerSelectionF1" xml:space="preserve">
+    <value>In the textbox below, paste one row of external reviewer data from Excel with same number, order and headings as in the list of texboxes. Then, click on the Fill Button to place the data in the textboxes. Or, you can fill-up the text boxes individually</value>
+  </data>
+  <data name="ExternalReviewerSelectionF2" xml:space="preserve">
+    <value>Paste Excel row here</value>
+  </data>
+  <data name="ExternalReviewerSelectionM1" xml:space="preserve">
+    <value>List of External Reviewers is complete</value>
+  </data>
+  <data name="ExternalReviewerSelectionM10" xml:space="preserve">
+    <value>Major of external reviewer is must</value>
+  </data>
+  <data name="ExternalReviewerSelectionM11" xml:space="preserve">
+    <value>A valid Email of external reviewer is must</value>
+  </data>
+  <data name="ExternalReviewerSelectionM12" xml:space="preserve">
+    <value>The Mailing Address must contain the name of the University/Institute/School</value>
+  </data>
+  <data name="ExternalReviewerSelectionM13" xml:space="preserve">
+    <value>The Name of external reviewer is must</value>
+  </data>
+  <data name="ExternalReviewerSelectionM14" xml:space="preserve">
+    <value>This selection is already made.</value>
+  </data>
+  <data name="ExternalReviewerSelectionM15" xml:space="preserve">
+    <value>Click here to make this selection. </value>
+  </data>
+  <data name="ExternalReviewerSelectionM16" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ExternalReviewerSelectionM17" xml:space="preserve">
+    <value>The page is visible in a read only mode because the application is in achived state</value>
+  </data>
+  <data name="ExternalReviewerSelectionM2" xml:space="preserve">
+    <value>List of Final External Reviewers has to be atleast @@SizeOfListFinalER@@. Please verify from Scopus, the Total Publication, No. of journal publications, H-index and Citation of the reviewers with a new added column Total journal publications and H-index together. [The Circular was already issued, in this regard]. No personal association or co-authorship with the applicant should be ascertained from CV.  List of Final External Reviewers is Incomplete.</value>
+  </data>
+  <data name="ExternalReviewerSelectionM3" xml:space="preserve">
+    <value>This External Reviewers with the Email Address: @@EmailAddress@@ is already present in the Final External Reviewers list.</value>
+  </data>
+  <data name="ExternalReviewerSelectionM4" xml:space="preserve">
+    <value>The External Reviewers with this Email Address: @@EmailAddress@@ is already present in the Master External Reviewers list. You can select any from the Search.</value>
+  </data>
+  <data name="ExternalReviewerSelectionM5" xml:space="preserve">
+    <value>There are some communication associated with this reviewer. Delete the communication in External Reviewer Communication page inorder to completely delete the external reviewer from final list.</value>
+  </data>
+  <data name="ExternalReviewerSelectionM6" xml:space="preserve">
+    <value>The Email address is already in use with other external reviewer</value>
+  </data>
+  <data name="ExternalReviewerSelectionM7" xml:space="preserve">
+    <value>Enter only one Email Address</value>
+  </data>
+  <data name="ExternalReviewerSelectionM8" xml:space="preserve">
+    <value>Active Area Of Research of external reviewer is must</value>
+  </data>
+  <data name="ExternalReviewerSelectionM9" xml:space="preserve">
+    <value>Specialty of external reviewer is must</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Form_CollegeInputF1" xml:space="preserve">
+    <value>College Council Input</value>
+  </data>
+  <data name="Form_CollegeInputF1SubHeading" xml:space="preserve">
+    <value>Paste below the college council minutes</value>
+  </data>
+  <data name="ScientificCouncilM26" xml:space="preserve">
+    <value>Scientific Council Coordinator has to be only one</value>
+  </data>
+</root>

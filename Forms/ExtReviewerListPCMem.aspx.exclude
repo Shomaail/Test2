@@ -1,0 +1,15 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="ExtReviewerListPCMem.aspx.cs" Inherits="Forms_ExtReviewerListPCMem" Title="Faculty Promotion System"  ValidateRequest="false"%>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+
+<%@ Register Src="../Controls/ExtReviewerList4PCMem.ascx" TagName="ExtReviewerList4PCMem"
+    TagPrefix="uc1" %>
+
+    <%@ MasterType VirtualPath="Forms.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+<br />
+    <uc1:ExtReviewerList4PCMem ID="ExtReviewerList4PCMem1" runat="server" />
+    
+</asp:Content>
+

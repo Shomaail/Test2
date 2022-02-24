@@ -1,0 +1,43 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="FilesUploadOld.aspx.cs" Inherits="Forms_FilesUpload" Title="Faculty Promotion System" MaintainScrollPositionOnPostback ="true"%>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register Src="../Controls/FilesUpload.ascx" TagName="FilesUpload" TagPrefix="uc1" %>
+<%--<%@ Register src="../Controls/ComposeEmailOld.ascx" tagname="ComposeEmail" tagprefix="uc3" %>--%>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+   <asp:HiddenField ID="hdnEmailBody" runat="server" />
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <asp:Label ID="lblMessage" runat="server"></asp:Label><br />
+    <uc1:FilesUpload id="FilesUpload1" runat="server">
+    </uc1:FilesUpload>
+    &nbsp;<br />
+     &nbsp; &nbsp;<asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="Save Uploaded File" CausesValidation="False" CssClass="btn btn-primary btn-md" /><br />
+    <br />
+    <asp:Table ID="TableStatus" Visible = "false" runat="server">
+    <asp:TableRow>
+    <asp:TableCell>The Promotion Committee Approval</asp:TableCell>
+    <asp:TableCell>
+            <asp:Image ID="ImagePCFlagYes" runat="server" ImageUrl="../images/green-tick.jpg"  Height="26px" Width = "26px"/>          
+            <asp:Image ID="ImagePCFlagNo" runat="server" ImageUrl="../images/delete_black.JPG"  Height="20px" Width = "20px"/>          
+    </asp:TableCell>
+    </asp:TableRow>
+    <asp:TableRow Visible = "false">
+    <asp:TableCell>Material Sent</asp:TableCell>
+    <asp:TableCell>
+        <asp:Image ID="ImageMSYes" runat="server" ImageUrl="../images/green-tick.jpg"  Height="26px" Width = "26px"/>          
+        <asp:Image ID="ImageMSNo" runat="server" ImageUrl="../images/delete_black.JPG"  Height="26px" Width = "26px"/>                  
+    </asp:TableCell>
+    </asp:TableRow>    
+    </asp:Table>
+    <br />
+    &nbsp; &nbsp;<asp:Button ID="ButtonSendSelPub" runat="server" 
+        onclick="ButtonSendSelPub_Click"        CssClass="btn btn-primary btn-md" 
+        Text="Send Email for Sending Selected Publications" Visible="False" ToolTip="Click here to open email templates for sending email. Only those Ext. Reviewers will be sent emails of whom the Acceptance is received and the final evaluation report is not received" />
+    <br />
+    
+    <br />
+<%--     <uc3:ComposeEmail ID="ComposeEmail1" runat="server" Visible="False" OnEmailSent="ComposeEmail_OnEmailSent" OnEmailNotSent="ComposeEmail_OnEmailNotSent" />--%>
+   <br />
+</asp:Content>
+

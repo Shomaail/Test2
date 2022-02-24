@@ -1,0 +1,376 @@
+﻿using System;
+using System.Collections;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms : System.Web.UI.MasterPage
+{
+    protected override void AddedControl(Control control, int index)
+    {
+        if (Request.ServerVariables["http_user_agent"].IndexOf("Safari", StringComparison.CurrentCultureIgnoreCase) != -1)
+        {
+            this.Page.ClientTarget = "uplevel";
+        }
+        base.AddedControl(control, index);
+    }
+
+
+    protected HtmlGenericControl body;
+    protected HtmlTableCell td;
+    protected void Page_PreInit(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        body = FindControl("Body") as HtmlGenericControl;        
+        td = FindControl("tdAppParticulars") as HtmlTableCell;
+        if (RadioButtonListLang.Items.Count != 2)
+        {
+            RadioButtonListLang.Items.Add("العربية");
+            RadioButtonListLang.Items.Add("English");
+        }
+            
+        try
+        {
+
+            if (Session["refree"] == null)
+            {
+                throw new Exception("Invalid Session. Please login again!");
+            }
+                
+            ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter extfrmInsAdapter = new ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter();
+            ExternalForms.ExtFormInstructionsDataTable extfrmInsTable= extfrmInsAdapter.GetData("External Reviewers");
+            formInstructions = new Hashtable();
+            formIDs          = new Hashtable();
+            string cuurentItemURL = "";
+            foreach (ExternalForms.ExtFormInstructionsRow row in extfrmInsTable)
+            {
+                string itemURL = row.Page;
+                formInstructions[row.Page] = row.IsInstructionNull() || Request.Cookies["langCookie"].Value == "ar" ? "" : row.Instruction;
+                formIDs[row.Page] = row.FormID;
+
+                /* header page-title */
+                if (row.Page == CurrentPageName)
+                {
+                    if (Request.Cookies["langCookie"].Value == "en")
+                    {
+                        lblPageTitle.Text = row.Title;
+                    }
+                    else
+                    {
+                        lblPageTitle.Text = "";
+                    }
+
+                    cuurentItemURL = itemURL;
+                }
+            }
+            Session["applicationFormInstruction" + ApplicationID] = formInstructions;
+            Session["applicationFormIDs" + ApplicationID] = formIDs;
+
+            if (IsPostBack) { return; }
+
+            PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter adapter = new PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter();
+            Promotion.vw_ExternalApplicationRefreeRow myRow = adapter.GetDataByRefreeId(ApplicationID, int.Parse(Session["refreeID"].ToString()))[0];
+
+            lblApplicantEmail.Text = myRow.Name;
+            lblEmployee.Text = myRow.Refree_Name;
+            /* printer friendly */
+            if (Utils.IsPrintMode())
+            {
+                tdLeftMenu.Visible = false;
+                lnkPrint.Visible = false;               
+            }
+            lnkPrint.NavigateUrl = cuurentItemURL + "?print=1";
+            
+        }
+        catch (Exception ex)
+        {
+            FormsAuthentication.SignOut();
+            FormsAuthentication.RedirectToLoginPage();
+            //Response.Write(ex.ToString());
+        }
+    }
+
+
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+     
+        if (Request.Cookies["langCookie"].Value == "en")
+        {
+            body.Attributes["dir"] = "ltr";
+            td.Attributes["align"] = "right";
+            RadioButtonListLang.SelectedIndex = 1;
+            FormMenu.Items.Clear();
+            FormMenu.Items.Add(new MenuItem("Home", "", null, "ExtMain.aspx"));
+            FormMenu.Items.Add(new MenuItem("Application Documents", "", null, "Form_ApplicationFiles.aspx"));
+            FormMenu.Items.Add(new MenuItem("Reviewer Form", "", null, "Form_ReviewerForm.aspx"));
+            FormMenu.Items.Add(new MenuItem("Action", "", null, "Form_ReviewerAction.aspx"));
+            MenuItem blank = new MenuItem("&nbsp;");
+            blank.Selectable = false;
+            FormMenu.Items.Add(blank);
+            FormMenu.Items.Add(new MenuItem("Logout", "", null, "~/ExtLogout.aspx"));
+            lblRole.Text = "External Reviewer";
+            lblAppOf.Text = "Application of";        
+        }
+        else if (Request.Cookies["langCookie"].Value == "ar")
+        {
+            body.Attributes["dir"] = "rtl";
+            td.Attributes["align"] = "left";
+            RadioButtonListLang.SelectedIndex = 0;
+            FormMenu.Items.Clear();
+            FormMenu.Items.Add(new MenuItem("الصفحة الرئيسية", "", null, "ExtMain.aspx"));
+            FormMenu.Items.Add(new MenuItem("وثاثق الطلب", "", null, "Form_ApplicationFiles.aspx"));
+            FormMenu.Items.Add(new MenuItem("نموذج المحكِّم", "", null, "Form_ReviewerForm.aspx"));
+            FormMenu.Items.Add(new MenuItem("الإجراءات", "", null, "Form_ReviewerAction.aspx"));
+            MenuItem blank = new MenuItem("&nbsp;");
+            blank.Selectable = false;
+            FormMenu.Items.Add(blank);
+            FormMenu.Items.Add(new MenuItem("الخروج", "", null, "~/ExtLogout.aspx"));
+            lblRole.Text = "المحكم";
+            lblAppOf.Text = "طلب";
+        }
+
+    }
+
+    /* check if a task is completed */
+    //refactor: return list of tasks
+//    public FormStatusStruct CheckFormTask(Promotion.TaskFormsRow form)
+//    {
+//        foreach (Promotion.ApplicationTaskFormRow row in FormsStatus)
+//        {
+//            if (row.FormID == form.FormID)
+//                return new FormStatusStruct(form.Title, row.Completed, row.Message.Length > 0 ? row.Message : "InComplete!");
+//        }
+//        return new FormStatusStruct();
+//    }
+
+
+//    private void ReportFormStatus(bool isComplete, string message)
+//    {
+//        PromotionTableAdapters.ApplicationTaskFormTableAdapter adapter = new PromotionTableAdapters.ApplicationTaskFormTableAdapter();
+//        try
+//        {
+//            adapter.InsertQuery(ApplicationID, TaskID, CurrentFormID, isComplete, message);
+//        }
+//        catch { }
+//        FormsStatus = null;
+//    }
+
+//    public void ReportSuccess()
+//    {
+//        ReportFormStatus(true, "");
+//    }
+
+//    public void ReportFailure(string errorMessage)
+//    {
+//        ReportFormStatus(false, errorMessage);
+//    }
+
+
+//    private Promotion.ActiveTasksRow activeTask = null;
+//    public Promotion.ActiveTasksRow ActiveTask
+//    {
+//        get
+//        {
+//            if (activeTask == null)
+//                if (Session["applicationTask" + ApplicationID] != null)
+//                    activeTask = (Promotion.ActiveTasksRow)Session["applicationTask" + ApplicationID];
+//                else
+//                {
+//                    PromotionTableAdapters.ActiveTasksTableAdapter adapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+//                    activeTask = adapter.GetActiveTaskByEmployee(ApplicationID, Employee.EmployeeID)[0];
+//                }
+
+//            return activeTask;
+//        }
+//    }
+
+//    private int taskID = -1;
+//    public int TaskID
+//    {
+//        get
+//        {
+//            if (taskID == -1)
+//                taskID = ActiveTask.TaskID;
+//            return taskID;
+//        }
+//    }
+
+//    private int roleID = -1;
+//    public int RoleID
+//    {
+//        get
+//        {   return ActiveTask.RoleID; }
+//    }
+
+//    private Hashtable formLevels = null;
+//    public Hashtable FormLevels
+//    {
+//        get
+//        {
+//            if (formLevels == null)
+//            {
+//                if (Session["applicationFormLevel" + ApplicationID] != null)
+//                    formLevels = (Hashtable)Session["applicationFormLevel" + ApplicationID];
+//                else
+//                    formLevels = new Hashtable();
+//            }
+//            return formLevels;
+//        }
+//    }
+
+
+    private int applicationID = -1;
+    public int ApplicationID
+    {
+        get
+        {
+            if (applicationID == -1)
+                try
+                {
+                    applicationID = int.Parse(Session["applicationID"].ToString());
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/ExtLogout.aspx"); 
+                }
+            return applicationID;
+        }
+    }
+
+//    private Promotion.EmployeeRow employee = null;
+//    public Promotion.EmployeeRow Employee
+//    {
+//        get
+//        {
+//            if (employee == null)
+//                employee = (Promotion.EmployeeRow) Session["user"];
+//            return employee;
+//        }
+//    }
+
+//    private Promotion.TaskFormsDataTable taskForms = null;
+//    public Promotion.TaskFormsDataTable TaskForms
+//    {
+//        get
+//        {
+//            if (taskForms == null)
+//                taskForms = (Promotion.TaskFormsDataTable)Session["forms"];
+//            return taskForms;
+//        }
+//    }
+
+    string currPageName = null;
+    public string CurrentPageName
+    {
+        get
+        {
+            if (currPageName == null)
+            {
+                currPageName = Page.Request.ServerVariables["SCRIPT_NAME"];
+                currPageName = currPageName.Substring(currPageName.LastIndexOf("/") + 1);
+            }
+            return currPageName;
+        }
+    }
+//    public int CurrentFormLevel
+//    {
+//        get
+//        {
+//            if (FormLevels[CurrentPageName] == null)
+//                return -1;
+//            else
+//                return (int)FormLevels[CurrentPageName];
+//        }
+//    }
+
+
+    private Hashtable formInstructions = null;
+    public Hashtable FormInstructions
+    {
+        get
+        {
+            if (formInstructions == null)
+            {
+                if (Session["applicationFormInstruction" + ApplicationID] != null)
+                    formInstructions = (Hashtable)Session["applicationFormInstruction" + ApplicationID];
+                else
+                    formInstructions = new Hashtable();
+            }
+            return formInstructions;
+        }
+    }
+
+    private Hashtable formIDs = null;
+    public Hashtable FormIDs
+    {
+        get
+        {
+            if (formIDs == null)
+            {
+                if (Session["applicationFormIDs" + ApplicationID] != null)
+                    formIDs = (Hashtable)Session["applicationFormIDs" + ApplicationID];
+                else
+                    formIDs = new Hashtable();
+            }
+            return formIDs;
+        }
+    }
+
+
+    public string CurrentFormInstruction
+    {
+        get
+        {
+            if (FormInstructions[CurrentPageName] == null)
+                return null;
+            else
+                return FormInstructions[CurrentPageName].ToString();
+        }
+    }
+    public byte CurrentFormID
+    {
+        get
+        {
+            if (FormIDs[CurrentPageName] == null)
+                return byte.Parse("-1");
+            else
+                return (byte)FormIDs[CurrentPageName];
+        }
+    }
+
+
+  protected void RadioButtonListLang_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+
+        if (RadioButtonListLang.SelectedIndex == 0)
+        {
+
+            Response.Cookies["langCookie"].Value = "ar";
+            Response.Cookies["langCookie"].Expires = DateTime.Now.AddDays(1);
+        }
+        else
+        {
+            Response.Cookies["langCookie"].Value = "en";
+            Response.Cookies["langCookie"].Expires = DateTime.Now.AddDays(1);
+        }
+        if (RadioButtonListLang.SelectedIndex == 0)
+        {
+
+            Request.Cookies["langCookie"].Value = "ar";
+            Request.Cookies["langCookie"].Expires = DateTime.Now.AddDays(1);
+        }
+        else
+        {
+            Request.Cookies["langCookie"].Value = "en";
+            Request.Cookies["langCookie"].Expires = DateTime.Now.AddDays(1);
+        }
+        
+    }
+}

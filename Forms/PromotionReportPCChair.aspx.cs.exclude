@@ -1,0 +1,190 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms_PromotionReportPCChair : System.Web.UI.Page
+{
+    public void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        Session.Add("ApplicationIDGlobal", Master.ApplicationID);
+        ButtonDS.Enabled = GetStatus();
+        LabelDS.Text = "";
+        LabelSave4VRGSSR.Text = "";
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+    }
+    protected void ButtonSave_Click(object sender, EventArgs e)
+    {
+
+            Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+            if (user == null)
+            {
+                Response.Redirect("~/Main.aspx");
+                return;
+            }
+            ViewsTableAdapters.vw_PCChairReportTableAdapter adapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();
+            Views.vw_PCChairReportDataTable table = adapter.GetDataByAppID(user.ApplicationID);
+            if (table.Count == 0)
+            {
+                LabelMessage.Text = "There is no Promotion Report uploaded.";
+                this.programmaticModalPopup1.Show();
+                
+                //Alert1.Message("There is no Promotion Report uploaded.");
+                LabelSave4VRGSSR.Text = "There is no Promotion Report uploaded.";
+                LabelSave4VRGSSR.ForeColor = System.Drawing.Color.Red;
+                ShowError("There is no Promotion Report uploaded.");
+                return;
+            }
+
+            if (PCChairFileUpload1.GetStatusByApplication(user.ApplicationID) == false)
+            {
+                LabelMessage.Text = "All the Promotion Committee Members have not signed on the uploaded report. The Promotion Report is saved but not forwarded to the VRGSSR";
+                this.programmaticModalPopup1.Show();                
+                //Alert1.Message("All the Promotion Committee Members have not signed on the uploaded report. The Promotion Report is saved but not forwarded to the VRGSSR");
+                LabelSave4VRGSSR.Text = "All the Promotion Committee Members have not signed on the uploaded report. The Promotion Report is saved but not forwarded to the VRGSSR";
+                LabelSave4VRGSSR.ForeColor = System.Drawing.Color.Red;
+                ShowError("All the Promotion Committee Members have not signed on the uploaded report. The Promotion Report is saved but not forwarded to the VRGSSR");
+                return;
+            }
+            bool success = true;
+            if (success)
+            {
+                LabelMessage.Text = "The promotion report with digital signatures is successfully saved. If you are also finished with feedback form, please go to Action Page for forwarding this application to VRGSSR";
+                this.programmaticModalPopup1.Show();
+                // Alert1.Message("The promotion report with digital signatures is successfully saved. Please go to Action Page for forwarding this application to VRGSSR");
+                LabelSave4VRGSSR.Text = "The promotion report with digital signatures is successfully saved. If you are also finished with feedback form, please go to Action Page for forwarding this application to VRGSSR";
+                LabelSave4VRGSSR.ForeColor = System.Drawing.Color.Blue;
+                ShowMessage("The promotion report with digital signatures is successfully saved. If you are also finished with feedback form, please go to Action Page for forwarding this application to VRGSSR");
+                //PromotionTableAdapters.Form_PromotionReportTableAdapter adapter = new PromotionTableAdapters.Form_PromotionReportTableAdapter();
+
+            }
+            else
+            {
+                ShowError("Error! Press the SAVE button to complete the form.");
+            }
+        
+    }
+
+    private void ShowError(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Red;
+        lblMessage.Text = message;
+        LabelMessage.Text = message;
+        this.programmaticModalPopup1.Show();
+       
+       // Alert1.Message(message);
+        Master.ReportFailure(message);
+    }
+
+    private void ShowMessage(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Blue;
+        lblMessage.Text = message;
+        LabelMessage.Text = message;
+        this.programmaticModalPopup1.Show();
+        
+        //Alert1.Message(message);
+        Master.ReportSuccess();
+    }
+    protected void ButtonDS_Click(object sender, EventArgs e)
+    {
+        LabelEraseDS.Text = "";
+        ViewsTableAdapters.vw_PCChairReportTableAdapter adapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();
+        Views.vw_PCChairReportDataTable table = adapter.GetDataByAppID(Master.ApplicationID);
+        if (table.Count == 0)
+        {
+
+            LabelMessage.Text = "There is no Promotion Report uploaded."; 
+            this.programmaticModalPopup1.Show();
+        
+          //  Alert1.Message("There is no Promotion Report uploaded.");
+            LabelDS.Text = "There is no Promotion Report uploaded.";
+            LabelDS.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapterFinalPC = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempRow pcRow = adapterFinalPC.GetByApplication(Master.ApplicationID, "V", 10)[0];
+        adapterFinalPC.UpdateDS(true, DateTime.Now, pcRow.AutoNumberPK);
+        DigitalSignature1.DataBind();
+
+        LabelMessage.Text = "You have successfully signed the promotion report"; 
+        this.programmaticModalPopup1.Show();
+        
+       // Alert1.Message ("You have successfully signed the promotion report");
+        LabelDS.Text = "You have successfully signed the promotion report";
+        LabelDS.ForeColor = System.Drawing.Color.Blue;
+        ButtonDS.Enabled = false;
+    }
+    protected void ButtonEraseDS_Click(object sender, EventArgs e)
+    {
+        LabelDS.Text = "";
+        ViewsTableAdapters.vw_PCChairReportTableAdapter vPCRptAdapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();
+        Views.vw_PCChairReportDataTable table = vPCRptAdapter.GetDataByAppID(Master.ApplicationID);
+        if (table.Count == 0)
+        {
+            LabelMessage.Text = "There is no Promotion Report uploaded.";
+            this.programmaticModalPopup1.Show();
+            
+          //  Alert1.Message ("There is no Promotion Report uploaded.");
+            LabelEraseDS.Text = "There is no Promotion Report uploaded.";
+            LabelEraseDS.ForeColor = System.Drawing.Color.Red;
+            return;
+        }
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable pcTable = adapter.GetData(Master.ApplicationID);
+        adapter.UpdateDS(false, null, pcTable[0].AutoNumberPK);
+        adapter.UpdateDS(false, null, pcTable[1].AutoNumberPK);
+        adapter.UpdateDS(false, null, pcTable[2].AutoNumberPK);
+        adapter.UpdateDS(false, null, pcTable[3].AutoNumberPK);
+        adapter.UpdateDS(false, null, pcTable[4].AutoNumberPK);        
+        DigitalSignature1.DataBind();
+        ButtonDS.Enabled = true;
+        LabelMessage.Text = "The Digital Signatures of all the Promotion Committee Members are successfully erased.";
+        this.programmaticModalPopup1.Show();        
+      //  Alert1.Message("The Digital Signatures of all the Promotion Committee Members are successfully erased.");
+        LabelEraseDS.Text = "The Digital Signatures of all the Promotion Committee Members are successfully erased.";
+        LabelEraseDS.ForeColor = System.Drawing.Color.Blue;
+    }
+    public bool GetStatus()
+    {
+
+        try
+        {
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter adapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            Promotion.PromotionCommitteeTempRow pcRow = adapter.GetByApplication(Master.ApplicationID, "V", 10)[0];
+            if (pcRow.DigitalSignature == true)
+                return false;
+            else
+                return true;
+        }
+        catch (Exception)
+        {
+            LabelMessage.Text = "The Promotion Committee is not Saved or there has been some changes in the promotion committee which are not saved by the VRGSSR. Hence you cannot digitally sign the Promotion Report.";
+            this.programmaticModalPopup1.Show();
+          //  Alert1.Message("The Promotion Committee is not Saved or there has been some changes in the promotion committee which are not saved by the VRGSSR. Hence you cannot digitally sign the Promotion Report.");
+            return false;
+            
+        }
+
+        
+    }
+    protected void showModalPopupServerOperatorButton1_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup1.Show();
+    }
+    protected void hideModalPopupViaServer1_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup1.Hide();
+    }
+}

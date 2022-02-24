@@ -1,0 +1,14 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtForms/ExtForm.master" AutoEventWireup="true" CodeFile="Form_ApplicationFiles.aspx.cs" Inherits="ExtForms_Form_ApplicationFiles" Title="KFUPM Online Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ Register Src="../Controls/FilesUpload.ascx" TagName="FilesUpload" TagPrefix="uc1" %>
+<%@ mastertype virtualpath="ExtForm.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    
+    <br />
+<uc1:FilesUpload id="FilesUpload1" runat="server">
+    </uc1:FilesUpload>
+</asp:Content>
+

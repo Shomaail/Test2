@@ -1,0 +1,73 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms_ViewChairReport4VRGSSR : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+  
+	        
+        SCTableAdapters.Application_TaskLogTableAdapter adapterAppTskLg = new SCTableAdapters.Application_TaskLogTableAdapter();
+        WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter nextTaskAdapter = new WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter();
+        int activeTasks = (int)nextTaskAdapter.GetActiveTasksCount(Master.ApplicationID);
+        Session.Add("ApplicationIDGlobal", Master.ApplicationID);
+        if (Master.CurrentFormLevel == -1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+        ButtonSave.Visible = (bool) Master.FormCheckable[Master.CurrentPageName];
+        try
+        {
+            if (adapterAppTskLg.GetDataByAppIDTskIDAcID(Master.ApplicationID
+        , 33
+        , 63).Count == 0)
+            {
+                ViewPCChairReport1.Visible = false;
+                lblMessage.Text = "The Promotion Committee Report is not yet forwarded by the Promotion Committee Chairman.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+        catch (Exception)
+        {
+            
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+  
+
+    }
+    protected void ButtonSave_Click(object sender, EventArgs e)
+    {
+        bool success = true; // ViewPCChairReport1.GetStatusByApplication(Master.ApplicationID); 
+        if (success)
+        {
+            ShowMessage("Saved Successfully");           
+        }
+        else
+            ShowError("Please make sure you input all the fields.");
+    }
+
+    private void ShowError(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Red;
+        lblMessage.Text = message;
+        Master.ReportFailure(message);
+    }
+
+    private void ShowMessage(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Blue;
+        lblMessage.Text = message;
+        Master.ReportSuccess();
+    }
+
+}

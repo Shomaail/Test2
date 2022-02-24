@@ -1,0 +1,70 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PromotionCommitteeEditable.ascx.cs" Inherits="Controls_PromotionCommitteeEditable" %>
+<asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" 
+    CellPadding="4" DataKeyNames="ApplicationID,Type,Position" 
+    DataSourceID="ObjectDataSourcePC" ForeColor="#333333" 
+    EmptyDataText="No Nomination has been suggested yet" 
+    EnableModelValidation="True">
+    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+    <Columns>
+    <asp:TemplateField><ItemTemplate><%# Container.DataItemIndex+1 %></ItemTemplate></asp:TemplateField>
+        <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
+        <asp:BoundField DataField="ApplicationID" HeaderText="ApplicationID" ReadOnly="True"
+            SortExpression="ApplicationID" Visible="False" />
+        <asp:BoundField DataField="Type" HeaderText="Type" ReadOnly="True" SortExpression="Type"
+            Visible="False" />
+        <asp:TemplateField HeaderText="Nomination" SortExpression="Position">
+            <ItemTemplate>
+                <asp:Label ID="Label1" runat="server" Text='<%# GetNomination(Eval("Position").ToString()) %>' Width="218px"></asp:Label>
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:CheckBoxField DataField="IsKFUPM" HeaderText="Is KFUPM employee?" 
+            SortExpression="IsKFUPM">
+            <ItemStyle HorizontalAlign="Center" />
+        </asp:CheckBoxField>
+        <asp:BoundField DataField="EmployeeID" HeaderText="EmployeeID" SortExpression="EmployeeID"
+            Visible="False" />
+        <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+        <asp:BoundField DataField="Department" HeaderText="Department" SortExpression="Department" />
+        <asp:BoundField DataField="Rank" HeaderText="Rank" SortExpression="Rank" />
+        <asp:BoundField DataField="Email" HeaderText="Email" SortExpression="Email" />
+        <asp:BoundField DataField="MailingAddress" HeaderText="MailingAddress" SortExpression="MailingAddress" />
+        <asp:BoundField DataField="Major" HeaderText="Major" SortExpression="Major" />
+        <asp:BoundField DataField="Phone" HeaderText="Phone" SortExpression="Phone" />
+    </Columns>
+    <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+    <EditRowStyle BackColor="#999999" />
+    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+<HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+</asp:GridView>
+<asp:ObjectDataSource ID="ObjectDataSourcePC" runat="server" 
+    DeleteMethod="Delete" SelectMethod="GetDataByApplication"
+    TypeName="FormTableAdapters.Form_PromotionCommitteeTableAdapter" 
+    UpdateMethod="Update" OldValuesParameterFormatString="original_{0}">
+    <DeleteParameters>
+        <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Original_Type" Type="String" />
+        <asp:Parameter Name="Original_Position" Type="Byte" />
+    </DeleteParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="IsKFUPM" Type="Boolean" />
+        <asp:Parameter Name="EmployeeID" Type="String" />
+        <asp:Parameter Name="Name" Type="String" />
+        <asp:Parameter Name="Department" Type="String" />
+        <asp:Parameter Name="Rank" Type="String" />
+        <asp:Parameter Name="Email" Type="String" />
+        <asp:Parameter Name="MailingAddress" Type="String" />
+        <asp:Parameter Name="Major" Type="String" />
+        <asp:Parameter Name="Phone" Type="String" />
+        <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Original_Type" Type="String" />
+        <asp:Parameter Name="Original_Position" Type="Byte" />       
+        
+    </UpdateParameters>
+    <SelectParameters>
+        <asp:QueryStringParameter DefaultValue="-1" Name="ApplicationID" 
+            QueryStringField="applicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="String" />
+    </SelectParameters>
+</asp:ObjectDataSource>

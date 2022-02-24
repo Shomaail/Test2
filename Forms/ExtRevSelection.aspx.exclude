@@ -1,0 +1,19 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="ExtRevSelection.aspx.cs" Inherits="Forms_ExtRevSelection1" Title="Faculty Promotion System" MaintainScrollPositionOnPostback ="true" ValidateRequest="false"%>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+
+<%@ Register Src="../Controls/ExtRevSelection.ascx" TagName="ExtRevSelection" TagPrefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <uc1:ExtRevSelection id="ExtRevSelection1" runat="server">
+    </uc1:ExtRevSelection>
+    <br />
+    <asp:Label ID="lblMessage" runat="server"></asp:Label><br />
+    <asp:Button ID="ButtonSaveRankedSelection" runat="server" OnClick="ButtonSaveRankedSelection_Click" class="btn btn-primary btn-md" 
+        Text="Save Ranked Selection" />
+    <br />
+   <asp:LinkButton ID="lbtnExtRevList4VR" ValidationGroup="ExtRevSaveBtn" runat="server">External Reviewers List For Vice Rector (printable view)</asp:LinkButton>
+</asp:Content>
+

@@ -1,0 +1,5 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PCChairReportUpload.aspx.cs" Inherits="Forms_PCChairReportUpload" Title="Untitled Page" %>
+<%@ Register Src="~/Controls/PCChairFileUpload.ascx" TagName="PCChairReportUploadCtrl" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<uc1:PCChairReportUploadCtrl ID="PCChairReportUploadCtrl1" runat="server" />
+</asp:Content>

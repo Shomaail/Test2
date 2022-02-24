@@ -1,0 +1,518 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ReviewerFormAr.ascx.cs"
+    Inherits="Controls_ReviewerFormAr" %>
+        <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+     <Triggers>
+                <asp:PostBackTrigger ControlID="ButtonUploadAr" />                
+                <asp:PostBackTrigger ControlID="LinkButtonSuppDoc" />
+                <asp:PostBackTrigger ControlID="ImageButtonDelSupDoc" />
+                
+                
+            </Triggers>
+    <ContentTemplate>
+
+<%--<script type="text/javascript">
+
+    function limitCharsLength(Object, MaxLen) {
+        if (Object.value.length > MaxLen - 1) {
+            Object.value = Object.value.substring(0, MaxLen);
+        }
+    }
+    function limitClipBoard(Object, MaxLen) {
+        if (window.clipboardData != null) {
+            //alert("clipboardData  is not null");
+            if (window.clipboardData.getData("Text").length > MaxLen - 1 - Object.value.length) {
+                //  alert("clipboardData  is very big");
+                window.clipboardData.setData("Text", window.clipboardData.getData("Text").toString().substring(0, (MaxLen - Object.value.length)));
+            }
+        }
+    }
+    function ValidateTextLength(oSrc, args) {
+        args.IsValid = args.Value.length > 20;
+    }
+
+</script>--%>
+    
+<%--   <script type="text/javascript">
+       //This function calls the web service    
+       function SaveUserInput() {
+           var fName = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_TextBoxJustification1");
+           var lName = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_TextBoxJustification2");
+           var draft = document.getElementById("ctl00_ContentPlaceHolder1_ReviewerForm1_TextBoxJustification3");
+           //Saving all input in a single value         
+           var input = fName.value + "+" + lName.value + "+" + draft.value;
+
+           //ProjName.WebServiceName.WebMethod         
+           Samples.AspNet.AsynchronousRevFormSave.SaveInput(input, SucceededCallback);
+       }
+       // This is the callback function that processes the Web Service return value.     
+       function SucceededCallback(result) {
+           var divPreview = document.getElementById("Preview");
+           divPreview.innerHTML = result;
+       }
+       // execute SaveUserInput for every 10 sec, timeout value is in miliseconds
+       window.setInterval('SaveUserInput()', 10000); 
+    
+</script>--%>
+<div id="Preview"></div>
+<div style="text-align: center">
+    <h3>
+        نموذج تقويم أبحاث الترقية إلى رتبة 
+        <asp:Label ID="lblRank" runat="server"></asp:Label>
+    </h3>
+</div>
+<div  style="text-align: right ; padding-right:50px; padding-bottom:50px" dir = "rtl">
+<br />
+<asp:Button ID="btnSaveCopy" runat="server" OnClick="btnSave_Click" Text="حفظ" class="btn btn-primary btn-md" 
+    Visible="False"></asp:Button>
+<asp:Button ID="btnUpdateCopy" runat="server" OnClick="btnUpdate_Click" Text="التحديث" class="btn btn-primary btn-md" 
+    Visible="False"></asp:Button>
+<table style="font-size: 12pt" dir="rtl" class="table-condensed">
+    <tr>
+        <td style="width: 658px;">
+            <br />
+            <asp:Table ID="Table1" runat="server" Width="99%" Height="89px">
+                <asp:TableRow runat="server">
+                    <asp:TableCell runat="server" VerticalAlign="Top"><label>إسم المرشح : </label></asp:TableCell>
+                    <asp:TableCell runat="server" VerticalAlign="Top">
+                        <asp:Label ID="lblName" runat="server" Font-Bold="True"></asp:Label></asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server">
+                    <asp:TableCell runat="server" Width="15%" VerticalAlign="Top"><label>
+                    العنوان :</label></asp:TableCell>
+                    <asp:TableCell runat="server" VerticalAlign="Top">
+                        <asp:Label ID="lblAddress" runat="server" Font-Bold="True"></asp:Label></asp:TableCell>
+                </asp:TableRow>
+            </asp:Table>
+            <br />
+        </td>
+    </tr>
+</table>
+<table  style="font-size: 12pt " dir="rtl"  class="table-condensed">
+    <tr>
+        <td style="width: 658px">
+            <span style="color: #000000; font-family: Georgia">يرجى إيضاح مدى معرفتكم بموضوع اختصاص المرشح بالتأشير على ما يلي :<br />
+            </span>
+            <br />
+            <asp:RadioButtonList ID="rblFamiliarity" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblFamiliarity_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="أنا أعمل في الوقت الحاضر في مجال الاختصاص المحدد للمرشح ."/>
+                <asp:ListItem Value="2" Text="سبق لي أن أنجزت أبحاثاً في مجال الاختصاص المحدد للمرشح ." />
+                <asp:ListItem Value="3" Text="خبرتي هي في المجال العام لاختصاص المرشح وليست في المجال المحدد لاختصاصه ." />
+                <asp:ListItem Value="4" Text="مجالات أخرى :" />
+            </asp:RadioButtonList>
+            <asp:TextBox ID="TextBoxOthers" runat="server" Height="85px" Width="423px" TextMode="MultiLine"
+                onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" 
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxOthers_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelOthers" runat="server" Visible="False" BorderStyle="Solid" BorderWidth="1px"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 658px">
+            <span style="font-size: 10pt">
+                <br />
+                <span style="font-size: 12pt">الأسئلة من 1 إلى 8 لها علاقة بخصائص المرشح كباحث من خلال أبحاثه، نرجو توضيح التقدير في كل خصيصة مع مبررات التقدير .</span></span>
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                1. كيف تقدرون إنتاجية المرشح م ناحية العدد والتواتر؟
+                </span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ1" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ1_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" />
+                <asp:ListItem Value="2" Text="جيد جداً" />
+                <asp:ListItem Value="3" Text="جيد" />
+                <asp:ListItem Value="4" Text="مقبول" />
+                <asp:ListItem Value="5" Text="ضعيف" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+             <asp:RequiredFieldValidator ID="rfvJust1" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification1" ErrorMessage="مطلوب تبرير السؤال رقم 1"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator1"
+                    runat="server" 
+                    ErrorMessage="تبرير السؤال رقم 1 مختصر جدا" 
+                    Text="(يرجى كتابة واحدة أو جملتين فقط)" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification1"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification1" runat="server" Height="85px" 
+                Width="548px" TextMode="MultiLine"
+                onDrop="return false;" onKeyPress="return limitCharsLength(this,500);" 
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification1_TextChanged"></asp:TextBox>
+            <asp:ImageButton ID="ImageButton1" runat="server" Height="33px" 
+                ImageUrl="~/images/saveIcon.gif" CausesValidation="false" 
+                onclick="ImageButtonTempSave_Click" Visible="False"/>
+            <asp:Label ID="LabelJust1" runat="server" Visible="False" BorderStyle="Solid" BorderWidth="1px"></asp:Label>
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                2.	ما هو تقديركم بصورة عامة لنوعية الدوريات العلمية التي نشر فيها المرشح أبحاثه؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ2" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ2_SelectedIndexChanged">
+                  <asp:ListItem Value="1" Text="ممتاز" Selected="True" />
+                <asp:ListItem Value="2" Text="جيد جداً" />
+                <asp:ListItem Value="3" Text="جيد" />
+                <asp:ListItem Value="4" Text="مقبول" />
+                <asp:ListItem Value="5" Text="ضعيف" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust2" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification2" ErrorMessage="مطلوب تبرير السؤال رقم 2"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator2"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين فقط)" ErrorMessage="تبرير السؤال رقم 2 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification2"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification2" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification2_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification2" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label>
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                 3.	ما هو تقديركم بصورة عامة لنوعية المؤتمرات التي نشر / شارك فيها؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ3" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ3_SelectedIndexChanged">        
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource15" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource16" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource17" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource18" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource19" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator EnableClientScript="true" ID="rfvJust3" runat="server"
+                ControlToValidate="TextBoxJustification3" ErrorMessage="مطلوب تبرير السؤال رقم 3"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator3"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين )" ErrorMessage="تبرير السؤال رقم 3 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification3"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification3" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification3_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification3" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label>
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                 4.	ما هو تقديركم لمدى الأصالة والإبداع في أبحاث المرشح؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ4" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ4_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource20" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource21" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource22" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource23" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource24" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator EnableClientScript="true" ID="rfvJust4" runat="server"
+                ControlToValidate="TextBoxJustification4" ErrorMessage="مطلوب تبرير السؤال رقم 4"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator4"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين )" ErrorMessage="تبرير السؤال رقم 4 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification4"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification4" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification4_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification4" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px; height: 17px">
+            <span>
+                <br />
+                5.	ما هو تقديركم لأهمية أبحاث المرشح بالنسبة لمجال تخصصه؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ5" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ5_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource25" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource26" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource27" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource28" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource29" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust5" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification5" ErrorMessage="مطلوب تبرير السؤال رقم 5"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator5"
+                    runat="server" Text="(يرجى كتابة جملة واحدة أو جملتين فقط)" ErrorMessage="تبرير السؤال رقم 5 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification5"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification5" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification5_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification5" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                6.	ما هو تقديركم لمدى استقلالية المرشح في أعماله البحثية؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ6" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ6_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource30" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource31" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource32" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource33" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource34" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust6" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification6" ErrorMessage="مطلوب تبرير السؤال رقم 6"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator6"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين)" ErrorMessage="تبرير السؤال رقم 6 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification6"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification6" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification6_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification6" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                 7.	ما هو تقديركم لمستوى الرجوع إلى أبحاث (Citation)؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ7" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ7_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource35" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource36" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource37" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource38" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource39" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust7" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification7" ErrorMessage="مطلوب تبرير السؤال رقم 7"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator7"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين)" ErrorMessage="تبرير السؤال رقم 7 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification7"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification7" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification7_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification7" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                8.	إلى أي حد تعتقدون أن المرشح قد بلغ مكانة علمية مرموقة؟</span><br />
+            <br />
+            <asp:RadioButtonList ID="rblQ8" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ8_SelectedIndexChanged">
+                <asp:ListItem Value="1" Text="ممتاز" Selected="True" meta:resourcekey="ListItemResource40" />
+                <asp:ListItem Value="2" Text="جيد جداً" meta:resourcekey="ListItemResource41" />
+                <asp:ListItem Value="3" Text="جيد" meta:resourcekey="ListItemResource42" />
+                <asp:ListItem Value="4" Text="مقبول" meta:resourcekey="ListItemResource43" />
+                <asp:ListItem Value="5" Text="ضعيف" meta:resourcekey="ListItemResource44" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust8" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification8" ErrorMessage="مطلوب تبرير السؤال رقم 8"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator8"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين)" ErrorMessage="تبرير السؤال رقم 8 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification8"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification8" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification8_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification8" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                9. يرجى بيان تقييمكم لتعزيز الطلب
+                </span>
+            <br />
+            <br />
+            <asp:RadioButtonList ID="rblQ9" runat="server" AutoPostBack="True" 
+                Visible='<%# GetFormStatus() == 4 %>'>
+                <asp:ListItem Value="1" Text="قابل للترقية" Selected="True" meta:resourcekey="ListItemResource45" />
+                <asp:ListItem Value="2" Text="قابل للترقية بتحفظ" meta:resourcekey="ListItemResource46" />
+                <asp:ListItem Value="3" Text="غير قابل للترقية" meta:resourcekey="ListItemResource47" />
+            </asp:RadioButtonList>
+            <asp:RadioButtonList ID="rblQ9New" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="rblQ9New_SelectedIndexChanged" Visible='<%# GetFormStatus() != 4 %>'>
+                <asp:ListItem Value="1" Text="قابل للترقية" Selected="True" meta:resourcekey="ListItemResource45" />                
+                <asp:ListItem Value="3" Text="غير قابل للترقية" meta:resourcekey="ListItemResource47" />
+            </asp:RadioButtonList>
+            <br />
+            <span>مبررات التقدير</span>
+            <asp:RequiredFieldValidator ID="rfvJust9" EnableClientScript="true" runat="server"
+                ControlToValidate="TextBoxJustification9" ErrorMessage="مطلوب تبرير السؤال رقم 9"
+                Text="*"></asp:RequiredFieldValidator><asp:CustomValidator ID="CustomValidator9"
+                    runat="server" Text="(يرجى كتابة واحدة أو جملتين)" ErrorMessage="تبرير السؤال رقم 9 مختصر جدا" OnServerValidate="ValidateTextLength"
+                    ClientValidationFunction="ValidateTextLength" ControlToValidate="TextBoxJustification9"></asp:CustomValidator>
+            <br />
+            <asp:TextBox ID="TextBoxJustification9" runat="server" Height="85px" Width="548px"
+                TextMode="MultiLine" onDrop="return false;" onKeyPress="return limitCharsLength(this,500);"
+                onPaste="return limitClipBoard(this,500);" AutoPostBack="True" 
+                ontextchanged="TextBoxJustification9_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelJustification9" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+        </td>
+    </tr>
+    <tr style="font-size: 12pt">
+        <td style="width: 658px">
+            <span>
+                <br />
+                <br />
+                تعليقات</span>
+            <br />
+            <asp:TextBox ID="TextBoxComments" runat="server" Height="108px" Width="634px" TextMode="MultiLine"
+                onDrop="return false;" onKeyPress="return limitCharsLength(this,2000);" 
+                onPaste="return limitClipBoard(this,2000);" AutoPostBack="True" 
+                ontextchanged="TextBoxComments_TextChanged"></asp:TextBox>
+            <asp:Label ID="LabelComments" runat="server" Visible="False" BorderStyle="Solid"
+                BorderWidth="1px"></asp:Label><br />
+            <br />
+            <asp:Panel ID="PanelUploadSupDoc" runat="server">
+                <fieldset style="margin-left: 30px; width: 500px; background-color: #f0f0f0; border: 1px solid #007d40;
+                    padding: 5px; text-align: center;">
+                    <legend style="font-style: italic; font-weight: bold; background-color: #007d40;
+                        color: white">الوثيقة الداعمة</legend>
+                     ارجو اضافت ها یتعلق بھذا مع هذا النموذج و  الجواز اسفر
+                    </br>
+                    <asp:LinkButton ID="LinkButtonSuppDoc" runat="server" OnClick="LinkButtonSuppDoc_Click"></asp:LinkButton>
+                    <asp:Label ID="LabelSize" runat="server"></asp:Label> &nbsp;&nbsp;
+                    <asp:ImageButton ID="ImageButtonDelSupDoc" runat="server" 
+                        ImageUrl="~/images/delete_black.JPG" onclick="ImageButtonDelSupDoc_Click" 
+                        ToolTip="حذف" Visible="False" 
+                        ValidationGroup="SuppDoc" />
+                    <br />
+                    <asp:FileUpload ID="FileUploadSuppDoc" runat="server" Width="327px" />
+                    <asp:Button ID="ButtonUploadAr" CausesValidation="false" runat="server" Text="Upload" class="btn btn-primary btn-md" 
+                        OnClick="ButtonUploadAr_Click" ToolTip="Press this button to upload any Supporting Document" /></fieldset>
+            </asp:Panel>
+            &nbsp;&nbsp;
+        </td>
+    </tr>
+</table>
+<asp:ValidationSummary ShowSummary="true" ID="vsRevForm" runat="server" HeaderText="غير كامل " DisplayMode="BulletList" 
+    ShowMessageBox="true" />
+<br />
+    الرجاء الضغط   علی أعمل  
+وإرسال هذه الاستمارة 
+
+<br />
+<asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="حفظ" Visible="False" class="btn btn-primary btn-md" >
+</asp:Button>
+<asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="التحديث" class="btn btn-primary btn-md" 
+    Visible="False"></asp:Button>
+    </div>
+<asp:ObjectDataSource ID="odsRevForm" runat="server" UpdateMethod="UpdateReviewerForm"
+    TypeName="ReviewerFormTableAdapters.Form_ReviewersFormTableAdapter" SelectMethod="GetReviewerFormByApplication"
+    OldValuesParameterFormatString="original_{0}" InsertMethod="InsertReviewerForm"
+    DeleteMethod="DeleteReviewerForm">
+    <DeleteParameters>
+        <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Original_Type" Type="Int32" />
+        <asp:Parameter Name="Original_Serial" Type="Int32" />
+    </DeleteParameters>
+    <UpdateParameters>
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="Int32" />
+        <asp:Parameter Name="Serial" Type="Int32" />
+        <asp:Parameter Name="familiarity" Type="String" />
+        <asp:Parameter Name="Q1" Type="Int32" />
+        <asp:Parameter Name="Q1Justification" Type="Object" />
+        <asp:Parameter Name="Q2" Type="Int32" />
+        <asp:Parameter Name="Q2Justification" Type="String" />
+        <asp:Parameter Name="Q3" Type="Int32" />
+        <asp:Parameter Name="Q3Justification" Type="String" />
+        <asp:Parameter Name="Q4" Type="Int32" />
+        <asp:Parameter Name="Q4Justification" Type="String" />
+        <asp:Parameter Name="Q5" Type="Int32" />
+        <asp:Parameter Name="Q5Justification" Type="String" />
+        <asp:Parameter Name="Q6" Type="Int32" />
+        <asp:Parameter Name="Q6Justification" Type="String" />
+        <asp:Parameter Name="Q7" Type="Int32" />
+        <asp:Parameter Name="Q7Justification" Type="String" />
+        <asp:Parameter Name="Q8" Type="Int32" />
+        <asp:Parameter Name="Q8Justification" Type="String" />
+        <asp:Parameter Name="Q9" Type="Int32" />
+        <asp:Parameter Name="Q9Justification" Type="String" />
+        <asp:Parameter Name="Comments" Type="String" />
+        <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Original_Type" Type="Int32" />
+        <asp:Parameter Name="Original_Serial" Type="Int32" />
+    </UpdateParameters>
+    <SelectParameters>
+        <asp:SessionParameter DefaultValue="1" Name="ApplicationID" SessionField="ApplicationID"
+            Type="Int32" />
+        <asp:SessionParameter DefaultValue="1" Name="Type" SessionField="Type" Type="Int32" />
+        <asp:SessionParameter DefaultValue="1" Name="Serial" SessionField="Serial" Type="Int32" />
+    </SelectParameters>
+    <InsertParameters>
+        <asp:Parameter Name="ApplicationID" Type="Int32" />
+        <asp:Parameter Name="Type" Type="Int32" />
+        <asp:Parameter Name="Serial" Type="Int32" />
+        <asp:Parameter Name="familiarity" Type="String" />
+        <asp:Parameter Name="Q1" Type="Int32" />
+        <asp:Parameter Name="Q1Justification" Type="Object" />
+        <asp:Parameter Name="Q2" Type="Int32" />
+        <asp:Parameter Name="Q2Justification" Type="String" />
+        <asp:Parameter Name="Q3" Type="Int32" />
+        <asp:Parameter Name="Q3Justification" Type="String" />
+        <asp:Parameter Name="Q4" Type="Int32" />
+        <asp:Parameter Name="Q4Justification" Type="String" />
+        <asp:Parameter Name="Q5" Type="Int32" />
+        <asp:Parameter Name="Q5Justification" Type="String" />
+        <asp:Parameter Name="Q6" Type="Int32" />
+        <asp:Parameter Name="Q6Justification" Type="String" />
+        <asp:Parameter Name="Q7" Type="Int32" />
+        <asp:Parameter Name="Q7Justification" Type="String" />
+        <asp:Parameter Name="Q8" Type="Int32" />
+        <asp:Parameter Name="Q8Justification" Type="String" />
+        <asp:Parameter Name="Q9" Type="Int32" />
+        <asp:Parameter Name="Q9Justification" Type="String" />
+        <asp:Parameter Name="Comments" Type="String" />
+    </InsertParameters>
+</asp:ObjectDataSource>
+<asp:HiddenField ID="HiddenFieldSupDoc" runat="server" />
+<asp:HiddenField ID="HiddenFieldSize" runat="server" />
+    </ContentTemplate>
+    </asp:UpdatePanel>

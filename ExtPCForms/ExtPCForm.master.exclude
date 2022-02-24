@@ -1,0 +1,83 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="ExtPCForm.master.cs" Inherits="Forms" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Faculty Promotion System</title>
+        <meta http-equiv="Content-Language" content="ar-sa"/>
+    <meta http-equiv="Page-Exit" content="progid:DXImageTransform.Microsoft.Fade(duration=.25)" />
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1256"/>
+
+</head>
+<body dir="ltr" style="margin: 0px; background-image: url(../images/logo.gif); background-repeat: no-repeat">
+    <div style="border: 0px solid; margin-left: 0px; margin-top: 78px;">
+    </div>
+       
+    <form id="form1" runat="server"> 
+    <asp:ToolkitScriptManager ID="Toolkitscriptmanager1" runat="server">
+    </asp:ToolkitScriptManager>
+        <table cellpadding="0" cellspacing="0" border="0" style="padding: 0px; margin: 0px;"
+            width="100%" height="100%">
+            <tr>
+                <td style="width: 136px; border-right: 1px solid #3062af; background-color: #f7f7f7"
+                    valign="top" runat="server" id="tdLeftMenu">
+                    <asp:Menu ID="FormMenu" runat="server" BackColor="#efefef" DynamicHorizontalOffset="2"
+                        Font-Names="Verdana, Arial" Font-Size="11pt" ForeColor="black" StaticSubMenuIndent="10px"
+                        Width="100%">
+                        <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="3px" BorderColor="#e5e5e5"
+                            BorderStyle="Solid" BorderWidth="1px" />
+                        <DynamicHoverStyle BackColor="#7C6F57" ForeColor="White" />
+                        <DynamicMenuStyle BackColor="#F7F6F3" />
+                        <StaticSelectedStyle BackColor="#3062af" ForeColor="White" />
+                        <DynamicSelectedStyle BackColor="#5D7B9D" />
+                        <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                        <StaticHoverStyle BackColor="#3062af" ForeColor="White" />
+                    </asp:Menu>
+                    <br />
+                    <p style="font-size: 0.8em; font-family: Trebuchet MS; text-align: center;">
+                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/images/FacProm-Handbook.pdf"
+                            Font-Bold="True" Font-Italic="True">[PrmotionDirections]</asp:HyperLink></p>
+                </td>
+                <td valign="top" style="padding-left: 3px; width: 662px;">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 10px;
+                        border-bottom: 2px solid #3062af; padding: 3px 3px; background-color: #f7f7f7">
+                        <tr>
+                            <td>
+                                <div style="color: #000000; font-size: 16pt; font-family: Georgia, Arial; font-style: italic;
+                                    font-weight: bold;">
+                                    <asp:Label ID="lblPageTitle" runat="server"></asp:Label>
+                                </div>
+                            </td>
+                            <td width="*" align="center">
+                                <asp:HyperLink ID="lnkPrint" runat="server" Target="_blank" ImageUrl="~/images/printer.png"
+                                    Style="float: right"></asp:HyperLink></td>
+                            <td align="right" style="font-size: 10pt">
+                                <asp:Label ID="lblEmployee" runat="server" ForeColor="maroon"></asp:Label>
+                                (<em><asp:Label ID="lblRole" runat="server"></asp:Label></em>)<br />
+                                Application of: <em>
+                                    <asp:Label ID="lblApplicantEmail" runat="server" ForeColor="maroon"></asp:Label></em>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="width:100%">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                    </div>
+                    </td>
+            </tr>
+        </table>
+        <table width="100%" style="border-top:1px solid #3062af ">
+            <tr>
+            <td align ="center" style="width: 100%">
+                <span style="font-size: 9pt">
+                    Faculty Promotion System <br />
+                    Copyright © 2008 King Fahd University of Petroleum & Minerals | Dhahran, 31261 | Saudi Arabia | +966 (3) 860 0000.<br />
+                    
+                </span>
+            </td>
+        </tr>
+    </table>        
+    </form>
+</body>
+</html>

@@ -1,0 +1,135 @@
+﻿using System;
+using System.Collections.Generic;
+
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using BL.Data;    
+public partial class Controls_ScientificCouncil : System.Web.UI.UserControl
+{
+    BAL bal = new BAL();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        EmployeeInput1.EnableFullDetails = false;
+        EmployeeInput2.EnableFullDetails = false;
+        EmployeeInput3.EnableFullDetails = false;
+        EmployeeInput4.EnableFullDetails = false;
+        EmployeeInput5.EnableFullDetails = false;
+        EmployeeInput6.EnableFullDetails = false;
+        EmployeeInput7.EnableFullDetails = false;
+        EmployeeInput8.EnableFullDetails = false;
+        EmployeeInput9.EnableFullDetails = false;
+        EmployeeInput10.EnableFullDetails = false;
+        EmployeeInput11.EnableFullDetails = false;
+        EmployeeInput12.EnableFullDetails = false;
+    }
+    public bool SaveSC(int applicationID, out string message)
+    {
+        SCTableAdapters.Application_RoleTableAdapter adapterAppRl = new SCTableAdapters.Application_RoleTableAdapter();
+        SCTableAdapters.RoleTableAdapter adapterRl = new SCTableAdapters.RoleTableAdapter();
+        SCTableAdapters.EmployeeTableAdapter adapterEmp = new SCTableAdapters.EmployeeTableAdapter();
+        WorkflowDynamicTableAdapters.ApplicationTableAdapter app = new WorkflowDynamicTableAdapters.ApplicationTableAdapter();
+        
+        adapterAppRl.DeleteSC(applicationID, "Scientific Council Member");
+        adapterAppRl.DeleteSC(applicationID, "Scientific Council Coordinator");
+
+        ASP.controls_employeeinputsc_ascx[] inputs = GetInputsArray();
+        message = "";
+        try
+        {
+            for (byte i = 0; i < inputs.Length; i++)
+            {
+                
+                if (inputs[i].KFUPMUserID != "")
+                {
+                    string SCMemEmpID = adapterEmp.GetDataByKFUPMUserID(inputs[i].KFUPMUserID)[0].EmployeeID;
+                    if (app.GetApplication(applicationID)[0].EmployeeID == SCMemEmpID)
+                    {
+                        message = "The Applicant is one of the Members of Scientific Council. Hence his name is removed from Scientific Council for this application.";
+                        inputs[i].KFUPMUserID = "";
+                        inputs[i].EmployeeName = "";
+                        inputs[i].EmployeeRank = "";
+                        continue;
+                    }
+                    if (inputs[i].EmployeeRank == "Scientific Council Coordinator")
+                    {
+                        adapterAppRl.Insert(applicationID,
+                            adapterRl.GetDataByTitle("Scientific Council Coordinator")[0].RoleID
+                            , SCMemEmpID);
+                    }
+                    else
+                    {
+                        adapterAppRl.Insert(applicationID
+                            , adapterRl.GetDataByTitle("Scientific Council Member " + (i + 1))[0].RoleID
+                            , SCMemEmpID);
+                    }
+                }
+
+            }
+            if (message == "")
+                message = "Scientific Council Members Saved Successfully";
+        }
+        catch (Exception e)
+        {
+            message = "Scientific Council Members not Saved. Following error occurred : " + e.Message;
+            return false; }
+
+        return true;
+
+    
+    }
+    public bool LoadSC(int applicationID)
+    {
+        //SCTableAdapters.Application_RoleTableAdapter adapterAppRl = new SCTableAdapters.Application_RoleTableAdapter();
+        //SCTableAdapters.RoleTableAdapter adapterRl = new SCTableAdapters.RoleTableAdapter();
+        //SCTableAdapters.EmployeeTableAdapter adapterEmp = new SCTableAdapters.EmployeeTableAdapter();
+
+        //SC.Application_RoleDataTable tableAppRl = adapterAppRl.GetSCByAppID(applicationID);
+
+        //if (tableAppRl.Count == 0) { return false; }
+
+        //ASP.controls_employeeinputsc_ascx[] inputs = GetInputsArray();
+
+        //for (int i = 0; i < tableAppRl.Count; i++)
+        //{
+        //    inputs[i].KFUPMUserID = adapterEmp.GetDataByEmpID(tableAppRl[i]["EmployeeID"].ToString())[0].KFUPMUserID;
+        //    inputs[i].LoadEmployee();
+        //}        
+        return true;
+    }
+    private ASP.controls_employeeinputsc_ascx[] GetInputsArray()
+    {
+        ASP.controls_employeeinputsc_ascx[] inputs = new ASP.controls_employeeinputsc_ascx[12];
+        inputs[0] = EmployeeInput1;
+        inputs[1] = EmployeeInput2;
+        inputs[2] = EmployeeInput3;
+        inputs[3] = EmployeeInput4;
+        inputs[4] = EmployeeInput5;
+        inputs[5] = EmployeeInput6;
+        inputs[6] = EmployeeInput7;
+        inputs[7] = EmployeeInput8;
+        inputs[8] = EmployeeInput9;
+        inputs[9] = EmployeeInput10;
+        inputs[10] = EmployeeInput11;
+        inputs[11] = EmployeeInput12;
+        return inputs;
+    }
+    protected void ButtonLoadSC_Click(object sender, EventArgs e)
+    {
+        SCTableAdapters.Application_RoleTableAdapter adapterAppRl = new SCTableAdapters.Application_RoleTableAdapter();
+        SCTableAdapters.DepartmentManagerTableAdapter adapterDeptMng = new SCTableAdapters.DepartmentManagerTableAdapter();
+        SCTableAdapters.EmployeeTableAdapter adapterEmp = new SCTableAdapters.EmployeeTableAdapter();
+        SC.DepartmentManagerDataTable tableDeptMng = adapterDeptMng.GetSC();
+        
+        ASP.controls_employeeinputsc_ascx[] inputs = GetInputsArray();
+        for (int i = 0; i < tableDeptMng.Count; i++)
+        {
+            inputs[i].KFUPMUserID = adapterEmp.GetDataByEmpID(tableDeptMng[i].EmployeeID)[0].KFUPMUserID;            
+            inputs[i].LoadEmployee();
+        }
+
+
+            
+
+    }
+}

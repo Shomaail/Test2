@@ -1,0 +1,65 @@
+using System;
+
+public partial class ExtForms_Form_ReviewerForm : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+        if (ReviewerForm1.GetFormStatus() == 3)
+        {
+            lblThanks.Text = "You have successfully completed the Evaluation form! Please Click on the Update Button (if present) and go to the Action Menu Item and Forward to the Office of the Vice Rector.";
+        }
+        else
+        {
+            lblThanks.Text = "";
+        }
+            
+
+
+    }
+
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+
+
+        try
+        {
+            if (Request.Cookies["langCookie"].Value == "ar")
+            {
+                ReviewerFormAr1.LoadReviewerForm(true);
+                ReviewerFormAr1.SetPrinterFriendly(Utils.IsPrintMode());
+                ReviewerFormAr1.Visible = true;
+                ReviewerForm1.Visible = false;
+            }
+            else
+            {
+                ReviewerForm1.LoadReviewerForm(true);
+                ReviewerForm1.SetPrinterFriendly(Utils.IsPrintMode());
+                ReviewerFormAr1.Visible = false;
+                ReviewerForm1.Visible = true;
+            }
+        }
+        catch (Exception)
+        {
+            ReviewerForm1.LoadReviewerForm(true);
+            ReviewerForm1.SetPrinterFriendly(Utils.IsPrintMode());
+            ReviewerFormAr1.Visible = false;
+            ReviewerForm1.Visible = true;
+        }
+    }
+
+
+    protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
+    protected void hideModalPopupViaServer1_Click(object sender, EventArgs e)
+    {
+//        this.programmaticModalPopup1.Hide();
+    }
+
+    //protected void LinkButton1_Click(object sender, EventArgs e)
+    //{
+    //    LinkButton1.Enabled = false;
+    //}
+}

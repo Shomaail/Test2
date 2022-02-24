@@ -1,0 +1,93 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Form_PromotionReport : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Session["pcMem"] == null)
+            {
+                Alert1.Message("Invalid Session. Please login again!");
+                throw new Exception("Invalid Session. Please login again!");
+            }
+            Session.Add("ApplicationIDGlobal", Master.ApplicationID);
+        Instruction1.Text = Master.CurrentFormInstruction;
+        Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+        ButtonDS.Enabled = ViewPCChairReport1.GetStatusByPCID(user.AutoNumberPK);
+
+            if (Master.CurRoleID == 10)
+            {
+                (ViewPCChairReport1.FindControl("grdFiles") as GridView).Columns[5].Visible = true;
+            }
+            else
+            {
+                (ViewPCChairReport1.FindControl("grdFiles") as GridView).Columns[5].Visible = false;
+            }
+                
+        }
+        catch 
+        {
+            Response.Redirect("~/Main.aspx");
+            //FormsAuthentication.SignOut();
+            //FormsAuthentication.RedirectToLoginPage();
+            //Response.Write(ex.ToString());
+        }
+    }
+    protected void ButtonDS_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Session["pcMem"] == null)
+            {
+                Alert1.Message("Invalid Session. Please login again!");
+                throw new Exception("Invalid Session. Please login again!");
+            }
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter finalPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            Promotion.PromotionCommitteeTempRow user = Session["pcMem"] as Promotion.PromotionCommitteeTempRow;
+            ViewsTableAdapters.vw_PCChairReportTableAdapter adapter = new ViewsTableAdapters.vw_PCChairReportTableAdapter();            
+            Views.vw_PCChairReportDataTable table = adapter.GetDataByAppID(user.ApplicationID);
+            if (table.Count == 0)
+            {
+                Alert1.Message("There is no Promotion Report uploaded.");
+                LabelDSPCMem.Text = "There is no Promotion Report uploaded.";
+                LabelDSPCMem.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            finalPCAdapter.UpdateDS(true, DateTime.Now, user.AutoNumberPK);
+            DigitalSignature1.DataBind();
+            Alert1.Message("The promotion report is successfully signed");
+            LabelDSPCMem.Text = "The promotion report is successfully signed";
+            LabelDSPCMem.ForeColor = System.Drawing.Color.Blue;
+            ButtonDS.Enabled = false;
+
+        }
+        catch 
+        {
+            Response.Redirect("~/Main.aspx");
+            //FormsAuthentication.SignOut();
+            //FormsAuthentication.RedirectToLoginPage();
+            //Response.Write(ex.ToString());
+        }
+    }
+    //public void AlertMessage(string strMessage)
+    //{
+    //    string strScript = "<script language=JavaScript>";
+    //    strScript += "alert('" + strMessage + "');";
+    //    strScript += "</script>";
+    //    if (!Page.IsStartupScriptRegistered("clientScript"))
+    //        Page.RegisterStartupScript("clientScript", strScript);
+    //}
+
+}
+

@@ -1,0 +1,210 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class Controls_CallForMeeting : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        ComposeEmail1.Visible = false;
+//        Instruction2.Text = @"This Call for meeting is to override the busy schedule posted by the Promotion Committee. 
+
+//Click on any date in the Calender below and select the time of meeting from the drop down list below.";
+    }
+    public void LoadControl(int appID)
+    {
+        ApplicationID = appID;
+        DropDownListCall4Meeting.SelectedIndex = 0;
+    
+    }
+    protected void CalendarCall4Meeting_SelectionChanged(object sender, EventArgs e)
+    {
+        DropDownListCall4Meeting.Enabled = true;
+    }
+    protected void DropDownListCall4Meeting_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DropDownListCall4Meeting.SelectedIndex != 0)
+            CallForMeeting();
+    }
+    public void CallForMeeting()
+    {
+        //DateTime meetingDecidedDateTime = CalendarCall4Meeting.SelectedDate.AddHours(DropDownListCall4Meeting.SelectedIndex + 6);
+        MeetingDecidedDateTime = CalendarCall4Meeting.SelectedDate.AddHours(DropDownListCall4Meeting.SelectedIndex + 6);
+        MeetingApplicant = ""; string emailAddresses = null, Chairman = null;
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter adapterAppExtTskLg = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter adapterTskExt = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();        
+        try
+        {
+            PromotionTableAdapters.PromotionCommitteeTempTableAdapter pAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+            Promotion.PromotionCommitteeTempDataTable meetingMembers = pAdapter.GetMembersAgainstAppID(ApplicationID);
+
+            foreach (Promotion.PromotionCommitteeTempRow pRow in meetingMembers)
+            {
+                if (pRow.Position == 10)
+                {
+                    Chairman = pRow.Name;
+                    PromotionTableAdapters.ApplicationsListTableAdapter aAdapter = new PromotionTableAdapters.ApplicationsListTableAdapter();
+                    Promotion.ApplicationsListDataTable aTable = aAdapter.GetDataByApplication(ApplicationID, pRow.EmployeeID);
+                    MeetingApplicant = aTable[0].Name;
+
+                }
+                emailAddresses += pRow.Email + ",";
+            }
+            emailAddresses += "promotion@kfupm.edu.sa";
+
+            Email.ComposeEmailDataTable emailDataTable = new Email.ComposeEmailDataTable();
+            emailDataTable.NewComposeEmailRow();
+            emailDataTable.AddComposeEmailRow(emailAddresses, "Call for meeting", @"Dear Promotion Committee Member,
+
+This is a call for meeting of the Ad-Hoc Promotion Committee for the application of Dr. " 
+                + MeetingApplicant + 
+@". The meeting time is decided to be "
+                + MeetingDecidedDateTime.ToLongDateString() +
+" at " + MeetingDecidedDateTime.ToShortTimeString() + @". The venue will be conference room # 6038 building 15 (Research Institute).
+
+Your participation in the meeting will be appreciated.
+
+Thanks
+Dr. " + Chairman + @" Chairman Ad-Hoc Promotion Committee for Dr. " + MeetingApplicant);
+
+            
+            ComposeEmail1.LoadData(emailDataTable);
+            ComposeEmail1.Visible = true;
+
+
+        }
+        catch (Exception)
+        {
+            //Alert1.Message("No Busy Week Schedule is launched. Please Launch a busy week schedule first and then call for meeting.");
+            //lblSendEmail.Text = "No Busy Week Schedule is launched. Please Launch a busy week schedule first and then call for meeting.";
+            //lblSendEmail.ForeColor = System.Drawing.Color.Red;
+
+        }
+    }
+    protected void ComposeEmail_EmailSent(object sender, EventArgs e)
+    {
+        CultureInfo myCI = new CultureInfo("ar-SY");
+        CalendarWeekRule myCWR = CalendarWeekRule.FirstDay;
+        DayOfWeek myFDW = DayOfWeek.Sunday;
+        System.Globalization.Calendar myCal = myCI.Calendar;
+        ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter appTskLgExtAdapter = new ExternalRemindersTableAdapters.Application_TaskLogExtTableAdapter();
+        ExternalRemindersTableAdapters.Task_ExtTableAdapter tskExtAdapter = new ExternalRemindersTableAdapters.Task_ExtTableAdapter();
+        PromotionTableAdapters.PromotionCommitteeTempTableAdapter finalPCAdapter = new PromotionTableAdapters.PromotionCommitteeTempTableAdapter();
+        Promotion.PromotionCommitteeTempDataTable finalPCTable = finalPCAdapter.GetData(ApplicationID);
+        MeetingsTableAdapters.Form_MeetingsTableAdapter frmMeetingAdapter = new MeetingsTableAdapters.Form_MeetingsTableAdapter();
+        MeetingsTableAdapters.Form_MeetingMembersTableAdapter frmMeetingMemAdapter = new MeetingsTableAdapters.Form_MeetingMembersTableAdapter();
+        try
+        {
+            int weekNumber = myCal.GetWeekOfYear(Convert.ToDateTime(CalendarCall4Meeting.SelectedDate), myCWR, myFDW);
+            string year = CalendarCall4Meeting.SelectedDate.Year.ToString();
+            frmMeetingAdapter.CancelMeetingsByApplicationID(ApplicationID);
+            frmMeetingAdapter.Insert(ApplicationID, weekNumber, year, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, true);            
+            frmMeetingAdapter.UpdateMeetingDateTime(MeetingDecidedDateTime, MeetingDecidedDateTime.ToLongDateString(), ApplicationID, true);
+            frmMeetingAdapter.CancelMeetingsByApplicationID(ApplicationID);
+            finalPCTable[0].Email += ", promotion@kfupm.edu.sa";
+            foreach (Promotion.PromotionCommitteeTempRow row in finalPCTable)
+            {
+                if (row.UserAccess == true)
+                {
+                    appTskLgExtAdapter.UpdateExtTskComplete(true
+                    , ApplicationID
+                    , tskExtAdapter.GetDataByTitle("Post Busy Schedule")[0].TaskID
+                    , row.AutoNumberPK);
+                    appTskLgExtAdapter.DeleteBy4(ApplicationID
+                        , tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID
+                        , -1
+                        , row.AutoNumberPK);
+                    if (DateTime.Today.AddDays(1).CompareTo(MeetingDecidedDateTime) < 0)
+                    {
+//                        if (ViewState["EmailBody"] != null)
+ //                       { 
+                            appTskLgExtAdapter.InsertQuery(ApplicationID, tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID
+   //                             , ViewState["EmailBody"] .ToString()
+                                  ,ComposeEmail1.EmailBody
+//                                , @"
+//Dear Promotion Committee Members of Dr. " + MeetingApplicant + @",
+//
+//Please be reminded, that tomorrow " + MeetingDecidedDateTime.ToLongDateString() + " at " + MeetingDecidedDateTime.ToShortTimeString() + @", there will be a meeting chaired by Dr. " + finalPCTable[0].Name + @". The venue of the meeting is Conference Room No. 6038 building 15 (Research Institute). 
+// 
+//Your participation in the meeting will be appreciated. 
+//
+//Thanks 
+//Adminstration
+//Online Faculty Promotion System
+//"
+                                    , row.Email, row.AutoNumberPK);
+                        appTskLgExtAdapter.UpdateSentDate(
+                            MeetingDecidedDateTime.AddHours(-48)
+                            , appTskLgExtAdapter.GetDataByAppIDTskIDID(ApplicationID, tskExtAdapter.GetDataByTitle("Meeting Reminder")[0].TaskID, row.AutoNumberPK)[0].TaskLogID);
+
+                        //}
+                    }
+                }
+
+            }
+            
+           // Alert1.Message("Email has been successfully send.");
+        }
+        catch (Exception)
+        {
+
+        }
+        ComposeEmail1.Visible = false;
+        ((AbstractUserControl)Parent).HideCallForMeetingControl();
+        
+    }
+    protected void ComposeEmail_EmailNotSent(object sender, EventArgs e)
+    {
+        MeetingDecidedDateTime = DateTime.MinValue;
+        ComposeEmail1.Visible = false;
+        ((AbstractUserControl)Parent).HideCallForMeetingControl();
+    }
+    public int ApplicationID
+    {
+        get
+        {
+            if (hdnApplicationID.Value.Length == 0)
+                return -1;
+            return int.Parse(hdnApplicationID.Value);
+        }
+        set
+        {
+            hdnApplicationID.Value = value.ToString();
+        }
+    }
+    public DateTime MeetingDecidedDateTime
+    {
+        get
+        {
+            if (HiddenFieldMeetingDDT.Value.Length == 0)
+                return DateTime.MinValue;
+            return DateTime.Parse(HiddenFieldMeetingDDT.Value);
+        }
+        set
+        {
+            HiddenFieldMeetingDDT.Value = value.ToString();
+        }
+    }
+    public string MeetingApplicant
+    {
+
+        get
+        {
+            if (hdnMeetingApplicant.Value.Length == 0)
+                return "";
+            return (hdnMeetingApplicant.Value);
+        }
+        set
+        {
+            hdnMeetingApplicant.Value = value.ToString();
+        }
+    }
+    protected void ButtonReturn_Click(object sender, EventArgs e)
+    {
+        MeetingDecidedDateTime = DateTime.MinValue;
+        ((AbstractUserControl)Parent).HideCallForMeetingControl();
+    }
+}

@@ -1,0 +1,240 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using AjaxControlToolkit;
+using System.Web.UI.HtmlControls;
+using System.IO;
+
+public partial class ExtForms_NoMasterPage_NMPPublicationsEvaluation : System.Web.UI.Page
+{
+    public string dataPath;
+    public FileInfo[] files;
+    ExtRevFormBAL erfBAL = new ExtRevFormBAL();
+    ExtRevBAL erBAL = new ExtRevBAL();
+
+    BAL bal = new BAL();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0];
+
+        if (ffer.EvaluationStatus == EvaluationStatus.Submitted + "" || ffer.EvaluationStatus == EvaluationStatus.Withdrawn + "")
+        {
+            // Disable the whole form 
+        }
+        lblCandName.Text = bal.GetApplicant(ApplicationID)[0].NameString;
+        lblForRank.Text = bal.GetApplication(ApplicationID)[0].ForRank;
+        lblSpecialization.Text = bal.GetForm_AppProperties(ApplicationID)[0].AreaOfSpecialization;
+        if(erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0].PromotionRecom.HasValue)
+        {
+            rblFinalRecommendation.SelectedValue = erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0].PromotionRecom.ToString();
+        }
+        
+        tbReason.Text = erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0].Reasons;
+        DatabindControls();
+    }
+    private void DatabindControls()
+    {
+        gvPublicationsEvaluation.DataSource = erfBAL.GetPublicationsEvaluation(ApplicationID,ExtReviewerID)
+            .Where(pe=>pe.Form_Attachment.SelectionForExtRev.Value);
+        gvPublicationsEvaluation.DataBind();
+
+        LoadEvaluationAttachment();
+    }
+    #region EventHandler
+    #region gvPublicationsEvaluation
+
+    #endregion
+    protected void lbtnDownload_PreRender(object sender, EventArgs e)
+    {
+        int rowID = ((sender as LinkButton).NamingContainer as GridViewRow).RowIndex;
+        int form_AttachmentID = int.Parse(gvPublicationsEvaluation.DataKeys[rowID].Values["Form_AttachmentID"].ToString());
+        List<Form_Attachment> ld = bal.GetForm_Attachment(form_AttachmentID);
+        if (ld.Count == 0 || ld[0].DocumentName == "") { return; }        
+        if (erfBAL.GetPublicationsEvaluation(ApplicationID, ExtReviewerID, form_AttachmentID)[0].Form_Attachment.SelectionForExtRev.Value)
+        {
+            Form_Attachment attachment = ld[0];
+            (sender as LinkButton).OnClientClick = "window.open('"
+            + "../Forms/NoMasterPage/Handler.ashx?appID=" + ApplicationID
+            + "&empID="
+            + attachment.EmployeeID
+            + "&fileName=" + attachment.DocumentName + "'); return false ;";
+        }
+    }
+    protected void lbtnEvaluationAttachment_PreRender(object sender, EventArgs e)
+    {
+        dataPath = Server.MapPath("~/App_Data/EvaluationAttachments/");
+
+        erfBAL.GetEvaluationAttachments(ApplicationID, ExtReviewerID, dataPath, out files);
+        if (files.Count() > 0)
+        {
+            (sender as LinkButton).OnClientClick = "window.open('"
+            + "../Forms/NoMasterPage/Handler.ashx?appID=" + ApplicationID
+            + "&extRevID="
+            + ExtReviewerID
+            + "&fileName=" + files[0].Name + "'); return false ;";
+        }
+    }
+    protected void lbtnDelEvaluationAttachment_Click(object sender, EventArgs e)
+    {
+        dataPath = Server.MapPath("~/App_Data/EvaluationAttachments/");
+
+        erfBAL.GetEvaluationAttachments(ApplicationID, ExtReviewerID, dataPath, out files);
+        File.Delete(files[0].FullName);
+        LoadEvaluationAttachment();
+    }
+    protected void lbtnAdd_Click(object sender, EventArgs e)
+    {
+        dataPath = Server.MapPath("~/App_Data/EvaluationAttachments/");
+        erfBAL.GetEvaluationAttachments(ApplicationID, ExtReviewerID, dataPath, out files);
+        if (Request.Files.Count == 0)
+        {
+            return;
+        }
+        HttpPostedFile file = Request.Files[0];
+        if (file.FileName != "")
+        {
+            foreach (var item in files)
+            {
+                File.Delete(dataPath + item.Name);
+            }
+            file.SaveAs(dataPath + ApplicationID + "_" + ExtReviewerID + "_" + file.FileName);
+        }
+
+        LoadEvaluationAttachment();
+    }
+    protected void tbRemarks_TextChanged(object sender, EventArgs e)
+    {
+        int rowIndex = ((sender as TextBox).NamingContainer as GridViewRow).RowIndex;
+        int form_AttachmentID = int.Parse(gvPublicationsEvaluation.DataKeys[rowIndex].Values[2].ToString());
+        if(erfBAL.GetPublicationsEvaluation(ApplicationID, ExtReviewerID, form_AttachmentID)[0].Form_Attachment.SelectionForExtRev.Value)
+        {
+            erfBAL.UpdatePublicationsEvaluations(ApplicationID, ExtReviewerID, form_AttachmentID
+                , (gvPublicationsEvaluation.Rows[rowIndex].FindControl("RatingEvaluationMarks") as Rating).CurrentRating
+                , (gvPublicationsEvaluation.Rows[rowIndex].FindControl("tbRemarks") as TextBox).Text);
+        }
+
+    }
+
+    protected void RatingEvaluationMarks_Changed(object sender, RatingEventArgs e)
+    {
+        int rowIndex = ((sender as Rating).NamingContainer as GridViewRow).RowIndex;
+        int form_AttachmentID = int.Parse(gvPublicationsEvaluation.DataKeys[rowIndex].Values[2].ToString());
+        if (erfBAL.GetPublicationsEvaluation(ApplicationID, ExtReviewerID, form_AttachmentID)[0].Form_Attachment.SelectionForExtRev.Value)
+        {
+            erfBAL.UpdatePublicationsEvaluations(ApplicationID, ExtReviewerID, form_AttachmentID
+            , int.Parse(e.Value)
+            , (gvPublicationsEvaluation.Rows[rowIndex].FindControl("tbRemarks") as TextBox).Text);
+        }
+        DatabindControls();
+    }
+    protected void rblFinalRecommendation_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0];
+        ffer.PromotionRecom = rblFinalRecommendation.SelectedValue == "True" ? true : false;
+        ffer.Reasons = tbReason.Text;
+        ffer.EvaluationStatus = EvaluationStatus.Saved_But_Not_Submitted.ToString().Replace("_", " ");
+        erBAL.UpdateFormFinalExtRev(ApplicationID, ExtReviewerID, ffer.Serial, ffer.WLStatus, ffer.WLDate, ffer.CommentsWithWL, ffer.MaterialSentStatus, ffer.MaterialSentDate,
+                    ffer.EvaluationStatus, ffer.EvaluationDate, ffer.CommentsWithEval, ffer.ShowExtRev2PC, ffer.ShowEval2PC, ffer.UserName, ffer.Password
+                    , ffer.Source, ffer.PromotionRecom, ffer.Reasons, ffer.Score);
+        DatabindControls();
+    }
+
+    protected void tbReason_TextChanged(object sender, EventArgs e)
+    {
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(ApplicationID, ExtReviewerID)[0];
+        ffer.PromotionRecom = rblFinalRecommendation.SelectedValue == "True" ? true : false;
+        ffer.Reasons = tbReason.Text;
+        ffer.EvaluationStatus = EvaluationStatus.Saved_But_Not_Submitted.ToString().Replace("_", " ");
+        erBAL.UpdateFormFinalExtRev(ApplicationID, ExtReviewerID, ffer.Serial, ffer.WLStatus, ffer.WLDate, ffer.CommentsWithWL, ffer.MaterialSentStatus, ffer.MaterialSentDate,
+                    ffer.EvaluationStatus, ffer.EvaluationDate, ffer.CommentsWithEval, ffer.ShowExtRev2PC, ffer.ShowEval2PC, ffer.UserName, ffer.Password
+                    , ffer.Source, ffer.PromotionRecom, ffer.Reasons, ffer.Score);
+        DatabindControls();
+    }
+    #endregion
+    private void LoadEvaluationAttachment()
+    {
+        dataPath = Server.MapPath("~/App_Data/EvaluationAttachments/");
+        erfBAL.GetEvaluationAttachments(ApplicationID, ExtReviewerID, dataPath, out files);
+        if (files.Count() != 0)
+        {
+            lbtnEvaluationAttachment.Text = files[0].Name.Replace(ApplicationID + "_" + ExtReviewerID + "_", "");
+            lbtnDelEvaluationAttachment.Visible = true;
+            lbtnEvaluationAttachment.Visible = true;
+            lbtnAdd.Visible = false;
+            EvaluationAttachment.Visible = false;
+        }
+        else
+        {
+            lbtnDelEvaluationAttachment.Visible = false;
+            lbtnEvaluationAttachment.Visible = false;
+            lbtnAdd.Visible = true;
+            EvaluationAttachment.Visible = true;
+        }
+    }
+    protected string GetTotalPoints()
+    {
+        return erfBAL.GetPublicationsEvaluation(ApplicationID,ExtReviewerID)
+            .Where(pe => pe.Form_Attachment.SelectionForExtRev.Value)
+            .Select(pe => pe.EvaluationMark).Sum().ToString();
+    }
+    protected string GetPointsAverage()
+    {
+        return Math.Round(erfBAL.GetPublicationsEvaluation(ApplicationID, ExtReviewerID)
+            .Where(pe => pe.Form_Attachment.SelectionForExtRev.Value)
+            .Select(pe => pe.EvaluationMark).Average().Value, 2).ToString();
+    }
+    
+    #region Properties
+    public int ApplicationID
+    {
+        set
+        {
+            ViewState["ApplicationID"] = value;
+        }
+        get
+        {
+            if (ViewState["ApplicationID"] != null)
+            {
+                return (int)ViewState["ApplicationID"];
+            }
+            else
+            {
+                return int.Parse(Request.QueryString["appID"]);
+            }
+        }
+    }
+
+    public int ExtReviewerID
+    {
+        set
+        {
+            ViewState["ExtReviewerID"] = value;
+        }
+        get
+        {
+            if (ViewState["ExtReviewerID"] != null)
+            {
+                return (int)ViewState["ExtReviewerID"];
+            }
+            else
+            {
+                return int.Parse(Request.QueryString["extRevID"]);
+            }
+        }
+    }
+    #endregion
+
+
+
+
+
+
+}

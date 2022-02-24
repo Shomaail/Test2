@@ -1,0 +1,38 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ScientificCouncil.ascx.cs" Inherits="Controls_ScientificCouncil" %>
+<%@ Register src="EmployeeInputSC.ascx" tagname="EmployeeInput" tagprefix="uc2" %>
+<asp:Button ID="ButtonLoadSC" runat="server" 
+    Text="Insert Original Scientific Council" onclick="ButtonLoadSC_Click" />
+   <h3>Scientific Council</h3>
+   <table cellpadding="3" cellspacing="0" border="1" style="border-collapse:collapse">
+   <tr>
+   <th style="background-color:#007d40; color:white"></th>
+   <th style="background-color:#007d40; color:white">KFUPM Email User ID</th>
+   <th style="background-color:#007d40; color:white">Name</th>
+   <th style="background-color:#007d40; color:white">Rank</th>   
+   </tr>
+   <tr><td>1. </td><uc2:employeeinput ID="EmployeeInput1" runat="server" EnableNonKFUPM="false"/>    
+   </tr>
+   <tr><td>2. </td><uc2:employeeinput ID="EmployeeInput2" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>3. </td><uc2:employeeinput ID="EmployeeInput3" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>4. </td><uc2:employeeinput ID="EmployeeInput4" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>5. </td><uc2:employeeinput ID="EmployeeInput5" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>6. </td><uc2:employeeinput ID="EmployeeInput6" runat="server" EnableNonKFUPM="false"/>    
+   </tr>
+   <tr><td>7. </td><uc2:employeeinput ID="EmployeeInput7" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>8. </td><uc2:employeeinput ID="EmployeeInput8" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>9. </td><uc2:employeeinput ID="EmployeeInput9" runat="server" EnableNonKFUPM="false"/>
+   </tr>
+   <tr><td>10. </td><uc2:employeeinput ID="EmployeeInput10" runat="server" EnableNonKFUPM="false"/>
+   </tr>   
+   <tr><td>11. </td><uc2:employeeinput ID="EmployeeInput11" runat="server" EnableNonKFUPM="false"/>
+   </tr>   <tr><td>12. </td><uc2:employeeinput ID="EmployeeInput12" runat="server" EnableNonKFUPM="false"/>
+   </tr>   
+   </table>
+    
+    

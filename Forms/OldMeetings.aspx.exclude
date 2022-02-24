@@ -1,0 +1,273 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="OldMeetings.aspx.cs" Inherits="Forms_OldMeetings" Title="Faculty Promotion System" MaintainScrollPositionOnPostback="true"%>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register src="../Controls/WeekSchedule.ascx" tagname="WeekSchedule" tagprefix="uc1" %>
+
+<%@ Register src="../Controls/Instruction.ascx" tagname="Instruction" tagprefix="uc2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+   
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <h3>
+        Previous Meetings in the current Promotion Application
+    </h3>
+    <asp:GridView ID="GridView1" CssClass="table-condensed"
+        runat="server" AutoGenerateColumns="False" 
+        CellPadding="4" DataKeyNames="MeetingID" 
+        DataSourceID="ObjectDataSourceOldMeetings" ForeColor="#333333" GridLines="Vertical" 
+        onselectedindexchanged="GridView1_SelectedIndexChanged" 
+        EmptyDataText="There has been no meeting called yet" 
+        onrowcommand="GridView1_RowCommand">
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <Columns>
+            <asp:TemplateField>
+                <ItemTemplate><%# Container.DataItemIndex +1 %> </ItemTemplate>
+            </asp:TemplateField>
+            <asp:ButtonField CommandName="ShowBusyWeek" Text="View Busy Week Schedule" />
+            <asp:BoundField DataField="FinalSelectedDate" HeaderText="FinalSelectedDate" 
+                SortExpression="FinalSelectedDate"  DataFormatString="{0:dd MMMM yyyy}"/>
+            <asp:TemplateField HeaderText="FinalSelectedTime" 
+                SortExpression="FinalSelectedTime">
+                <ItemTemplate>
+                    <asp:Label ID="Label1" runat="server" Text='<%# Eval("FinalSelectedTime").ToString().Equals("") ? " ": Eval("FinalSelectedTime.TimeOfDay").ToString() + " Hours"%>'></asp:Label> 
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <asp:TextBox ID="TextBox1" runat="server" 
+                        Text='<%# Bind("FinalSelectedTime") %>'></asp:TextBox>
+                </EditItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+    <HeaderStyle BackColor=" #007D40" Font-Bold="True" ForeColor="White" />
+        <EditRowStyle BackColor="#999999" />
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+    </asp:GridView>
+    <asp:ObjectDataSource ID="ObjectDataSourceOldMeetings" runat="server" 
+        DeleteMethod="Delete" InsertMethod="Insert" 
+        OldValuesParameterFormatString="original_{0}" SelectMethod="GetDataByAppIDMS" 
+        TypeName="MeetingsTableAdapters.Form_MeetingsTableAdapter" 
+        UpdateMethod="Update">
+        <DeleteParameters>
+            <asp:Parameter Name="Original_MeetingID" Type="Int32" />
+            <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+            <asp:Parameter Name="Original_WeekNo" Type="Int32" />
+            <asp:Parameter Name="Original_Year" Type="String" />
+            <asp:Parameter Name="Original_TimeSlot1" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot2" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot3" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot4" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot5" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot6" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot7" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot8" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot9" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot10" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot11" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot12" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot13" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot14" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot15" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot16" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot17" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot18" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot19" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot20" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot21" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot22" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot23" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot24" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot25" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot26" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot27" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot28" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot29" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot30" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot31" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot32" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot33" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot34" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot35" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot36" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot37" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot38" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot39" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot40" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot41" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot42" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot43" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot44" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot45" Type="Int32" />
+            <asp:Parameter Name="Original_FinalSelectedTime" Type="DateTime" />
+            <asp:Parameter Name="Original_FinalSelectedDate" Type="String" />
+            <asp:Parameter Name="Original_MeetingStatus" Type="Boolean" />
+        </DeleteParameters>
+        <UpdateParameters>
+            <asp:Parameter Name="ApplicationID" Type="Int32" />
+            <asp:Parameter Name="WeekNo" Type="Int32" />
+            <asp:Parameter Name="Year" Type="String" />
+            <asp:Parameter Name="TimeSlot1" Type="Int32" />
+            <asp:Parameter Name="TimeSlot2" Type="Int32" />
+            <asp:Parameter Name="TimeSlot3" Type="Int32" />
+            <asp:Parameter Name="TimeSlot4" Type="Int32" />
+            <asp:Parameter Name="TimeSlot5" Type="Int32" />
+            <asp:Parameter Name="TimeSlot6" Type="Int32" />
+            <asp:Parameter Name="TimeSlot7" Type="Int32" />
+            <asp:Parameter Name="TimeSlot8" Type="Int32" />
+            <asp:Parameter Name="TimeSlot9" Type="Int32" />
+            <asp:Parameter Name="TimeSlot10" Type="Int32" />
+            <asp:Parameter Name="TimeSlot11" Type="Int32" />
+            <asp:Parameter Name="TimeSlot12" Type="Int32" />
+            <asp:Parameter Name="TimeSlot13" Type="Int32" />
+            <asp:Parameter Name="TimeSlot14" Type="Int32" />
+            <asp:Parameter Name="TimeSlot15" Type="Int32" />
+            <asp:Parameter Name="TimeSlot16" Type="Int32" />
+            <asp:Parameter Name="TimeSlot17" Type="Int32" />
+            <asp:Parameter Name="TimeSlot18" Type="Int32" />
+            <asp:Parameter Name="TimeSlot19" Type="Int32" />
+            <asp:Parameter Name="TimeSlot20" Type="Int32" />
+            <asp:Parameter Name="TimeSlot21" Type="Int32" />
+            <asp:Parameter Name="TimeSlot22" Type="Int32" />
+            <asp:Parameter Name="TimeSlot23" Type="Int32" />
+            <asp:Parameter Name="TimeSlot24" Type="Int32" />
+            <asp:Parameter Name="TimeSlot25" Type="Int32" />
+            <asp:Parameter Name="TimeSlot26" Type="Int32" />
+            <asp:Parameter Name="TimeSlot27" Type="Int32" />
+            <asp:Parameter Name="TimeSlot28" Type="Int32" />
+            <asp:Parameter Name="TimeSlot29" Type="Int32" />
+            <asp:Parameter Name="TimeSlot30" Type="Int32" />
+            <asp:Parameter Name="TimeSlot31" Type="Int32" />
+            <asp:Parameter Name="TimeSlot32" Type="Int32" />
+            <asp:Parameter Name="TimeSlot33" Type="Int32" />
+            <asp:Parameter Name="TimeSlot34" Type="Int32" />
+            <asp:Parameter Name="TimeSlot35" Type="Int32" />
+            <asp:Parameter Name="TimeSlot36" Type="Int32" />
+            <asp:Parameter Name="TimeSlot37" Type="Int32" />
+            <asp:Parameter Name="TimeSlot38" Type="Int32" />
+            <asp:Parameter Name="TimeSlot39" Type="Int32" />
+            <asp:Parameter Name="TimeSlot40" Type="Int32" />
+            <asp:Parameter Name="TimeSlot41" Type="Int32" />
+            <asp:Parameter Name="TimeSlot42" Type="Int32" />
+            <asp:Parameter Name="TimeSlot43" Type="Int32" />
+            <asp:Parameter Name="TimeSlot44" Type="Int32" />
+            <asp:Parameter Name="TimeSlot45" Type="Int32" />
+            <asp:Parameter Name="FinalSelectedTime" Type="DateTime" />
+            <asp:Parameter Name="FinalSelectedDate" Type="String" />
+            <asp:Parameter Name="MeetingStatus" Type="Boolean" />
+            <asp:Parameter Name="Original_MeetingID" Type="Int32" />
+            <asp:Parameter Name="Original_ApplicationID" Type="Int32" />
+            <asp:Parameter Name="Original_WeekNo" Type="Int32" />
+            <asp:Parameter Name="Original_Year" Type="String" />
+            <asp:Parameter Name="Original_TimeSlot1" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot2" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot3" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot4" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot5" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot6" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot7" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot8" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot9" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot10" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot11" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot12" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot13" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot14" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot15" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot16" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot17" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot18" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot19" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot20" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot21" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot22" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot23" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot24" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot25" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot26" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot27" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot28" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot29" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot30" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot31" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot32" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot33" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot34" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot35" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot36" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot37" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot38" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot39" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot40" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot41" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot42" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot43" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot44" Type="Int32" />
+            <asp:Parameter Name="Original_TimeSlot45" Type="Int32" />
+            <asp:Parameter Name="Original_FinalSelectedTime" Type="DateTime" />
+            <asp:Parameter Name="Original_FinalSelectedDate" Type="String" />
+            <asp:Parameter Name="Original_MeetingStatus" Type="Boolean" />
+        </UpdateParameters>
+        <SelectParameters>
+            <asp:Parameter Name="appID" Type="Int32" />
+            <asp:Parameter DefaultValue="false" Name="MeetingStatus" Type="Boolean" />
+        </SelectParameters>
+        <InsertParameters>
+            <asp:Parameter Name="ApplicationID" Type="Int32" />
+            <asp:Parameter Name="WeekNo" Type="Int32" />
+            <asp:Parameter Name="Year" Type="String" />
+            <asp:Parameter Name="TimeSlot1" Type="Int32" />
+            <asp:Parameter Name="TimeSlot2" Type="Int32" />
+            <asp:Parameter Name="TimeSlot3" Type="Int32" />
+            <asp:Parameter Name="TimeSlot4" Type="Int32" />
+            <asp:Parameter Name="TimeSlot5" Type="Int32" />
+            <asp:Parameter Name="TimeSlot6" Type="Int32" />
+            <asp:Parameter Name="TimeSlot7" Type="Int32" />
+            <asp:Parameter Name="TimeSlot8" Type="Int32" />
+            <asp:Parameter Name="TimeSlot9" Type="Int32" />
+            <asp:Parameter Name="TimeSlot10" Type="Int32" />
+            <asp:Parameter Name="TimeSlot11" Type="Int32" />
+            <asp:Parameter Name="TimeSlot12" Type="Int32" />
+            <asp:Parameter Name="TimeSlot13" Type="Int32" />
+            <asp:Parameter Name="TimeSlot14" Type="Int32" />
+            <asp:Parameter Name="TimeSlot15" Type="Int32" />
+            <asp:Parameter Name="TimeSlot16" Type="Int32" />
+            <asp:Parameter Name="TimeSlot17" Type="Int32" />
+            <asp:Parameter Name="TimeSlot18" Type="Int32" />
+            <asp:Parameter Name="TimeSlot19" Type="Int32" />
+            <asp:Parameter Name="TimeSlot20" Type="Int32" />
+            <asp:Parameter Name="TimeSlot21" Type="Int32" />
+            <asp:Parameter Name="TimeSlot22" Type="Int32" />
+            <asp:Parameter Name="TimeSlot23" Type="Int32" />
+            <asp:Parameter Name="TimeSlot24" Type="Int32" />
+            <asp:Parameter Name="TimeSlot25" Type="Int32" />
+            <asp:Parameter Name="TimeSlot26" Type="Int32" />
+            <asp:Parameter Name="TimeSlot27" Type="Int32" />
+            <asp:Parameter Name="TimeSlot28" Type="Int32" />
+            <asp:Parameter Name="TimeSlot29" Type="Int32" />
+            <asp:Parameter Name="TimeSlot30" Type="Int32" />
+            <asp:Parameter Name="TimeSlot31" Type="Int32" />
+            <asp:Parameter Name="TimeSlot32" Type="Int32" />
+            <asp:Parameter Name="TimeSlot33" Type="Int32" />
+            <asp:Parameter Name="TimeSlot34" Type="Int32" />
+            <asp:Parameter Name="TimeSlot35" Type="Int32" />
+            <asp:Parameter Name="TimeSlot36" Type="Int32" />
+            <asp:Parameter Name="TimeSlot37" Type="Int32" />
+            <asp:Parameter Name="TimeSlot38" Type="Int32" />
+            <asp:Parameter Name="TimeSlot39" Type="Int32" />
+            <asp:Parameter Name="TimeSlot40" Type="Int32" />
+            <asp:Parameter Name="TimeSlot41" Type="Int32" />
+            <asp:Parameter Name="TimeSlot42" Type="Int32" />
+            <asp:Parameter Name="TimeSlot43" Type="Int32" />
+            <asp:Parameter Name="TimeSlot44" Type="Int32" />
+            <asp:Parameter Name="TimeSlot45" Type="Int32" />
+            <asp:Parameter Name="FinalSelectedTime" Type="DateTime" />
+            <asp:Parameter Name="FinalSelectedDate" Type="String" />
+            <asp:Parameter Name="MeetingStatus" Type="Boolean" />
+        </InsertParameters>
+    </asp:ObjectDataSource>
+    <uc1:WeekSchedule ID="WeekSchedule1" runat="server" Visible="False" />
+
+</asp:Content>
+

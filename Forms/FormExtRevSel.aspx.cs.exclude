@@ -1,0 +1,775 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Configuration;
+using BL.Data;
+
+public partial class Forms_FormExtRevSel : System.Web.UI.Page
+{
+    ExtRevBAL erBAL = new ExtRevBAL();
+    BAL bal = new BAL();
+    public int sizeOfListER = 10;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            if (!(Request.Form["__EVENTTARGET"] != null && Request.Form["__EVENTTARGET"].Contains("ddlQuickJump")))
+            {
+                return;
+            }
+        }
+        lbtnExtRevList4VR.Attributes.Add("onclick", "window.open ('NoMasterPage/ExtRevList4VRR.aspx?applicationid=" + Master.ApplicationID.ToString() + "',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 800, width = 1200, left = 100, top= 100, screenx=10,screeny=600,menubar=no');");
+        odsFormExtRevSugg.SelectParameters["ApplicationID"].DefaultValue = Master.ApplicationID.ToString();
+        FormMode = "ExtRev";
+        DatabindControls();
+    }
+    #region Properties
+    public string FormMode
+    {
+        set
+        {
+            ViewState["FormMode"] = value;
+        }
+        get
+        {
+            if (ViewState["FormMode"] != null)
+                return (string)ViewState["FormMode"];
+            else
+                return "";
+        }
+    }
+    public int ExternalReviewerID
+    {
+        get
+        {
+            if (hfExtRevID.Value.Length == 0)
+                return -1;
+            return int.Parse(hfExtRevID.Value);
+        }
+        set
+        {
+            hfExtRevID.Value = value.ToString();
+        }
+    }
+    public int Serial
+    {
+        get
+        {
+            if (hfSerial.Value.Length == 0)
+                return -1;
+            return int.Parse(hfSerial.Value);
+        }
+        set
+        {
+            hfSerial.Value = value.ToString();
+        }
+    }
+    public int Type
+    {
+        get
+        {
+            if (hfType.Value.Length == 0)
+                return -1;
+            return int.Parse(hfType.Value);
+        }
+        set
+        {
+            hfType.Value = value.ToString();
+        }
+    }
+
+    #endregion
+    public string GetStatus()
+    {
+        string value = Eval("Type").ToString();
+        switch (value)
+        {
+            case "0":
+                return "Applicant";
+            case "1":
+                return "Department";
+            case "2":
+                return "College";
+            case "3":
+                return ConfigurationManager.AppSettings["TopAuthority_TitleShort"];
+            default:
+                return "SCSubCom";
+        }
+    }
+
+
+    private void DatabindControls()
+    {
+        btnShowInsertExtRev.DataBind();
+        List<Form_FinalExtRev> lffer = erBAL.GetForm_FinalExtRev(Master.ApplicationID);
+        if (lffer.Count >= sizeOfListER)
+        {
+            Master.ReportSuccess("List of External Reviewers is complete");
+
+        }
+        else
+        {
+            lblMessage.Text = "List of 10 Final External Reviewers is incomplete";
+            Master.ReportFailure("List of 10 Final External Reviewers is incomplete");
+        }
+        if (bal.GetApplicationTaskForm(Master.ApplicationID, Master.TaskID, (byte)FormID.FormExtRevSel_aspx, false, 0).Count > 0)
+        {
+            if (bal.GetApplicationTaskForm(Master.ApplicationID, Master.TaskID, (byte)FormID.FormExtRevSel_aspx, false, 0)[0].Completed)
+            {
+                lblMessage.ForeColor = Color.Green;
+            }
+            else
+            {
+                lblMessage.ForeColor = ColorTranslator.FromHtml("#CC3300");
+            }
+            lblMessage.Text = bal.GetApplicationTaskForm(Master.ApplicationID, Master.TaskID, (byte)FormID.FormExtRevSel_aspx, false, 0)[0].Message;
+        }
+
+        gvFinalExtRev.DataSource = erBAL.GetForm_FinalExtRev(Master.ApplicationID);
+        //gvFinalExtRev.DataSource = erBAL.GetForm_FinalExtRev(Master.ApplicationID)
+        //    .OrderByDescending(a => a.ExternalReviewer.HIndex.HasValue && a.ExternalReviewer.NoOfJournals.HasValue ?
+        //    a.ExternalReviewer.HIndex.Value + a.ExternalReviewer.NoOfJournals.Value : a.Serial);
+        gvFinalExtRev.DataBind();
+        divFormExtRevSuggested.DataBind();
+        divViewDetail.DataBind();
+        divInsertFormExtRev.DataBind();
+        divFinalExtRev.DataBind();
+        // divFinaExtRevDet.DataBind();
+    }
+    protected void btnReturn_Click(object sender, EventArgs e)
+    {
+        FormMode = "ExtRev";
+        DatabindControls();
+    }
+    #region Event Handlers
+    #region Gridview
+    #region GridviewSuggestedExtRev
+    protected void gvExternalReviewersSugg_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        int extRevID = int.Parse(e.CommandArgument.ToString());
+        if (e.CommandName == "SelectDetail")
+        {
+            odsFormExtRevSuggDet.SelectParameters["ExternalReviewerID"].DefaultValue = extRevID.ToString();
+            dvExtReviewers.DataBind();
+            FormMode = "ExtRevDetail";
+            DatabindControls();
+        }
+        else if (e.CommandName == "Select")
+        {
+            List<Form_FinalExtRev> lffer = erBAL.GetForm_FinalExtRev(Master.ApplicationID);
+            for (int rowNo = 0; rowNo < lffer.Count; rowNo++)
+            {
+                if (lffer[rowNo].ExternalReviewerID == extRevID)
+                {
+                    labelProgrammaticPopup0.Text = "This selection is already present in the Final External Reviewers.";
+                    programmaticModalPopup0.Show();
+                    return;
+                }
+            }
+            erBAL.InsertFormFinalExtRev(Master.ApplicationID, extRevID, erBAL.GetForm_FinalExtRev(Master.ApplicationID).Count + 1
+                , WillingessStatus.Not_Sent.ToString().Replace("_", " "), null, "", SendSelPubStatus.Material_Not_Sent.ToString().Replace("_", " ")
+                , null, EvaluationStatus.Not_Submitted.ToString().Replace("_", " "), null, "", null, null, "", ""
+                , erBAL.GetSourceForFinalExtRev(extRevID, Master.ApplicationID,Master.CurRoleID), null);
+
+            DatabindControls();
+        }
+    }
+    #endregion
+    #region GridviewFinalExtRev
+    protected void gvFinalExtRev_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        int appID = Master.ApplicationID;
+        int extRevID = Convert.ToInt32(e.CommandArgument.ToString());
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(appID).Where(er => er.ExternalReviewerID == extRevID).ToList()[0];
+        if (e.CommandName == "MoveRowUp")
+        {
+            erBAL.DeleteFormFinalExtRev(appID, extRevID);
+            Form_FinalExtRev fferUR = erBAL.GetForm_FinalExtRevByAppIDSer(appID, ffer.Serial.Value - 1)[0];
+            erBAL.DeleteFormFinalExtRev(appID, fferUR.ExternalReviewerID);
+            erBAL.InsertFormFinalExtRev(appID, fferUR.ExternalReviewerID, ffer.Serial,
+                fferUR.WLStatus,
+                fferUR.WLDate,
+                fferUR.CommentsWithWL,
+                fferUR.MaterialSentStatus,
+                fferUR.MaterialSentDate,
+                fferUR.EvaluationStatus,
+                fferUR.EvaluationDate,
+                fferUR.CommentsWithEval,
+                fferUR.ShowExtRev2PC,
+                fferUR.ShowEval2PC,
+                fferUR.UserName,
+                fferUR.Password,
+                fferUR.Source,
+                fferUR.EvaluationID
+                );
+            erBAL.InsertFormFinalExtRev(appID, ffer.ExternalReviewerID, ffer.Serial - 1,
+                ffer.WLStatus,
+                ffer.WLDate,
+                ffer.CommentsWithWL,
+                ffer.MaterialSentStatus,
+                ffer.MaterialSentDate,
+                ffer.EvaluationStatus,
+                ffer.EvaluationDate,
+                ffer.CommentsWithEval,
+                ffer.ShowExtRev2PC,
+                ffer.ShowEval2PC,
+                ffer.UserName,
+                ffer.Password,
+                ffer.Source,
+                ffer.EvaluationID
+                );
+            DatabindControls();
+        }
+        else if (e.CommandName == "MoveRowDn")
+        {
+            erBAL.DeleteFormFinalExtRev(appID, extRevID);
+            Form_FinalExtRev fferLR = erBAL.GetForm_FinalExtRevByAppIDSer(appID, ffer.Serial.Value + 1)[0];
+            erBAL.DeleteFormFinalExtRev(appID, fferLR.ExternalReviewerID);
+            erBAL.InsertFormFinalExtRev(appID, fferLR.ExternalReviewerID, ffer.Serial,
+                fferLR.WLStatus,
+                fferLR.WLDate,
+                fferLR.CommentsWithWL,
+                fferLR.MaterialSentStatus,
+                fferLR.MaterialSentDate,
+                fferLR.EvaluationStatus,
+                fferLR.EvaluationDate,
+                fferLR.CommentsWithEval,
+                fferLR.ShowExtRev2PC,
+                fferLR.ShowEval2PC,
+                fferLR.UserName,
+                fferLR.Password,
+                fferLR.Source,
+                fferLR.EvaluationID);
+            erBAL.InsertFormFinalExtRev(appID, ffer.ExternalReviewerID, ffer.Serial + 1,
+                ffer.WLStatus,
+                ffer.WLDate,
+                ffer.CommentsWithWL,
+                ffer.MaterialSentStatus,
+                ffer.MaterialSentDate,
+                ffer.EvaluationStatus,
+                ffer.EvaluationDate,
+                ffer.CommentsWithEval,
+                ffer.ShowExtRev2PC,
+                ffer.ShowEval2PC,
+                ffer.UserName,
+                ffer.Password,
+                ffer.Source,
+                ffer.EvaluationID);
+            DatabindControls();
+        }
+        if (e.CommandName == "SelectDetail")
+        {
+            odsFormExtRevSuggDet.SelectParameters["ExternalReviewerID"].DefaultValue = extRevID.ToString();
+            dvExtReviewers.DataBind();
+            FormMode = "ExtRevDetail";
+            DatabindControls();
+        }
+
+    }
+    protected void gvFinalExtRev_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        int totalRows = erBAL.GetForm_FinalExtRev(Master.ApplicationID).Count;
+        if (totalRows == 1 && e.Row.RowType == DataControlRowType.DataRow)
+        {
+            (e.Row.FindControl("iBtnArrowUp") as ImageButton).Visible = false;
+            (e.Row.FindControl("iBtnArrowDn") as ImageButton).Visible = false;
+        }
+        if (e.Row.RowIndex == 0 && e.Row.RowType == DataControlRowType.DataRow)
+        {
+            (e.Row.FindControl("iBtnArrowUp") as ImageButton).Visible = false;
+        }
+        if (e.Row.RowIndex == totalRows - 1 && e.Row.RowType == DataControlRowType.DataRow)
+        {
+            (e.Row.FindControl("iBtnArrowDn") as ImageButton).Visible = false;
+        }
+    }
+    protected void gvFinalExtRev_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        int appID = Master.ApplicationID;
+        int extRevID = int.Parse(gvFinalExtRev.DataKeys[e.RowIndex].Values[1].ToString());
+        Form_FinalExtRev ffer = erBAL.GetForm_FinalExtRev(appID).Where(er => er.ExternalReviewerID == extRevID).ToList()[0];
+        if (ffer.WLStatus != WillingessStatus.Not_Sent.ToString().Replace("_", " "))
+        {
+            labelProgrammaticPopup0.Text = "There are some communication associated with this reviewer. Delete the communication in External Reviewer Communication page inorder to completely delete the external reviewer from final list.";
+            programmaticModalPopup0.Show();
+            return;
+        }
+
+        foreach (Application_TaskLogExt row in bal.GetAppTaskLogExt().Where(atle => atle.ApplicationID == appID && atle.ExternalReviewerID == extRevID))
+        {
+            bal.DeleteApplication_TaskLogExt(row.TaskLogID);
+        }
+        erBAL.DeleteFormFinalExtRev(appID, extRevID);
+        int i = 1;
+        foreach (Form_FinalExtRev row in erBAL.GetForm_FinalExtRev(appID))
+        {
+            erBAL.DeleteFormFinalExtRev(Master.ApplicationID, row.ExternalReviewerID);
+            erBAL.InsertFormFinalExtRev(Master.ApplicationID, row.ExternalReviewerID, i++,
+                   row.WLStatus,
+                   row.WLDate,
+                   row.CommentsWithWL,
+                   row.MaterialSentStatus,
+                   row.MaterialSentDate,
+                   row.EvaluationStatus,
+                   row.EvaluationDate,
+                   row.CommentsWithEval,
+                   row.ShowExtRev2PC,
+                   row.ShowEval2PC,
+                   row.UserName,
+                   row.Password,
+                   row.Source,row.EvaluationID
+                   );
+        }
+        if (erBAL.GetForm_FinalExtRev(appID).Count < 10)
+        {
+            Master.ReportFailure("List of 10 Final External Reviewers is incomplete");
+        }
+
+        DatabindControls();
+        DatabindControls();
+    }
+    protected void gvFinalExtRev_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int extRevID = int.Parse(gvFinalExtRev.DataKeys[e.NewEditIndex].Values[1].ToString());
+        PopulateAddEditForm(extRevID);
+        FormMode = "EditExtRev";
+        DatabindControls();
+        e.Cancel = true;
+
+    }
+    protected void gvFinalExtRev_DataBound(object sender, EventArgs e)
+    {
+        //foreach (GridViewRow row in gvFinalExtRev.Rows)
+        //{
+        //    LinkButton lbtnDelete = row.FindControl("lbtnDelete") as LinkButton;
+        //    lbtnDelete.Attributes.Add("OnClick", "return confirm_delete_ExtReviewer();");
+        //}
+    }
+    #endregion
+    protected void gvExtRevSearchResult_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ExternalReviewerID = int.Parse(gvExtRevSearchResult.DataKeys[gvExtRevSearchResult.SelectedIndex].Values[0].ToString());
+        PopulateAddEditForm(ExternalReviewerID);
+    }
+
+    #endregion
+    #region Button Event Handlers
+    protected void btnClear_Click(object sender, EventArgs e)
+    {
+        taExtRev.InnerText = "";
+    }
+    protected void btnFillTB_Click(object sender, EventArgs e)
+    {
+        //string[] erData = taExtRev.InnerText.Split('\t', '\r', '\n');
+        taExtRev.InnerText = Regex.Replace(taExtRev.InnerText, PromotionApplication.specialCharacters, string.Empty);
+        string[] erData = taExtRev.InnerText.Split('\t');
+        if (erData.Length >= 1)
+        {
+            tbName.Text = erData[0];
+        }
+        if (erData.Length >= 2)
+        {
+            //ddlRank.SelectedItem.Selected = false;
+            ddlRank.SelectedIndex = -1;
+            if (ddlRank.Items.FindByText(erData[1]) != null)
+            {
+                ddlRank.Items.FindByText(erData[1]).Selected = true;
+            }
+
+
+        }
+        if (erData.Length >= 3)
+        {
+            tbMailingAddress.Value = erData[2];
+        }
+        if (erData.Length >= 4)
+        {
+            tbPhoneAndFax.Value = erData[3];
+
+        }
+        if (erData.Length >= 5)
+        {
+            tbEmail.Value = erData[4].Trim();
+
+        }
+        if (erData.Length >= 6)
+        {
+            tbMajor.Value = erData[5];
+
+        }
+        if (erData.Length >= 7)
+        {
+            tbSpecialty.Value = erData[6];
+        }
+        if (erData.Length >= 8)
+        {
+            tbActiveAreaOfResearch.Value = erData[7];
+        }
+        if (erData.Length >= 9)
+        {
+            tbWebpage.Value = erData[8];
+
+        }
+        int result = 0;
+        if (erData.Length >= 10)
+        {
+            if (int.TryParse(erData[9], out result))
+            {
+                tbTotPublications.Value = result.ToString();
+            }
+            else
+            {
+                tbTotPublications.Value = "0";
+            }
+        }
+        if (erData.Length >= 11)
+        {
+            if (int.TryParse(erData[sizeOfListER], out result))
+            {
+                tbNoOfJournals.Value = result.ToString();
+            }
+            else
+            {
+                tbNoOfJournals.Value = "0";
+            }
+        }
+        if (erData.Length >= 12)
+        {
+            if (int.TryParse(erData[11], out result))
+            {
+                tbHIndex.Value = result.ToString();
+            }
+            else
+            {
+                tbHIndex.Value = "0";
+            }
+        }
+        if (erData.Length >= 13)
+        {
+            if (int.TryParse(erData[12], out result))
+            {
+                tbCitations.Value = result.ToString();
+            }
+            else
+            {
+                tbCitations.Value = "0";
+            }
+        }
+        if (erData.Length >= 14)
+        {
+        }
+        if (erData.Length >= 15)
+        {
+        }
+        if (erData.Length >= 16)
+        {
+        }
+        if (erData.Length >= 17)
+        {
+        }
+    }
+    protected void btnShowDivExcel_Click(object sender, EventArgs e)
+    {
+        divExcel.Visible = true;
+        btnShowDivExcel.Visible = false;
+
+    }
+
+    protected void btnHideDivExcel_Click(object sender, EventArgs e)
+    {
+        divExcel.Visible = false;
+        btnShowDivExcel.Visible = true;
+    }
+    protected void btnHideDetail_Click(object sender, EventArgs e)
+    {
+        ExternalReviewerID = -1;
+        FormMode = "ExtRev";
+        DatabindControls();
+    }
+    protected void btnHideInsertExtRev_Click(object sender, EventArgs e)
+    {
+        ExternalReviewerID = -1;
+        FormMode = "ExtRev";
+        DatabindControls();
+    }
+    protected void btnShowInsertExtRev_Click(object sender, EventArgs e)
+    {
+        ExternalReviewerID = -1;
+        FormMode = "AddExtRev";
+        DatabindControls();
+    }
+    protected void btnAddExtRev_Click(object sender, EventArgs e)
+    {
+        //string[] deptLowInResearch = { "PE", "IAS", "GS" };
+        //if ((tbTotPublications.Value == "0" || tbNoOfJournals.Value == "0" || tbHIndex.Value == "0" || tbCitations.Value == "0") && !deptLowInResearch.Contains(Master.Applicant.DeptShort))
+        //{
+        //    labelProgrammaticPopup0.Text = "Total Publications, No of Journals, H-Index, and Citations has to be greater than 0.";
+        //    programmaticModalPopup0.Show();
+        //    return;
+        //}
+        if (!ValidationChecks())
+        {
+            return;
+        }
+        List<Form_FinalExtRev> lffer = erBAL.GetForm_FinalExtRev(Master.ApplicationID);
+
+        if (FormMode.Contains("Add"))
+        {
+            if (lffer.Where(er => er.ExternalReviewer.Email.Equals(tbEmail.Value)).Count() > 0)
+            {
+                //Already present in final List 
+                labelProgrammaticPopup0.Text = "This External Reviewers with the Email Address: (" + tbEmail.Value + ") is already present in the Final External Reviewers list.";
+                programmaticModalPopup0.Show();
+                return;
+            }
+        }
+        else
+        {
+            if (lffer.Where(er => er.ExternalReviewer.Email.Equals(tbEmail.Value)).Count() > 1)
+            {
+                //Already present in final List 
+                labelProgrammaticPopup0.Text = "This External Reviewers with the Email Address: (" + tbEmail.Value + ") is already present in the Final External Reviewers list.";
+                programmaticModalPopup0.Show();
+                return;
+            }
+
+        }
+
+        if (ExternalReviewerID != -1)
+        {
+            ExternalReviewer er = erBAL.GetExtRevByID(ExternalReviewerID)[0];
+            erBAL.UpdateExtRev(ExternalReviewerID,
+                                    tbName.Text,
+                                    ddlRank.Value == "Others" ? tbOthers.Value : ddlRank.Value,
+                                    tbMailingAddress.Value,
+                                    tbEmail.Value,
+                                    tbMajor.Value,
+                                    tbSpecialty.Value,
+                                    tbPhoneAndFax.Value,
+                                    tbActiveAreaOfResearch.Value,
+                                    er.PrevAreaOfResearch,
+                                    tbWebpage.Value,
+                                    er.Comments,
+                                    int.Parse(tbTotPublications.Value == "" ? "0" : tbTotPublications.Value),
+                                    int.Parse(tbNoOfJournals.Value == "" ? "0" : tbNoOfJournals.Value),
+                                    int.Parse(tbHIndex.Value == "" ? "0" : tbHIndex.Value),
+                                    int.Parse(tbCitations.Value == "" ? "0" : tbCitations.Value),
+                                    RecordStatus.Active.ToString(), er.Password, er.IBAN, er.PassportNo
+                                    , tbName.Text.Contains("Dr. ") ? tbName.Text : "Dr. " + tbName.Text, tbDescription.Text);
+        }
+
+        else
+        {
+            ExternalReviewerID = erBAL.InsertExtRev(
+                                    tbName.Text,
+                                    ddlRank.Value == "Others" ? tbOthers.Value : ddlRank.Value,
+                                    tbMailingAddress.Value,
+                                    tbEmail.Value,
+                                    tbMajor.Value,
+                                    tbSpecialty.Value,
+                                    tbPhoneAndFax.Value,
+                                    tbActiveAreaOfResearch.Value,
+                                    "",
+                                    tbWebpage.Value,
+                                    "",
+                                    int.Parse(tbTotPublications.Value == "" ? "0" : tbTotPublications.Value),
+                                    int.Parse(tbNoOfJournals.Value == "" ? "0" : tbNoOfJournals.Value),
+                                    int.Parse(tbHIndex.Value == "" ? "0" : tbHIndex.Value),
+                                    int.Parse(tbCitations.Value == "" ? "0" : tbCitations.Value),
+                                     RecordStatus.Active.ToString(), "", "", "", tbName.Text.Contains("Dr. ") ? tbName.Text : "Dr. " + tbName.Text,tbDescription.Text
+                                    );
+
+        }
+
+        if (FormMode == "AddExtRev")
+        {
+            erBAL.InsertFormFinalExtRev(Master.ApplicationID, ExternalReviewerID, erBAL.GetForm_FinalExtRev(Master.ApplicationID).Count + 1
+                , WillingessStatus.Not_Sent.ToString().Replace("_", " "), null, "", SendSelPubStatus.Material_Not_Sent.ToString().Replace("_", " ")
+                , null, EvaluationStatus.Not_Submitted.ToString().Replace("_", " "), null, "", null, null, "", ""
+                , Master.CurRoleID == (byte)RoleID.TopAuthority ? "VRR" : "SCSubComm", null);
+        }
+        //else if (FormMode == "EditExtRev")
+        //{
+        //    erBAL.DeleteFormFinalExtRev(
+        //                Master.ApplicationID,
+        //                ExternalReviewerID);
+        //    erBAL.InsertFormExtRev(
+        //                Master.ApplicationID,
+        //                Type,
+        //                Serial,
+        //                ExternalReviewerID
+        //                );
+
+        //}
+        if (lffer.Count >= 9)
+        {
+            Master.ReportSuccess("List of External Reviewers is complete");
+
+        }
+        else
+        {
+            lblMessage.Text = "List of 10 Final External Reviewers is incomplete";
+            Master.ReportFailure("List of 10 Final External Reviewers is incomplete");
+        }
+        ExternalReviewerID = -1;
+        FormMode = "ExtRev";
+        DatabindControls();
+    }
+    protected void btnHideFinalExtRevDet_Click(object sender, EventArgs e)
+    {
+
+    }
+    protected void btnHideSearch_Click(object sender, EventArgs e)
+    {
+        divExtRevSearch.Visible = false;
+    }
+    protected void btnSearch_Click(object sender, EventArgs e)
+    {
+        tbName.Text = Regex.Replace(tbName.Text, PromotionApplication.specialCharacters, string.Empty);
+        odsExtRevSearch.SelectParameters["MainSearchString"].DefaultValue = tbName.Text;
+        gvExtRevSearchResult.DataBind();
+        divExtRevSearch.Visible = true;
+    }
+    protected void btnClearForm_Click(object sender, EventArgs e)
+    {
+        PopulateAddEditForm();
+    }
+    protected void hideModalPopupViaServer0_Click(object sender, EventArgs e)
+    {
+        programmaticModalPopup0.Hide();
+    }
+    #endregion
+    #region TextBox Event Handlers
+    protected void tbName_TextChanged(object sender, EventArgs e)
+    {
+        string name = tbName.Text;
+        //tbName.Text = name.Replace("Dr. ", "");
+        //tbName.Text = name.Replace("Prof. ", "");
+        //tbName.Text = name.Replace("Professor", "");
+        odsExtRevSearch.SelectParameters["MainSearchString"].DefaultValue = tbName.Text.ToLower();
+        gvExtRevSearchResult.DataBind();
+        divExtRevSearch.Visible = true;
+    }
+    
+    protected void tbEmail_TextChanged(object sender, EventArgs e)
+    {
+        tbEmail.Value = tbEmail.Value.Trim();
+        List<ExternalReviewer> lER = erBAL.GetExtRevByEmail(tbEmail.Value);
+        if (lER.Count != 0)
+        {
+            // tbEmail.BackColor = Color.Red;
+            odsExtRevSearch.SelectParameters["MainSearchString"].DefaultValue = tbEmail.Value;
+            gvExtRevSearchResult.DataBind();
+            divExtRevSearch.Visible = true;
+            // btnAddExtRev.Enabled = false;
+            //   tbEmail.ToolTip = "The Email address is already in use with other external reviewer";
+        }
+        else
+        {
+            //tbEmail.Style["BackColor"] = Color.White;
+            btnAddExtRev.Enabled = true;
+            tbEmail.Attributes["placeholder"] = "Enter only one Email Address";
+            ExternalReviewerID = -1;
+        }
+
+
+    }
+    #endregion
+    #endregion
+    private void PopulateAddEditForm(int erID)
+    {
+        //   tbEmail.BackColor = Color.White;
+        List<ExternalReviewer> lER = erBAL.GetExtRevByID(erID);
+        ExternalReviewer er = lER[0];
+        ExternalReviewerID = er.ExternalReviewerID;
+        tbName.Text = er.NameString;
+        //ddlRank.SelectedItem.Selected = false;
+        //if(ddlRank.Items.FindByText(er.Rank) != null)
+        //{
+        //    ddlRank.Items.FindByText(er.Rank).Selected = true;
+        //}        
+        if (er.Rank != null && er.Rank != "")
+        {
+            if (ddlRank.Items.FindByText(er.Rank) != null)
+            {
+                ddlRank.SelectedIndex = -1;
+                ddlRank.Items.FindByText(er.Rank).Selected = true;
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "ShowDiv", "document.getElementById('divOthers').style.display=''", true);
+                tbOthers.Value = er.Rank;
+            }
+        }
+        tbPhoneAndFax.Value = er.PhoneAndFax;
+        tbMailingAddress.Value = er.MailingAddress;
+        tbMajor.Value = er.Major;
+        tbSpecialty.Value = er.Speciality;
+        tbActiveAreaOfResearch.Value = er.ActiveAreaOfResearch;
+        tbWebpage.Value = er.Webpage;
+        tbEmail.Value = er.Email;
+        tbTotPublications.Value = er.TotalPublications.HasValue ? er.TotalPublications.Value.ToString() : "0";
+        tbNoOfJournals.Value = er.NoOfJournals.HasValue ? er.NoOfJournals.Value.ToString() : "0";
+        tbHIndex.Value = er.HIndex.HasValue ? er.HIndex.Value.ToString() : "0";
+        tbCitations.Value = er.Citations.HasValue ? er.Citations.Value.ToString() : "0";
+
+    }
+    private void PopulateAddEditForm()
+    {
+        //tbEmail.BackColor = Color.White;
+        tbName.Text = "";
+        if (ddlRank.SelectedIndex != -1)
+        {
+            ddlRank.Items.FindByText("Professor").Selected = true;
+        }
+        tbPhoneAndFax.Value = "";
+        tbMailingAddress.Value = "";
+        tbMajor.Value = "";
+        tbSpecialty.Value = "";
+        tbActiveAreaOfResearch.Value = "";
+        tbWebpage.Value = "";
+        tbEmail.Value = "";
+        tbTotPublications.Value = "0";
+        tbNoOfJournals.Value = "0";
+        tbHIndex.Value = "0";
+        tbCitations.Value = "0";
+
+    }
+    private bool ValidationChecks()
+    {
+        bool isOK = true;
+        if (tbName.Text == "")
+        {
+            tbName.BorderColor = Color.OrangeRed;
+            labelProgrammaticPopup0.Text = "The Name of external reviewer is must";
+            programmaticModalPopup0.Show();
+            isOK = false;
+        }
+        else
+        {
+            tbName.BorderColor = Color.Gray;
+
+        }
+        tbName.Text = Regex.Replace(tbName.Text, PromotionApplication.specialCharacters, string.Empty);
+        tbMailingAddress.Value = Regex.Replace(tbMailingAddress.Value, PromotionApplication.specialCharacters, string.Empty);
+        tbMajor.Value = Regex.Replace(tbMajor.Value, PromotionApplication.specialCharacters, string.Empty);
+        tbSpecialty.Value = Regex.Replace(tbSpecialty.Value, PromotionApplication.specialCharacters, string.Empty);
+        tbActiveAreaOfResearch.Value = Regex.Replace(tbActiveAreaOfResearch.Value, PromotionApplication.specialCharacters, string.Empty);
+        tbPhoneAndFax.Value = Regex.Replace(tbPhoneAndFax.Value, PromotionApplication.specialCharacters, string.Empty);
+        tbWebpage.Value = Regex.Replace(tbWebpage.Value, PromotionApplication.specialCharacters.Replace("&", ""), string.Empty);
+
+        if (isOK)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PromotionReportPCMem.aspx.cs" Inherits="Form_PromotionReport" Title="Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/ViewPCChairReport.ascx" TagName="ViewPCChairReport"
+    TagPrefix="uc2" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register src="../Controls/DigitalSignature.ascx" tagname="DigitalSignature" tagprefix="uc3" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <table style="width: 100%;">
+        <tr>
+            <td>
+               <uc3:DigitalSignature ID="DigitalSignature1" runat="server" />
+            </td>
+            <td>
+                <asp:Button ID="ButtonDS" runat="server" OnClick="ButtonDS_Click" class="btn btn-primary btn-md" 
+                    Text="Digitally Sign "/> 
+                <br />
+ <asp:Label ID="LabelDSPCMem" runat="server"></asp:Label>
+            </td>
+           
+        </tr>
+           </table>
+    
+    <br />
+    <uc2:viewpcchairreport id="ViewPCChairReport1" runat="server"></uc2:viewpcchairreport>
+    <br />
+    <br />
+   <br />
+   
+    <uc10:Alert ID="Alert1" runat="server" />
+</asp:Content>
+

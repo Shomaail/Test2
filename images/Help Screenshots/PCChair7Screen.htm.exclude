@@ -1,0 +1,570 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0080)http://localhost:1409/Backup/Forms/PromotionReportPCChair.aspx?applicationID=126 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Faculty Promotion System</title><link
+href="" type=text/css
+rel=stylesheet>
+<META http-equiv=Content-Language content=ar-sa>
+<META http-equiv=Content-Type
+content="text/html; charset=utf-8; charset=windows-1256">
+<STYLE type=text/css>.ctl00_FormMenu_0 {
+	DISPLAY: none; LEFT: 0px; VISIBILITY: hidden; POSITION: absolute; TOP: 0px; BACKGROUND-COLOR: white
+}
+.ctl00_FormMenu_1 {
+	FONT-SIZE: 11pt; COLOR: black; FONT-FAMILY: Verdana,Arial; TEXT-DECORATION: none
+}
+.ctl00_FormMenu_2 {
+	FONT-SIZE: 11pt; WIDTH: 100%; COLOR: black; FONT-FAMILY: Verdana,Arial; BACKGROUND-COLOR: #efefef
+}
+.ctl00_FormMenu_3 {
+
+}
+.ctl00_FormMenu_4 {
+	BORDER-RIGHT: #e5e5e5 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #e5e5e5 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 3px; BORDER-LEFT: #e5e5e5 1px solid; PADDING-TOP: 3px; BORDER-BOTTOM: #e5e5e5 1px solid
+}
+.ctl00_FormMenu_5 {
+
+}
+.ctl00_FormMenu_6 {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px
+}
+.ctl00_FormMenu_7 {
+	BACKGROUND-COLOR: #f7f6f3
+}
+.ctl00_FormMenu_8 {
+	COLOR: white
+}
+.ctl00_FormMenu_9 {
+	BACKGROUND-COLOR: #3062af
+}
+.ctl00_FormMenu_10 {
+
+}
+.ctl00_FormMenu_11 {
+	BACKGROUND-COLOR: #5d7b9d
+}
+.ctl00_FormMenu_12 {
+	COLOR: white
+}
+.ctl00_FormMenu_13 {
+	COLOR: white; BACKGROUND-COLOR: #3062af
+}
+.ctl00_FormMenu_14 {
+	COLOR: white
+}
+.ctl00_FormMenu_15 {
+	COLOR: white; BACKGROUND-COLOR: #7c6f57
+}
+</STYLE>
+
+<META content="MSHTML 6.00.6000.16809" name=GENERATOR></HEAD>
+<BODY dir=ltr
+style="BACKGROUND-IMAGE: url(../images/logo.gif); MARGIN: 0px; BACKGROUND-REPEAT: no-repeat">
+<DIV
+style="BORDER-RIGHT: 0px solid; BORDER-TOP: 0px solid; MARGIN-TOP: 78px; MARGIN-LEFT: 0px; BORDER-LEFT: 0px solid; BORDER-BOTTOM: 0px solid"></DIV>
+<FORM id=aspnetForm name=aspnetForm
+action=PromotionReportPCChair.aspx?applicationID=126 method=post
+encType=multipart/form-data>
+<DIV><input  disabled="disabled" id=__EVENTTARGET type=hidden name=__EVENTTARGET> <input  disabled="disabled"
+id=__EVENTARGUMENT type=hidden name=__EVENTARGUMENT> <input  disabled="disabled" id=__VIEWSTATE
+type=hidden
+value=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
+name=__VIEWSTATE> </DIV>
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</SCRIPT>
+
+<SCRIPT src="Faculty%20Promotion%20System_files/WebResourceCAROFN74.axd"
+type=text/javascript></SCRIPT>
+
+<SCRIPT src="Faculty%20Promotion%20System_files/WebResourceCAFTF9HO.axd"
+type=text/javascript></SCRIPT>
+
+<DIV><input  disabled="disabled" id=__SCROLLPOSITIONX type=hidden value=0 name=__SCROLLPOSITIONX>
+<input  disabled="disabled" id=__SCROLLPOSITIONY type=hidden value=0 name=__SCROLLPOSITIONY> <input  disabled="disabled"
+id=__VIEWSTATEENCRYPTED type=hidden name=__VIEWSTATEENCRYPTED> <input  disabled="disabled"
+id=__EVENTVALIDATION type=hidden
+value=WU9/Modxsd/dYsGMuQAb6xGw2McOlesHicKLbrirmQL8Rtza7cOa+BXUF0v0oN5kQRa1D+lJAvdvcC4YbQ+qpqeAyaLVZ18v7Mkkvnbi2PI=
+name=__EVENTVALIDATION> </DIV>
+<TABLE
+style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px"
+height="100%" cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD id=ctl00_tdLeftMenu
+    style="BORDER-RIGHT: #3062af 1px solid; WIDTH: 100px; HEIGHT: 587px; BACKGROUND-COLOR: #f7f7f7"
+    vAlign=top><A
+      href=""><IMG
+      style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px"
+      height=0 alt="Skip Navigation Links"
+      src="Faculty%20Promotion%20System_files/WebResource.gif" width=0></A>
+      <TABLE class=ctl00_FormMenu_2 id=ctl00_FormMenu cellSpacing=0
+      cellPadding=0 border=0>
+        <TBODY>
+        <TR id=ctl00_FormMenun0 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Messages</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun1 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Applicant</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun2 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Points</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun3 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Years
+                  of Service</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun4 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Annual
+                  Evaluations</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun5 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Chairman
+                  Input</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun6 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Attachments
+                  (Files)</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun7 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Eligibility
+                  Checklist</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun8 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Launch
+                  Busy Schedule</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun9 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Post
+                  Busy Schedule</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun10 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">View
+                  Busy Schedule</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun11 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">External
+                  Reviewers</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun12 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Summary
+                  of <BR>Reviewers Forms</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun13 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class="ctl00_FormMenu_4 ctl00_FormMenu_9" cellSpacing=0
+            cellPadding=0 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3 ctl00_FormMenu_8"
+                  href="">Promotion
+                  Committee <BR>Report*</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun14 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Contact
+                  <BR>Promotion Committee</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun15 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Promotion
+                  File</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun16 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">Action</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun17>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">&nbsp;</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun18 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">-
+              Logout</A></TD></TR></TBODY></TABLE></TD></TR>
+        <TR id=ctl00_FormMenun19 onkeyup=Menu_Key(this)
+        onmouseover=Menu_HoverStatic(this) onmouseout=Menu_Unhover(this)>
+          <TD>
+            <TABLE class=ctl00_FormMenu_4 cellSpacing=0 cellPadding=0
+            width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD style="WIDTH: 100%; WHITE-SPACE: nowrap">
+				<A
+                  class="ctl00_FormMenu_1 ctl00_FormMenu_3"
+                  href="">- Main
+                Menu</A></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+	<A
+      id=ctl00_FormMenu_SkipLink href=""></A><BR>
+      <P
+      style="FONT-SIZE: 0.8em; FONT-FAMILY: Trebuchet MS; TEXT-ALIGN: center"></P>&nbsp;
+      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+	<A id=ctl00_HyperLinkHelp
+      title="Click here to see the what you are supposed to do here."
+      style="FONT-WEIGHT: bold; FONT-SIZE: 0.8em; COLOR: #000066; FONT-STYLE: italic; FONT-FAMILY: Trebuchet MS; TEXT-ALIGN: center"
+      href=""><IMG
+      title="Click here to see the what you are supposed to do here."
+      style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px"
+      alt=[Help] src="Faculty%20Promotion%20System_files/Help.jpg"></A>
+      <BR><BR>
+	<A id=ctl00_HyperLinkFPG
+      style="COLOR: #000066; FONT-STYLE: italic"
+      href="">Faculty
+      Promotion Guidlines</A></TD>
+    <TD style="PADDING-LEFT: 3px; WIDTH: 100%; HEIGHT: 587px" vAlign=top>
+      <TABLE
+      style="PADDING-RIGHT: 3px; PADDING-LEFT: 3px; MARGIN-BOTTOM: 10px; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; BORDER-BOTTOM: #3062af 2px solid; BACKGROUND-COLOR: #f7f7f7"
+      cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD noWrap>
+            <DIV
+            style="FONT-WEIGHT: bold; FONT-SIZE: 16pt; COLOR: #000000; FONT-STYLE: italic; FONT-FAMILY: Georgia, Arial"><SPAN
+            id=ctl00_lblPageTitle>Promotion Committee <BR>Report</SPAN>
+</DIV></TD>
+          <TD align=middle width=*>
+		  <A id=ctl00_lnkPrint
+            style="FLOAT: right; COLOR: #000066; FONT-STYLE: italic"
+            href=""
+            target=_blank><IMG
+            style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px"
+            src="Faculty%20Promotion%20System_files/printer.gif"></A></TD>
+          <TD style="FONT-SIZE: 10pt" align=right width=*><SPAN
+            id=ctl00_lblEmployee style="COLOR: maroon">Saifut Tariq Khan</SPAN>
+            (<EM><SPAN id=ctl00_lblRole>Promotion Committee
+            Chairman</SPAN></EM>)<BR>Application of: <EM><SPAN
+            id=ctl00_lblApplicantEmail style="COLOR: maroon">ABC</SPAN></EM> <BR>
+		  <A id=ctl00_HyperLinkLogout
+            style="COLOR: #000066; FONT-STYLE: italic"
+            href="">Logout</A></TD></TR></TBODY></TABLE>
+      <DIV style="WIDTH: 100%">
+      <FIELDSET
+      style="BORDER-RIGHT: #3062af 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #3062af 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN-LEFT: 30px; BORDER-LEFT: #3062af 1px solid; WIDTH: 90%; PADDING-TOP: 5px; BORDER-BOTTOM: #3062af 1px solid; BACKGROUND-COLOR: #f0f0f0"><LEGEND
+      style="FONT-WEIGHT: bold; COLOR: white; FONT-STYLE: italic; BACKGROUND-COLOR: #3062af">Instructions</LEGEND><SPAN
+      id=ctl00_ContentPlaceHolder1_Instruction1_lblInstructions>In this page you
+      can upload the Promotion Committee Report. This report will be then
+      visible to all promotion committee members.
+      <P>After vierwing the report as soon as any member or yourself press the
+      Digitally Sign promotion Report button, the status of digital signature
+      with time stamp will be shown in the table below.</P>
+      <P>You have the authority to erase all the Digital Signature if you desire
+      any changes in the promotion report. </P>
+      <P>When all the Promotion Committee Members have signed on the promotion
+      report, then you can forward it to VRGSSR by clicking on Save and Forward
+      to VRGSSR button</P></SPAN></FIELDSET> <BR><SPAN
+      id=ctl00_ContentPlaceHolder1_lblMessage
+      style="FONT-STYLE: italic"></SPAN><BR>
+      <H3>Digital Signatures Status</H3>
+      <DIV>
+      <TABLE id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1
+      style="WIDTH: 90%; COLOR: #333333; BORDER-COLLAPSE: collapse"
+      cellSpacing=0 cellPadding=4 rules=cols border=1>
+        <TBODY>
+        <TR
+          style="FONT-WEIGHT: bold; COLOR: white; BACKGROUND-COLOR: #5d7b9d"><TH
+          scope=col>&nbsp;</TH>
+          <TH scope=col>Position</TH>
+          <TH scope=col>Name</TH>
+          <TH scope=col>Digital Signature</TH>
+          <TH scope=col>Date and Time</TH></TR>
+        <TR style="COLOR: #333333; BACKGROUND-COLOR: #f7f6f3">
+          <TD>1 </TD>
+          <TD><SPAN
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl02_LabelPosition>Chairman</SPAN>
+          </TD>
+          <TD>Saifut Tariq Khan</TD>
+          <TD align=middle><SPAN
+            style="Z-INDEX: 100; LEFT: 0px; POSITION: relative; TOP: 0px"
+            disabled><input  disabled="disabled"
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl02_CheckBoxDigitalSignature
+            disabled type=checkbox
+            name=ctl00$ContentPlaceHolder1$DigitalSignature1$GridView1$ctl02$CheckBoxDigitalSignature></SPAN>
+          </TD>
+          <TD>&nbsp;</TD></TR>
+        <TR style="COLOR: #284775; BACKGROUND-COLOR: white">
+          <TD>2 </TD>
+          <TD><SPAN
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl03_LabelPosition>Promotion
+            Committee Member</SPAN> </TD>
+          <TD>Naif S. Alshammri</TD>
+          <TD align=middle><SPAN
+            style="Z-INDEX: 100; LEFT: 0px; POSITION: relative; TOP: 0px"
+            disabled><input  disabled="disabled"
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl03_CheckBoxDigitalSignature
+            disabled type=checkbox
+            name=ctl00$ContentPlaceHolder1$DigitalSignature1$GridView1$ctl03$CheckBoxDigitalSignature></SPAN>
+          </TD>
+          <TD>&nbsp;</TD></TR>
+        <TR style="COLOR: #333333; BACKGROUND-COLOR: #f7f6f3">
+          <TD>3 </TD>
+          <TD><SPAN
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl04_LabelPosition>Promotion
+            Committee Member</SPAN> </TD>
+          <TD>Abdul-Karim Ahmed Amer</TD>
+          <TD align=middle><SPAN
+            style="Z-INDEX: 100; LEFT: 0px; POSITION: relative; TOP: 0px"
+            disabled><input  disabled="disabled"
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl04_CheckBoxDigitalSignature
+            disabled type=checkbox
+            name=ctl00$ContentPlaceHolder1$DigitalSignature1$GridView1$ctl04$CheckBoxDigitalSignature></SPAN>
+          </TD>
+          <TD>&nbsp;</TD></TR>
+        <TR style="COLOR: #284775; BACKGROUND-COLOR: white">
+          <TD>4 </TD>
+          <TD><SPAN
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl05_LabelPosition>Promotion
+            Committee Member</SPAN> </TD>
+          <TD>Eric Smith</TD>
+          <TD align=middle><SPAN
+            style="Z-INDEX: 100; LEFT: 0px; POSITION: relative; TOP: 0px"
+            disabled><input  disabled="disabled"
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl05_CheckBoxDigitalSignature
+            disabled type=checkbox
+            name=ctl00$ContentPlaceHolder1$DigitalSignature1$GridView1$ctl05$CheckBoxDigitalSignature></SPAN>
+          </TD>
+          <TD>&nbsp;</TD></TR>
+        <TR style="COLOR: #333333; BACKGROUND-COLOR: #f7f6f3">
+          <TD>5 </TD>
+          <TD><SPAN
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl06_LabelPosition>Promotion
+            Committee Member</SPAN> </TD>
+          <TD>Fazal Noor</TD>
+          <TD align=middle><SPAN
+            style="Z-INDEX: 100; LEFT: 0px; POSITION: relative; TOP: 0px"
+            disabled><input  disabled="disabled"
+            id=ctl00_ContentPlaceHolder1_DigitalSignature1_GridView1_ctl06_CheckBoxDigitalSignature
+            disabled type=checkbox
+            name=ctl00$ContentPlaceHolder1$DigitalSignature1$GridView1$ctl06$CheckBoxDigitalSignature></SPAN>
+          </TD>
+          <TD>&nbsp;</TD></TR></TBODY></TABLE></DIV>&nbsp; <BR><BR>
+      <DIV id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_pnlUpload
+      style="WIDTH: 100%">
+      <SCRIPT type=text/javascript>
+
+function confirm_delete()
+{
+  if (confirm("This will erase all the Digital Signatures. Are you sure you want to remove this promotion report?")==true)
+    return true;
+
+  else
+
+    return false;
+}
+</SCRIPT>
+
+      <H3>Promotion Committee Report Uploaded by the Promotion Committee
+      Chairman</H3>
+      <DIV>
+      <TABLE
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_ViewPCChairReport1_grdFiles
+      style="BORDER-LEFT-COLOR: #3062af; BORDER-BOTTOM-COLOR: #3062af; WIDTH: 90%; COLOR: black; BORDER-TOP-COLOR: #3062af; BORDER-COLLAPSE: collapse; BORDER-RIGHT-COLOR: #3062af"
+      cellSpacing=0 cellPadding=4 rules=cols border=1>
+        <TBODY>
+        <TR
+        style="BORDER-TOP-STYLE: groove; BORDER-RIGHT-STYLE: groove; BORDER-LEFT-STYLE: groove; BORDER-BOTTOM-STYLE: groove">
+          <TD colSpan=6>The Promotion Committee Chairman has not uploaded any
+            report for this application </TD></TR></TBODY></TABLE></DIV><BR><input  disabled="disabled"
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_ViewPCChairReport1_HiddenFieldApplicationID
+      type=hidden value=126
+      name=ctl00$ContentPlaceHolder1$PCChairFileUpload1$ViewPCChairReport1$HiddenFieldApplicationID>
+      <BR><BR>
+      <FIELDSET
+      style="BORDER-RIGHT: #3062af 1px solid; BORDER-TOP: #3062af 1px solid; BORDER-LEFT: #3062af 1px solid; WIDTH: 90%; BORDER-BOTTOM: #3062af 1px solid; BACKGROUND-COLOR: #efefef"><BR><SPAN
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_lblInfo></SPAN><LEGEND
+      style="FONT-WEIGHT: bold; COLOR: white; FONT-STYLE: italic; BACKGROUND-COLOR: #3062af">Upload
+      a File:</LEGEND>
+      <P>&nbsp;&nbsp; Select the file:<BR>&nbsp;&nbsp; <input  disabled="disabled" disabled="disabled"
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_FileUploader
+      style="WIDTH: 477px" type=file
+      name=ctl00$ContentPlaceHolder1$PCChairFileUpload1$FileUploader></P>
+      <P>&nbsp;&nbsp; Describe the file contents:<BR>&nbsp;&nbsp; <input  disabled="disabled"
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_txtDescription
+      style="BORDER-RIGHT: #000066 1px solid; BORDER-TOP: #000066 1px solid; BORDER-LEFT: #000066 1px solid; WIDTH: 476px; COLOR: #000066; BORDER-BOTTOM: #000066 1px solid; BACKGROUND-COLOR: transparent"
+      name=ctl00$ContentPlaceHolder1$PCChairFileUpload1$txtDescription></P>&nbsp;&nbsp;
+<input  disabled="disabled" disabled="disabled" id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_btnUpload style="FONT-WEIGHT: bold; BORDER-LEFT-COLOR: #3062af; BORDER-BOTTOM-COLOR: #3062af; WIDTH: 156px; COLOR: white; BORDER-TOP-STYLE: ridge; BORDER-TOP-COLOR: #3062af; FONT-STYLE: italic; FONT-FAMILY: Georgia; BORDER-RIGHT-STYLE: ridge; BORDER-LEFT-STYLE: ridge; BACKGROUND-COLOR: #3062af; BORDER-RIGHT-COLOR: #3062af; BORDER-BOTTOM-STYLE: ridge" type=submit value="Upload Report" name=ctl00$ContentPlaceHolder1$PCChairFileUpload1$btnUpload>
+      <BR><BR><SPAN
+      id=ctl00_ContentPlaceHolder1_PCChairFileUpload1_Label1></SPAN><BR></FIELDSET>
+      <BR></DIV><BR>
+      <CENTER><input  disabled="disabled" disabled="disabled" id=ctl00_ContentPlaceHolder1_007d40 style="FONT-WEIGHT: bold; Z-INDEX: 100; BORDER-LEFT-COLOR: #3062af; LEFT: 0px; BORDER-BOTTOM-COLOR: #3062af; COLOR: white; BORDER-TOP-STYLE: ridge; BORDER-TOP-COLOR: #3062af; FONT-STYLE: italic; FONT-FAMILY: Georgia; BORDER-RIGHT-STYLE: ridge; BORDER-LEFT-STYLE: ridge; POSITION: relative; TOP: 1px; BACKGROUND-COLOR: #3062af; BORDER-RIGHT-COLOR: #3062af; BORDER-BOTTOM-STYLE: ridge" type=submit value="Digitally Sign the Promotion Report" name=ctl00$ContentPlaceHolder1$007d40>
+      <BR><BR><SPAN id=ctl00_ContentPlaceHolder1_LabelDS></SPAN><BR><BR><input  disabled="disabled"  disabled="disabled" id=ctl00_ContentPlaceHolder1_ButtonEraseDS style="FONT-WEIGHT: bold; Z-INDEX: 102; BORDER-LEFT-COLOR: #3062af; LEFT: 0px; BORDER-BOTTOM-COLOR: #3062af; WIDTH: 386px; COLOR: white; BORDER-TOP-STYLE: ridge; BORDER-TOP-COLOR: #3062af; FONT-STYLE: italic; FONT-FAMILY: Georgia; BORDER-RIGHT-STYLE: ridge; BORDER-LEFT-STYLE: ridge; POSITION: relative; TOP: 1px; BACKGROUND-COLOR: #3062af; BORDER-RIGHT-COLOR: #3062af; BORDER-BOTTOM-STYLE: ridge" type=submit value="Erase Digital Signature" name=ctl00$ContentPlaceHolder1$ButtonEraseDS><BR><BR><SPAN
+      id=ctl00_ContentPlaceHolder1_LabelEraseDS></SPAN><BR><BR><input  disabled="disabled" disabled="disabled" id=ctl00_ContentPlaceHolder1_ButtonSave style="FONT-WEIGHT: bold; BORDER-LEFT-COLOR: #3062af; BORDER-BOTTOM-COLOR: #3062af; WIDTH: 388px; COLOR: white; BORDER-TOP-STYLE: ridge; BORDER-TOP-COLOR: #3062af; FONT-STYLE: italic; FONT-FAMILY: Georgia; BORDER-RIGHT-STYLE: ridge; BORDER-LEFT-STYLE: ridge; BACKGROUND-COLOR: #3062af; BORDER-RIGHT-COLOR: #3062af; BORDER-BOTTOM-STYLE: ridge" type=submit value=Save name=ctl00$ContentPlaceHolder1$ButtonSave>
+      <BR><BR><SPAN
+      id=ctl00_ContentPlaceHolder1_LabelSave4VRGSSR></SPAN></CENTER>
+      <CENTER>&nbsp;</CENTER></DIV></TD></TR></TBODY></TABLE>
+<TABLE style="BORDER-TOP: #3062af 1px solid" width="100%">
+  <TBODY>
+  <TR>
+    <TD style="WIDTH: 100%" align=middle><SPAN style="FONT-SIZE: 9pt">Faculty
+      Promotion System <BR>Copyright © 2008 King Fahd University of Petroleum
+      &amp; Minerals | Dhahran, 31261 | Saudi Arabia | +966 (3) 860
+      0000.<BR></SPAN></TD></TR></TBODY></TABLE>
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var ctl00_FormMenu_Data = new Object();
+ctl00_FormMenu_Data.disappearAfter = 500;
+ctl00_FormMenu_Data.horizontalOffset = 2;
+ctl00_FormMenu_Data.verticalOffset = 0;
+ctl00_FormMenu_Data.hoverClass = 'ctl00_FormMenu_15';
+ctl00_FormMenu_Data.hoverHyperLinkClass = 'ctl00_FormMenu_14';
+ctl00_FormMenu_Data.staticHoverClass = 'ctl00_FormMenu_13';
+ctl00_FormMenu_Data.staticHoverHyperLinkClass = 'ctl00_FormMenu_12';
+
+theForm.oldSubmit = theForm.submit;
+theForm.submit = WebForm_SaveScrollPositionSubmit;
+
+theForm.oldOnSubmit = theForm.onsubmit;
+theForm.onsubmit = WebForm_SaveScrollPositionOnSubmit;
+//]]>
+</SCRIPT>
+</FORM></BODY></HTML>

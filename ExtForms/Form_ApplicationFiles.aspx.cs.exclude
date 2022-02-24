@@ -1,0 +1,14 @@
+using System;
+
+public partial class ExtForms_Form_ApplicationFiles : System.Web.UI.Page
+{
+    private enum Mode { InputByRole = 1, ViewRole = 2, ViewAll = 3, ViewAppInputRole = 4, ViewAllInputRole = 5 }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+        Instruction1.Text = Master.CurrentFormInstruction;
+        int appID = int.Parse(Session["applicationID"].ToString());
+        FilesUpload1.LoadFiles(appID, 0, false, true);       
+    }
+}

@@ -1,0 +1,403 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms : System.Web.UI.MasterPage
+{
+    protected override void AddedControl(Control control, int index)
+    {
+        if (Request.ServerVariables["http_user_agent"].IndexOf("Safari", StringComparison.CurrentCultureIgnoreCase) != -1)
+        {
+            this.Page.ClientTarget = "uplevel";
+        }
+        base.AddedControl(control, index);
+    }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+        if (IsPostBack) return;        
+        try
+        {
+            //if (Session["user"] == null || Request.QueryString["applicationID"] == null)
+            if (Session["refree"] == null)
+                throw new Exception("Invalid Session. Please login again!");
+
+            //if (Session["applicationTask" + ApplicationID] != null) return;
+
+            /* adapters */
+            //PromotionTableAdapters.ActiveTasksTableAdapter adapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+            ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter extfrmInsAdapter = new ExternalFormsTableAdapters.ExtFormInstructionsTableAdapter();
+
+            ExternalForms.ExtFormInstructionsDataTable extfrmInsTable= extfrmInsAdapter.GetData("External Reviewers");
+            /* Forms Levels */
+            //formLevels       = new Hashtable();
+            formInstructions = new Hashtable();
+            formIDs          = new Hashtable();
+            //FormMenu.Items.Clear();
+
+            string cuurentItemURL = "";
+            foreach (ExternalForms.ExtFormInstructionsRow row in extfrmInsTable)
+            {
+                string itemURL = row.Page;
+            //    MenuItem item = new MenuItem(row.Title, row.FormID.ToString(), null, itemURL);
+
+            //    if (row.Page == CurrentPageName)
+            //        item.Selected = true;
+
+            //    FormMenu.Items.Add(item);
+
+            //    formLevels[row.Page] = (int) row.Level;
+                formInstructions[row.Page] = row.IsInstructionNull() ? "" : row.Instruction;
+                formIDs[row.Page] = row.FormID;
+
+                /* header page-title */
+                if (row.Page == CurrentPageName)
+                {
+                    lblPageTitle.Text = row.Title;
+                    cuurentItemURL = itemURL;
+                }
+            }
+            // Logout/mainMenu items
+            /* Code added by SALMAN AHMAD
+             * This is a seperate Master page for the External Reviewer
+             */
+            FormMenu.Items.Clear();
+
+            FormMenu.Items.Add(new MenuItem("الصفحة الرئيسية", "", null, "ExtMain.aspx"));
+            FormMenu.Items.Add(new MenuItem("طلب وثائق", "", null, "Form_ApplicationFiles.aspx"));
+            FormMenu.Items.Add(new MenuItem("المحكم  نموذج", "", null, "Form_ReviewerForm.aspx"));
+            FormMenu.Items.Add(new MenuItem("أعمل", "", null, "Form_ReviewerAction.aspx"));
+            // --- SALMAN CODE ENDS HERE --- 
+            
+            MenuItem blank = new MenuItem("&nbsp;");
+            blank.Selectable = false;
+
+            FormMenu.Items.Add(blank);
+
+            FormMenu.Items.Add(new MenuItem("خروج", "", null, "~/ExtLogout.aspx"));
+            
+                        
+            //Session["forms"] = taskForms;
+            //Session["applicationTask" + ApplicationID] = activeTask;
+            //Session["applicationFormLevel" + ApplicationID] = formLevels;
+            Session["applicationFormInstruction" + ApplicationID] = formInstructions;
+            Session["applicationFormIDs" + ApplicationID] = formIDs;
+
+            /* header role */
+            lblRole.Text = "المحكم خارجية  ";
+            //lblEmployee.Text = activeTask.Employee;
+            PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter adapter = new PromotionTableAdapters.vw_ExternalApplicationRefreeTableAdapter();
+            Promotion.vw_ExternalApplicationRefreeRow myRow = adapter.GetDataByRefreeId(ApplicationID, int.Parse(Session["refreeID"].ToString()))[0];
+
+            lblApplicantEmail.Text = myRow.Name;
+            lblEmployee.Text = myRow.Refree_Name;
+            /* printer friendly */
+            if (Utils.IsPrintMode())
+            {
+                tdLeftMenu.Visible = false;
+                lnkPrint.Visible = false;
+                //this.sty
+                
+            }
+            lnkPrint.NavigateUrl = cuurentItemURL + "?print=1";
+            
+        }
+        catch (Exception ex)
+        {
+            FormsAuthentication.SignOut();
+            FormsAuthentication.RedirectToLoginPage();
+            //Response.Write(ex.ToString());
+        }
+    }
+
+
+
+
+    /* check if a task is completed */
+    //refactor: return list of tasks
+//    public FormStatusStruct CheckFormTask(Promotion.TaskFormsRow form)
+//    {
+//        foreach (Promotion.ApplicationTaskFormRow row in FormsStatus)
+//        {
+//            if (row.FormID == form.FormID)
+//                return new FormStatusStruct(form.Title, row.Completed, row.Message.Length > 0 ? row.Message : "InComplete!");
+//        }
+//        return new FormStatusStruct();
+//    }
+
+
+//    private void ReportFormStatus(bool isComplete, string message)
+//    {
+//        PromotionTableAdapters.ApplicationTaskFormTableAdapter adapter = new PromotionTableAdapters.ApplicationTaskFormTableAdapter();
+//        try
+//        {
+//            adapter.InsertQuery(ApplicationID, TaskID, CurrentFormID, isComplete, message);
+//        }
+//        catch { }
+//        FormsStatus = null;
+//    }
+
+//    public void ReportSuccess()
+//    {
+//        ReportFormStatus(true, "");
+//    }
+
+//    public void ReportFailure(string errorMessage)
+//    {
+//        ReportFormStatus(false, errorMessage);
+//    }
+
+
+//    private Promotion.ActiveTasksRow activeTask = null;
+//    public Promotion.ActiveTasksRow ActiveTask
+//    {
+//        get
+//        {
+//            if (activeTask == null)
+//                if (Session["applicationTask" + ApplicationID] != null)
+//                    activeTask = (Promotion.ActiveTasksRow)Session["applicationTask" + ApplicationID];
+//                else
+//                {
+//                    PromotionTableAdapters.ActiveTasksTableAdapter adapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+//                    activeTask = adapter.GetActiveTaskByEmployee(ApplicationID, Employee.EmployeeID)[0];
+//                }
+
+//            return activeTask;
+//        }
+//    }
+
+//    private int taskID = -1;
+//    public int TaskID
+//    {
+//        get
+//        {
+//            if (taskID == -1)
+//                taskID = ActiveTask.TaskID;
+//            return taskID;
+//        }
+//    }
+
+//    private int roleID = -1;
+//    public int RoleID
+//    {
+//        get
+//        {   return ActiveTask.RoleID; }
+//    }
+
+//    private Hashtable formLevels = null;
+//    public Hashtable FormLevels
+//    {
+//        get
+//        {
+//            if (formLevels == null)
+//            {
+//                if (Session["applicationFormLevel" + ApplicationID] != null)
+//                    formLevels = (Hashtable)Session["applicationFormLevel" + ApplicationID];
+//                else
+//                    formLevels = new Hashtable();
+//            }
+//            return formLevels;
+//        }
+//    }
+
+
+    private int applicationID = -1;
+    public int ApplicationID
+    {
+        get
+        {
+            if (applicationID == -1)
+                try
+                {
+                    applicationID = int.Parse(Session["applicationID"].ToString());
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/ExtLogout.aspx"); 
+                }
+            return applicationID;
+        }
+    }
+
+//    private Promotion.EmployeeRow employee = null;
+//    public Promotion.EmployeeRow Employee
+//    {
+//        get
+//        {
+//            if (employee == null)
+//                employee = (Promotion.EmployeeRow) Session["user"];
+//            return employee;
+//        }
+//    }
+
+//    private Promotion.TaskFormsDataTable taskForms = null;
+//    public Promotion.TaskFormsDataTable TaskForms
+//    {
+//        get
+//        {
+//            if (taskForms == null)
+//                taskForms = (Promotion.TaskFormsDataTable)Session["forms"];
+//            return taskForms;
+//        }
+//    }
+
+    string currPageName = null;
+    public string CurrentPageName
+    {
+        get
+        {
+            if (currPageName == null)
+            {
+                currPageName = Page.Request.ServerVariables["SCRIPT_NAME"];
+                currPageName = currPageName.Substring(currPageName.LastIndexOf("/") + 1);
+            }
+            return currPageName;
+        }
+    }
+//    public int CurrentFormLevel
+//    {
+//        get
+//        {
+//            if (FormLevels[CurrentPageName] == null)
+//                return -1;
+//            else
+//                return (int)FormLevels[CurrentPageName];
+//        }
+//    }
+
+
+    private Hashtable formInstructions = null;
+    public Hashtable FormInstructions
+    {
+        get
+        {
+            if (formInstructions == null)
+            {
+                if (Session["applicationFormInstruction" + ApplicationID] != null)
+                    formInstructions = (Hashtable)Session["applicationFormInstruction" + ApplicationID];
+                else
+                    formInstructions = new Hashtable();
+            }
+            return formInstructions;
+        }
+    }
+
+    private Hashtable formIDs = null;
+    public Hashtable FormIDs
+    {
+        get
+        {
+            if (formIDs == null)
+            {
+                if (Session["applicationFormIDs" + ApplicationID] != null)
+                    formIDs = (Hashtable)Session["applicationFormIDs" + ApplicationID];
+                else
+                    formIDs = new Hashtable();
+            }
+            return formIDs;
+        }
+    }
+
+
+    public string CurrentFormInstruction
+    {
+        get
+        {
+            if (FormInstructions[CurrentPageName] == null)
+                return null;
+            else
+                return FormInstructions[CurrentPageName].ToString();
+        }
+    }
+    public byte CurrentFormID
+    {
+        get
+        {
+            if (FormIDs[CurrentPageName] == null)
+                return byte.Parse("-1");
+            else
+                return (byte)FormIDs[CurrentPageName];
+        }
+    }
+
+
+//    private Promotion.ApplicationTaskFormDataTable formsStatus = null;
+//    public Promotion.ApplicationTaskFormDataTable FormsStatus
+//    {
+//        get
+//        {
+//            if (formsStatus == null)
+//            {
+//                if (Session["applicationFormsStatus" + ApplicationID] != null)
+//                    formsStatus = (Promotion.ApplicationTaskFormDataTable)Session["applicationFormsStatus" + ApplicationID];
+//                else
+//                {
+//                    formsStatus = new PromotionTableAdapters.ApplicationTaskFormTableAdapter().GetDataByApplication(ApplicationID, TaskID);
+//                    Session["applicationFormsStatus" + ApplicationID] = formsStatus;
+//                }
+
+//            }
+//            return formsStatus;
+//        }
+//        set
+//        {
+//            formsStatus = value;
+//            Session["applicationFormsStatus" + ApplicationID] = value;
+//        }
+//    }
+	
+//}
+
+
+//public struct FormStatusStruct
+//{
+
+//    public string task;
+//    public string Task
+//    {
+//        get { return task; }
+//    }
+//    private bool status;
+//    public bool Status
+//    {
+//        get { return status; }
+//    }
+//    private string message;
+
+//    public string Message
+//    {
+//        get { return message; }
+//        set { message = value; }
+//    }
+
+
+//    public FormStatusStruct(string t, bool s, string m)
+//    {
+//        task = t;
+//        status = s;
+//        message = m;
+//    }
+    protected void RadioButtonListLang_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (RadioButtonListLang.SelectedIndex == 0)
+        {
+            //Session["MasterPage"] = "ExtFormAr.master";
+            Response.Redirect(Request.Url.ToString().Replace("en", "ar"));
+            //this.MasterPageFile = "ExtMainAr.master";
+        }
+        else
+        {
+            Response.Redirect(Request.Url.ToString().Replace("ar", "en"));
+            //Session["MasterPage"] = "ExtForm.master";
+            //this.MasterPageFile = "ExtMain.master";
+        }
+
+    }
+}

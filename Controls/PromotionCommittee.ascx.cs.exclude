@@ -1,0 +1,131 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_PromotionCommittee : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        EmployeeInput4.EnableNonKFUPM = true;
+        EmployeeInput5.EnableNonKFUPM = true;
+        EmployeeInput8.EnableNonKFUPM = true;
+        EmployeeInput9.EnableNonKFUPM = true;
+
+        EmployeeInput1.EnableFullDetails = true;
+        EmployeeInput2.EnableFullDetails = true;
+        EmployeeInput3.EnableFullDetails = true;
+        EmployeeInput4.EnableFullDetails = true;
+        EmployeeInput5.EnableFullDetails = true;
+        EmployeeInput6.EnableFullDetails = true;
+        EmployeeInput7.EnableFullDetails = true;
+        EmployeeInput8.EnableFullDetails = true;
+        EmployeeInput9.EnableFullDetails = true;
+        EmployeeInput10.EnableFullDetails = true;
+
+    }
+
+    public bool SaveCommittee(int applicationID, string type)
+    {
+        PromotionTableAdapters.Form_PromotionCommitteeTableAdapter adapter = new PromotionTableAdapters.Form_PromotionCommitteeTableAdapter();
+
+        adapter.DeleteByApplication(applicationID, type);
+       
+        ASP.controls_employeeinput_ascx[] inputs = GetInputsArray();
+        try
+        {
+            for (byte i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i].IsNonKFUPM)
+                {
+                    adapter.Insert(
+                            applicationID,
+                            type,
+                            i,
+                            false,
+                            null,
+                            inputs[i].EmployeeName,
+                            inputs[i].EmployeeDepartment,
+                            inputs[i].EmployeeRank,
+                            inputs[i].EmployeeEmail,
+                            inputs[i].EmployeeMailingAddress,
+                            inputs[i].EmployeeMajor,
+                            inputs[i].EmployeePhone
+                            );
+                }
+                else
+                {
+                    if (inputs[i].IsValidEmployee )
+                    {
+                        adapter.Insert(applicationID,    type,    i,    true,    inputs[i].EmployeeID,    inputs[i].EmployeeName,    inputs[i].EmployeeDepartment,
+                            inputs[i].EmployeeRank, inputs[i].EmployeeEmail, inputs[i].EmployeeMailingAddress, inputs[i].EmployeeMajor, inputs[i].EmployeePhone);
+                    }
+
+                }
+            }
+        }
+        catch
+        { 
+            return false; 
+        }
+        if (adapter.GetDataBy2(applicationID, type).Count == 10)
+            return true;
+        else
+            return false;
+    }
+    public bool LoadCommittee(int applicationID, string type)
+    {
+        PromotionTableAdapters.Form_PromotionCommitteeTableAdapter adapter = new PromotionTableAdapters.Form_PromotionCommitteeTableAdapter();
+
+        Promotion.Form_PromotionCommitteeDataTable table = adapter.GetDataByApplication(applicationID, type);
+        if (table.Count == 0) return false;
+
+        ASP.controls_employeeinput_ascx[] inputs = GetInputsArray();
+
+        for (int i = 0; i < table.Count; i++)
+        {
+            if (table[i].IsKFUPM)
+            {
+                inputs[table[i].Position].KFUPMUserID = table[i]["KFUPMUserID"].ToString();
+                inputs[table[i].Position].LoadEmployee();
+            }
+            else
+            {
+                inputs[table[i].Position].IsNonKFUPM = true;
+                inputs[table[i].Position].EnableNonKFUPM = true;
+                inputs[table[i].Position].EmployeeName = table[i].IsNameNull()? "" : table[i].Name;
+                inputs[table[i].Position].EmployeeRank = table[i].IsRankNull()? "" : table[i].Rank;
+                inputs[table[i].Position].EmployeeDepartment = table[i].IsDepartmentNull()? "" : table[i].Department;
+                inputs[table[i].Position].EmployeeEmail = table[i].IsEmailNull()? "" : table[i].Email;
+                inputs[table[i].Position].EmployeeMajor = table[i].IsMajorNull()? "" : table[i].Major;
+                inputs[table[i].Position].EmployeeMailingAddress = table[i].IsMailingAddressNull()? "" : table[i].MailingAddress;
+                inputs[table[i].Position].EmployeePhone = table[i].IsPhoneNull() ? "" : table[i].Phone;
+
+            }
+        }
+
+        return true;
+    }
+
+    private ASP.controls_employeeinput_ascx[] GetInputsArray()
+    {
+        ASP.controls_employeeinput_ascx[] inputs = new ASP.controls_employeeinput_ascx[10];
+        inputs[0] = EmployeeInput1;
+        inputs[1] = EmployeeInput2;
+        inputs[2] = EmployeeInput3;
+        inputs[3] = EmployeeInput4;
+        inputs[4] = EmployeeInput5;
+        inputs[5] = EmployeeInput6;
+        inputs[6] = EmployeeInput7;
+        inputs[7] = EmployeeInput8;
+        inputs[8] = EmployeeInput9;
+        inputs[9] = EmployeeInput10;
+        return inputs;
+    }
+}

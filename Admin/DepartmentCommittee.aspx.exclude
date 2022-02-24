@@ -1,0 +1,23 @@
+<%@ Page Language="C#" MasterPageFile="~/Admin/Admin.master" AutoEventWireup="true" CodeFile="DepartmentCommittee.aspx.cs" Inherits="Admin_DepartmentCommittee" Title="Faculty Promotion System" %>
+
+<%@ Register Src="~/Controls/DepartmentCommittee.ascx" TagName="DepartmentCommittee"
+    TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    Select an Application:<br />
+    <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" DataSourceID="ApplicationtDataSource1"
+        DataTextField="Name" DataValueField="ApplicationID" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
+    </asp:DropDownList>&nbsp;<asp:Button ID="Button1" runat="server" OnClick="Button1_Click" class="btn btn-primary btn-md" 
+        Text="Select" />
+    <asp:ObjectDataSource ID="ApplicationtDataSource1" runat="server"
+        OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="PromAdminTableAdapters.ApplicationTableAdapter">
+    </asp:ObjectDataSource>
+    <br />
+    <asp:Label ID="lblMsg" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label><br />
+    <br />
+    <uc1:DepartmentCommittee ID="DepartmentCommittee1" runat="server" />
+    <br />
+    <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update List" class="btn btn-primary btn-md" 
+        Visible="False" />&nbsp;<asp:Button ID="btnCancel" runat="server" OnClick="btnCancel_Click" class="btn btn-primary btn-md" 
+            Text="Cancel" Visible="False" /><br />
+</asp:Content>
+

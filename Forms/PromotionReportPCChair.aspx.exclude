@@ -1,0 +1,67 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="PromotionReportPCChair.aspx.cs" Inherits="Forms_PromotionReportPCChair" Title="Faculty Promotion System" MaintainScrollPositionOnPostback="true" %>
+
+<%@ Register Src="../Controls/DigitalSignature.ascx" TagName="DigitalSignature" TagPrefix="uc4" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Src="../Controls/PCChairFileUpload.ascx" TagName="PCChairFileUpload"
+    TagPrefix="uc2" %>
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+
+<%@ MasterType VirtualPath="Forms.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <uc1:Instruction ID="Instruction1" runat="server" />
+    <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label><br />
+    <table>
+        <tr>
+            <td>
+                <uc4:DigitalSignature ID="DigitalSignature1" runat="server" />
+            </td>
+            <td>
+                <asp:Button ID="ButtonDS" runat="server" OnClick="ButtonDS_Click" CssClass="btn btn-primary btn-lg"
+                    Text="Digitally Sign" />
+                <asp:Label ID="LabelDS" runat="server"></asp:Label><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <asp:Button ID="ButtonEraseDS" runat="server" OnClick="ButtonEraseDS_Click" CssClass="btn btn-primary btn-md" Style="z-index: 102; left: 0px; position: relative; top: 1px"
+                    Text="Erase Digital Signature" Width="386px" />
+                <asp:Label ID="LabelEraseDS" runat="server"></asp:Label></td>
+            <td></td>
+        </tr>
+
+    </table>
+    <br />
+    <br />
+    <uc2:PCChairFileUpload ID="PCChairFileUpload1" runat="server" />
+    <br />
+    
+   
+    
+    <asp:Button ID="ButtonSave" runat="server" OnClick="ButtonSave_Click" 
+        Text="Save" Width="388px"  CssClass="btn btn-primary btn-md"
+        ToolTip="Click this button to save the form after all digital Signatures are present." />
+    <br />
+    <br />
+    <asp:Label ID="LabelSave4VRGSSR" runat="server"></asp:Label>
+    <asp:Button runat="server" ID="hiddenTargetControlForModalPopup1" Style="display: none" />
+    <asp:ModalPopupExtender runat="server" ID="programmaticModalPopup1"
+        BehaviorID="programmaticModalPopupBehavior1"
+        TargetControlID="hiddenTargetControlForModalPopup1"
+        PopupControlID="programmaticPopup1"
+        BackgroundCssClass="modalBackground"
+        DropShadow="True"
+        PopupDragHandleControlID="programmaticPopupDragHandle1"
+        RepositionMode="RepositionOnWindowScroll">
+    </asp:ModalPopupExtender>
+    <asp:Panel runat="server" CssClass="modalPopup" ID="programmaticPopup1" Style="display: none; width: 350px; padding: 10px">
+        <asp:Panel runat="Server" ID="programmaticPopupDragHandle1" Style="cursor: move; background-color: #DDDDDD; border: solid 1px Gray; color: Black; text-align: center;">
+            Message
+        </asp:Panel>
+        <asp:Label ID="LabelMessage" runat="server" Text=""></asp:Label>
+        <br />
+        <div align="center">
+            <asp:LinkButton runat="server" ID="hideModalPopupViaServer1" Text="OK" OnClick="hideModalPopupViaServer1_Click" />
+        </div>
+    </asp:Panel>
+</asp:Content>
+

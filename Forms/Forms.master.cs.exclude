@@ -1,0 +1,586 @@
+using System;
+using System.Data;
+using System.Collections;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using BL.Data;
+using System.Collections.Generic;
+using System.Linq;
+
+public partial class Forms : MasterPage
+{
+    public BAL bal = new BAL();
+    public string currentItemURL = "";
+    protected override void AddedControl(Control control, int index)
+    {
+        if (Request.ServerVariables["http_user_agent"].IndexOf("Safari", StringComparison.CurrentCultureIgnoreCase) != -1)
+        {
+            this.Page.ClientTarget = "uplevel";
+        }
+        base.AddedControl(control, index);
+    }
+    public int GetNoOfActiveTask(int appID)
+    {
+        return bal.GetAppTaskLog(appID)
+                    .Where(atl => !atl.Completed)
+                    .GroupBy(atl => atl.TaskID)
+                    .Select(group => group.First()).Count();
+    }
+    public bool IsActing()
+    {
+        return bal.GetApplicationRole(ApplicationID, curRoleID).Where(a =>
+        a.IsActing == "Acting").ToList().Count > 0;
+    }
+    public void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;             
+        try
+        {
+            if (Session["user"] == null || Request.QueryString["applicationID"] == null)
+                throw new Exception("Invalid Session. Please login again!");
+            ImageButtonSearch.Attributes.Add("onclick", "window.open ('SearchPop.aspx',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 700, width = 1200, left = 200, top= 200, screenx=10,screeny=600,menubar=no');");
+
+            List<Application_TaskLog> latl = bal.GetAppTaskLog(ApplicationID).Where(a => !a.Completed).ToList();            
+            Application_TaskLog atl = new Application_TaskLog();
+            if (!(bool)Session["ExtEmp"])
+            {
+                atl = latl.Where(at => at.Task.Role.Application_Role.Where(ar => ar.EmployeeID == Employee.EmployeeID && ar.RoleID == CurRoleID).Count() > 0).First();
+                employee = atl.Task.Role.Application_Role.Where(ar => ar.ApplicationID == ApplicationID).Select(ar => ar.Employee).First();
+                //lblEmployee.Text = Employee.NameString + " (" + Employee.Rank + ")";
+                lblRole.Text = atl.Task.Role.Title;
+            }
+            PanelQuickJump.Visible = CurRoleID == 6;
+            LabelTaskName.Text = atl.Task.Title;
+            List<TaskForm> taskForms = bal.GetTaskFormByTask(atl.TaskID, false);
+            /* Forms Levels */
+            formLevels       = new Hashtable();
+            formInstructions = new Hashtable();
+            formIDs          = new Hashtable();
+            formCheckable = new Hashtable();
+            FormMenu.Items.Clear();
+
+            foreach (TaskForm row in taskForms)
+            {
+                string itemURL = row.Form.Page + "?applicationID=" + ApplicationID + "&roleID=" + CurRoleID;
+                MenuItem item;
+
+                if (row.Checkable == true)
+                {
+                    string reqMenuItem = "<span style=\"color: #669900; font-weight: bold\">" + row.Form.Title + "</span>";
+                    item = new MenuItem(reqMenuItem, row.FormID.ToString(), "~/images/Pointer.png", itemURL);
+                    item.ToolTip = "To complete your task, fill out this form and go to Action Menu item for required action";
+                    
+                }
+                else
+                    item = new MenuItem(row.Form.Title, row.FormID.ToString(), null, itemURL);
+                if (row.Form.Page == CurrentPageName)
+                {
+                    item.Text = "<span style=\"color: #FFFFFF\">" + row.Form.Title + "</span>";
+                    item.Selected = true;
+                }
+
+                FormMenu.Items.Add(item);
+
+                formLevels[row.Form.Page] = (int) row.Level;
+                formInstructions[row.Form.Page] = row.Instruction;
+                formIDs[row.Form.Page] = row.FormID;
+                formCheckable[row.Form.Page] = row.Checkable;
+
+                /* header page-title */
+                if (row.Form.Page == CurrentPageName)
+                {
+                    lblPageTitle.Text = row.Form.Title;
+                    currentItemURL = itemURL;
+                }
+            }
+          //  formLevels["FormExtRev.aspx"] = 1;
+            MenuItem blank = new MenuItem("&nbsp;");
+            blank.Selectable = false;
+            FormMenu.Items.Add(blank);
+            
+            FormMenu.Items.Add(new MenuItem("- Logout", "", null, "~/Logout.aspx"));
+            FormMenu.Items.Add(new MenuItem("- Main Menu", "", null, "~/Main.aspx"));
+
+
+            Session["forms"] = taskForms;
+         //   Session["applicationTask" + ApplicationID] = activeTask;
+            Session["applicationFormLevel" + ApplicationID] = formLevels;
+            Session["applicationFormInstruction" + ApplicationID] = formInstructions;
+            Session["applicationFormIDs" + ApplicationID] = formIDs;
+            Session["applicationFormCheckable" + ApplicationID] = formCheckable;
+
+           
+           
+            lblRole.Text = atl.Task.Role.Title;
+            lblDeputy.Visible = (bool)Session["IsDeputy"];            
+            lblEmployee.Text = Employee.NameString+ " (" + Employee.Rank + ")";           
+            lblApplicantEmail.Text = atl.Application.Employee.NameString + " (" + atl.Application.Employee.Rank + ")" + "(" + atl.Application.Employee.Department1.ShortName+ ")";
+            lblToRank.Text = "To: " +App.ForRank;
+            ddlQuickJump.DataSource = bal.GetApplication()
+                .Where(a => !a.ApplicationClosed && a.Application_TaskLog
+                .Where(al =>!al.Completed && (al.TaskID == 9 ||al.TaskID == 25 || al.TaskID == 33 ||al.TaskID == 55)).Count() > 0)
+            .Select(a => new { Text = a.Employee.NameString + " (" + a.Employee.Department1.ShortName + ")", Value = a.ApplicationID });
+            ddlQuickJump.DataBind();
+            ddlQuickJump.SelectedValue = ApplicationID.ToString();
+           
+
+            /* printer friendly */
+            if (Utils.IsPrintMode())
+            {
+                HyperLinkLogout.Visible = false;
+                PanelQuickJump.Visible = false;
+                tdLeftMenu.Visible = false;
+                lnkPrint.Visible = false;
+                divFooter.Visible = false;
+                divTop.Visible = false;
+                bodyMaster.Style.Clear();
+                ImageButtonSearch.Visible = false;
+            }
+            lnkPrint.NavigateUrl = currentItemURL + "&print=1";
+        }
+        catch (Exception ex)
+        {
+            FormsAuthentication.SignOut();
+            if (ex.Message == "There is no row at position 0.")
+                Response.Redirect("~/Logout.aspx");
+            else
+                FormsAuthentication.RedirectToLoginPage();
+            
+            //Response.Write(ex.ToString());
+        }
+    }
+
+
+
+
+    /* check if a task is completed */
+    //refactor: return list of tasks
+    //public FormStatusStruct CheckFormTask(Promotion.TaskFormsRow form)
+    //{
+    //    foreach (WorkflowDynamic.Application_TaskFormRow row in FormsStatus)
+    //    {
+    //        if (row.FormID == form.FormID)
+    //            return new FormStatusStruct(form.Title.Replace("<br>",""), row.Completed, row.Message.Length > 0 ? row.Message : "InComplete!");
+    //    }
+    //    return new FormStatusStruct();
+    //}
+    public FormStatusStruct CheckFormTask(TaskForm form)
+    {
+        foreach (TaskFormDTO row in FormsStatus)
+        {
+            if (row.FormID == form.FormID && row.Completed.HasValue)
+            {
+                return new FormStatusStruct(form.Form.Title.Replace("<br>", ""), row.Completed.Value, row.Message.Length > 0 ? row.Message : "Incomplete!");
+            }
+        }
+        return new FormStatusStruct();
+    }
+    private List<TaskFormDTO> formsStatus = null;
+    public List<TaskFormDTO> FormsStatus
+    {
+        get
+        {
+            if (formsStatus == null)
+            {
+                formsStatus = bal.GetTaskFormByAppIDTask(ApplicationID, TaskID, false, 0);
+            }
+            return formsStatus;
+        }
+        set
+        {
+            formsStatus = value;
+        }
+    }
+    private void ReportFormStatus(bool isComplete, string message)
+    {        
+        try
+        {
+            bal.DeletetAppTskFrm(ApplicationID, TaskID, CurrentFormID, false, 0);
+            bal.InsertAppTskFrm(ApplicationID, TaskID, CurrentFormID, isComplete, message, false, 0);
+
+        }
+        catch { }
+        FormsStatus = null;
+    }
+
+    public void ReportSuccess()
+    {
+        ReportFormStatus(true, "");
+    }
+
+    public void ReportSuccess(string OKMessage)
+    {
+        ReportFormStatus(true, OKMessage);
+    }
+
+    public void ReportFailure(string errorMessage)
+    {
+        ReportFormStatus(false, errorMessage);
+    }
+
+    
+
+    private int taskID = -1;
+    public int TaskID
+    {
+        get
+        {
+            if (taskID == -1)
+            {
+                try
+                {
+                    List<Application_TaskLog> latl = bal.GetAppTaskLog(ApplicationID).Where(a => !a.Completed).ToList();
+                    Application_TaskLog atl = latl.Where(at => at.Task.Role.Application_Role.Where(ar => ar.EmployeeID == Employee.EmployeeID && ar.RoleID == CurRoleID).Count() > 0).First();
+                    taskID = atl.Task.TaskID;
+                }
+                catch
+                {
+                    Response.Redirect("~/Main.aspx");
+                    return -1;
+                }
+            }
+            return taskID;
+        }
+    }
+
+    private Hashtable formCheckable = null;
+    public Hashtable FormCheckable
+    {
+        get
+        {
+            if (formCheckable == null)
+            {
+                if (Session["applicationFormCheckable" + ApplicationID] != null)
+                    formCheckable = (Hashtable)Session["applicationFormCheckable" + ApplicationID];
+                else
+                    formCheckable = new Hashtable();
+            }
+            return formCheckable;
+        }
+    }
+    public Hashtable formLevels = null;
+    public Hashtable FormLevels
+    {
+        get
+        {
+            if (formLevels == null)
+            {
+                if (Session["applicationFormLevel" + ApplicationID] != null)
+                    formLevels = (Hashtable)Session["applicationFormLevel" + ApplicationID];
+                else
+                    formLevels = new Hashtable();
+            }
+            return formLevels;
+        }
+    }
+
+    
+    private int applicationID = -1;
+    public int ApplicationID
+    {
+        get
+        {
+            if (applicationID == -1)
+                try
+                {
+                    applicationID = int.Parse(Request.QueryString["applicationID"]);
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/Main.aspx");
+                    
+                }
+            return applicationID;
+        }
+    }
+
+    //private Application app = null;
+    //public Application App
+    //{
+    //    get
+    //    {
+    //        if (app == null)
+    //        {
+    //            try
+    //            {
+    //                app = bal.GetApplication(ApplicationID)[0];
+    //            }
+    //            catch (Exception)
+    //            {
+    //                return null;
+
+    //            }
+    //        }
+    //        return app;
+    //    }
+    //}
+    private Application app = null;
+    public Application App
+    {
+        get
+        {
+            if (app == null)
+            {
+                try
+                {
+                    app = bal.GetApplication(ApplicationID)[0];
+                }
+                catch (Exception)
+                {
+                    return null;
+
+                }
+            }
+            return app;
+        }
+    }
+    //private int roleID = -1;
+    //public int RoleID
+    //{
+    //    get
+    //    { return ActiveTask.RoleID; }
+    //}
+    private int roleID = -1;
+    public int RoleID
+    {
+        get
+        { return byte.Parse(Request.QueryString["roleID"]); }
+    }
+    private byte curRoleID = 0;
+    public byte CurRoleID
+    {
+        get
+        {
+            if (curRoleID == 0)
+            {
+                try
+                {
+                    curRoleID = byte.Parse(Cryptography.Decrypt(Request.QueryString["roleID"].Replace(" ", "+")));
+                    //curRoleID = byte.Parse(Request.QueryString["roleID"]);
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/Main.aspx");
+
+                }
+            }
+            return curRoleID;
+        }
+    }
+
+
+    private ExternalEmployee eEmployee = null;
+    public ExternalEmployee EEmployee
+    {
+        get
+        {
+            if (eEmployee == null)
+            {
+                if (Session["user"] != null && (bool)Session["ExtEmp"])
+                {
+                    eEmployee = (ExternalEmployee)Session["user"];
+                }
+                else
+                {
+                    if (Session["user"] != null)
+                    {
+                        return new ExternalEmployee() { ExternalEmployeeID = 0 };
+                    }
+                    else
+                    {
+                        return null;
+
+                    }
+
+                }
+            }
+            return eEmployee;
+        }
+    }
+    private Employee employee = null;
+    public Employee Employee
+    {
+        get
+        {
+            if (employee == null)
+            {
+                if (Session["user"] != null && !(bool)Session["ExtEmp"])
+                {
+                    employee = (Employee)Session["user"];
+                }
+                else
+                {
+                    if (Session["user"] != null)
+                    {
+                        return new Employee() { EmployeeID = "0" };
+                    }
+                    else
+                    {
+                        return null;
+
+                    }
+                }
+            }
+            return employee;
+        }
+    }
+    //   private HR.EmployeeRow employee = null;
+    //public HR.EmployeeRow Employee
+    //{
+    //       get
+    //       {
+    //           if (employee == null)
+    //               employee = (HR.EmployeeRow) Session["user"];
+    //           return employee;
+    //       }
+    //}
+
+    private Employee applicant = null;
+    public Employee Applicant
+    {
+
+        get
+        {
+            if (applicant == null)
+            {
+                if (bal.GetApplicant(ApplicationID).Count > 0)
+                {
+                    applicant = bal.GetApplicant(ApplicationID)[0];
+                }
+            }
+            return applicant;
+
+        }
+    }
+
+
+    private List<TaskForm> taskForms = null;
+    public List<TaskForm> TaskForms
+    {
+        get
+        {
+            if (taskForms == null)
+            {
+                taskForms = (List<TaskForm>)Session["forms"];
+            }
+
+            return taskForms;
+        }
+    }
+    //private Promotion.TaskFormsDataTable taskForms = null;
+    //public Promotion.TaskFormsDataTable TaskForms
+    //{
+    //    get
+    //    {
+    //        if (taskForms == null)
+    //            taskForms = (Promotion.TaskFormsDataTable)Session["forms"];            
+
+    //        return taskForms;
+    //    }
+    //}
+
+    string currPageName = null;
+    public string CurrentPageName
+    {
+        get
+        {
+            if (currPageName == null)
+            {
+                currPageName = Page.Request.ServerVariables["SCRIPT_NAME"];
+                currPageName = currPageName.Substring(currPageName.LastIndexOf("/") + 1);
+            }
+            return currPageName;
+        }
+    }
+    public int CurrentFormLevel
+    {
+        get
+        {
+            if (FormLevels[CurrentPageName] == null)
+                return -1;
+            else
+                return (int)FormLevels[CurrentPageName];
+        }
+
+    }
+
+
+    private Hashtable formInstructions = null;
+    public Hashtable FormInstructions
+    {
+        get
+        {
+            if (formInstructions == null)
+            {
+                if (Session["applicationFormInstruction" + ApplicationID] != null)
+                    formInstructions = (Hashtable)Session["applicationFormInstruction" + ApplicationID];
+                else
+                    formInstructions = new Hashtable();
+            }
+            return formInstructions;
+        }
+    }
+
+    private Hashtable formIDs = null;
+    public Hashtable FormIDs
+    {
+        get
+        {
+            if (formIDs == null)
+            {
+                if (Session["applicationFormIDs" + ApplicationID] != null)
+                    formIDs = (Hashtable)Session["applicationFormIDs" + ApplicationID];
+                else
+                    formIDs = new Hashtable();
+            }
+            return formIDs;
+        }
+    }
+
+
+    public string CurrentFormInstruction
+    {
+        get
+        {
+            if (FormInstructions[CurrentPageName] == null)
+                return null;
+            else
+                return FormInstructions[CurrentPageName].ToString();
+        }
+    }
+    public byte CurrentFormID
+    {
+        get
+        {
+            if (FormIDs[CurrentPageName] == null)
+            {
+                return byte.Parse("0");
+            }
+            else
+            {
+                return (byte)FormIDs[CurrentPageName];
+            }
+        }
+    }
+
+
+   
+    public void ddlQuickJump_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            Response.Redirect(Request.RawUrl.Replace(ApplicationID.ToString(), ddlQuickJump.SelectedValue).Replace(CurRoleID.ToString(),CurRoleID.ToString()));
+        }
+        catch (Exception exp)
+        {
+            throw (exp);
+         
+        }
+    }
+
+
+}
+
+
+

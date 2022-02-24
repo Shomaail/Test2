@@ -1,0 +1,44 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Controls_PromotionCommitteeEditable : System.Web.UI.UserControl
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+    }
+    public void LoadPCEditable(int applicationID, string type)
+    {
+        ObjectDataSourcePC.SelectParameters["ApplicationID"].DefaultValue = applicationID.ToString();
+        ObjectDataSourcePC.SelectParameters["Type"].DefaultValue = type;
+
+    }
+    public string GetNomination(string position)
+    {
+        switch (Int32.Parse(position))
+        {
+            case 0: return "Chairman";
+            case 1: return "Chairman";
+            case 2: return "Chairman";
+            case 3: return "Member in Speciality Area";
+            case 4: return "Member in Speciality Area";
+            case 5: return "Member in Speciality Area";
+            case 6: return "Member in Speciality Area";
+            case 7: return "Member in Related Area";
+            case 8: return "Member in Related Area";
+            case 9: return "Member in Related Area";
+
+            default:
+                return "";
+        }
+    }
+
+}

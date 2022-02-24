@@ -1,0 +1,181 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class Forms_Refrees : System.Web.UI.Page
+{
+    private enum Mode {InputByApp = 1, ViewApp = 2, InputByDept = 3, ViewAppDept = 4, ViewAppDeptInputCollege = 5, ViewAppDeptCollege = 6}
+    public override string StyleSheetTheme
+    {
+        get
+        {
+            return Utils.IsPrintMode() ? Utils.PrinterStyleSheet : base.StyleSheetTheme;
+        }
+    }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        this.MaintainScrollPositionOnPostBack = true;
+     //   Page.Validate();
+        if (IsPostBack)
+        {
+            return;
+        }
+
+        if (Master.CurrentFormLevel == -1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+        SwitchMode((Mode)Master.CurrentFormLevel);
+
+        bool isPrintMode = Utils.IsPrintMode();
+
+        Refrees1.SetPrinterFriendly(isPrintMode);
+        Refrees2.SetPrinterFriendly(isPrintMode);
+        Refrees3.SetPrinterFriendly(isPrintMode);
+
+        //hide buttons when printing
+        if (isPrintMode)
+        {
+            btnSave.Visible = false;
+            btnSaveDept.Visible = false;
+            btnSaveCollege.Visible = false;
+            Instruction1.Visible = false;
+        }
+
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        int numProfessors;
+        int success = Refrees1.SaveRefrees(Master.ApplicationID, 0, out numProfessors);
+
+        if (success == 10)
+        {
+            PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();
+            Promotion.ApplicationRow a = adapter.GetApplication(Master.ApplicationID)[0];
+            if (a.ForRank.ToLower() == "associate professor")
+            {
+                if (success - numProfessors > 2)
+                    ShowMessage("Saved Successfully.<p>Please notice that it is required for this promotion application to specify a maximum of two associate professors (or equivalent ranks).</p>");
+                else
+                    ShowMessage("Saved and Completed Successfully");
+            }
+            else
+            {
+                ShowMessage("Saved and Completed Successfully");
+            }
+
+        }
+        else
+            ShowError("Saved! Please input 10 referees to complete the form. The fields: Name, Major Field, Speciality and Active Area of research, must be filled for each external reviewer");
+    }
+
+    protected void btnSaveDept_Click(object sender, EventArgs e)
+    {
+        int numProfessors;
+        int success = Refrees2.SaveRefrees(Master.ApplicationID, 1, out numProfessors);
+        if (success == 10)
+            ShowMessage("Saved and completed Successfully");
+        else
+            ShowError("Saved! Please input 10 referees to complete the form. The fields: Name, Major Field, Speciality and Active Area of research, must be filled for each external reviewer");
+    }
+
+    protected void btnSaveCollege_Click(object sender, EventArgs e)
+    {
+        int numProfessors;
+        int success = Refrees3.SaveRefrees(Master.ApplicationID, 2, out numProfessors);
+        if (success == 10)
+            ShowMessage("Saved and Completed Successfully.");
+        else
+            ShowError("Saved! Please input 10 referees to complete the form. The fields: Name, Major Field, Speciality and Active Area of research, must be filled for each external reviewer");
+
+    }
+
+
+    private void ShowError(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Red;
+        lblMessage.Text = message;
+        Master.ReportFailure(message);
+    }
+
+    private void ShowMessage(string message)
+    {
+        lblMessage.ForeColor = System.Drawing.Color.Blue;
+        lblMessage.Text = message;
+        Master.ReportSuccess();
+    }
+
+    private void SwitchMode(Mode mode)
+    {
+        switch(mode)
+        {
+            case Mode.InputByApp:
+                if (Utils.IsPrintMode())
+                    Refrees1.ListRefrees(Master.ApplicationID, 0);
+                else
+                    Refrees1.LoadRefrees(Master.ApplicationID, 0);
+                pnlDepartments.Visible = false;
+                pnlCollege.Visible = false;
+                break;
+            case Mode.InputByDept:
+                pnlApplicants.Visible = true;
+                Refrees1.ListRefrees(Master.ApplicationID, 0);
+                if (Utils.IsPrintMode())
+                    Refrees2.ListRefrees(Master.ApplicationID, 1);
+                else
+                    Refrees2.LoadRefrees(Master.ApplicationID, 1);
+                btnSave.Visible = false;
+                pnlCollege.Visible = false;
+                break;
+            case Mode.ViewApp:
+                Refrees1.ListRefrees(Master.ApplicationID, 0);
+                btnSave.Visible = false;
+                pnlDepartments.Visible = false;
+                pnlCollege.Visible = false;
+                break;
+            case Mode.ViewAppDept:
+                Refrees1.ListRefrees(Master.ApplicationID, 0);
+                Refrees2.ListRefrees(Master.ApplicationID, 1);
+                btnSave.Visible = false;
+                btnSaveDept.Visible = false;
+                pnlCollege.Visible = false;
+                break;
+            case Mode.ViewAppDeptInputCollege:
+                Refrees1.ListRefrees(Master.ApplicationID, 0);
+                Refrees2.ListRefrees(Master.ApplicationID, 1);
+                if (Utils.IsPrintMode())
+                {
+                    Refrees3.ListRefrees(Master.ApplicationID, 2);
+                }
+                else
+                {
+                    Refrees3.LoadRefrees(Master.ApplicationID, 2);
+                    //(Refrees3.FindControl("taExtRevData") as HtmlTextArea).Focus();
+                }
+                btnSave.Visible = false;
+                btnSaveDept.Visible = false;
+                break;
+
+            case Mode.ViewAppDeptCollege:
+                Refrees1.ListRefrees(Master.ApplicationID, 0);
+                Refrees2.ListRefrees(Master.ApplicationID, 1);
+                Refrees3.ListRefrees(Master.ApplicationID, 2);
+                btnSave.Visible = false;
+                btnSaveDept.Visible = false;
+                btnSaveCollege.Visible = false;
+                break;
+        }
+    }
+}

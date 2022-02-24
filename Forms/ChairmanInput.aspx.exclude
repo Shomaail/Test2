@@ -1,0 +1,18 @@
+<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="ChairmanInput.aspx.cs" Inherits="Forms_ChairmanInput" Title="Faculty Promotion System" MaintainScrollPositionOnPostback="true" %>
+
+<%@ Register Src="../Controls/Comments.ascx" TagName="Comments" TagPrefix="uc3" %>
+
+<%@ Register Src="../Controls/ChairmanInput.ascx" TagName="ChairmanInput" TagPrefix="uc2" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:Instruction ID="Instruction1" runat="server"  />
+    <asp:Label ID="lblMessage" runat="server" EnableViewState="False" Font-Italic="True"></asp:Label><br />
+    <uc2:ChairmanInput id="ChairmanInput1" runat="server">
+    </uc2:ChairmanInput>
+    <br />
+    <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="Save Chairman Input" class="btn btn-primary btn-md"  /><br />
+    <br />
+    <br />
+</asp:Content>

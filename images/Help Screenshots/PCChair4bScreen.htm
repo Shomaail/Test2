@@ -1,0 +1,837 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="" type="text/css" rel="stylesheet" />
+    <title>Faculty Promotion System </title>
+    <meta http-equiv="Content-Language" content="ar-sa" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8; charset=windows-1256" />
+    <style type="text/css">
+        .ctl00_FormMenu_0
+        {
+            background-color: white;
+            visibility: hidden;
+            display: none;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        .ctl00_FormMenu_1
+        {
+            color: Black;
+            font-family: Verdana,Arial;
+            font-size: 11pt;
+            text-decoration: none;
+        }
+        .ctl00_FormMenu_2
+        {
+            color: Black;
+            background-color: #EFEFEF;
+            font-family: Verdana,Arial;
+            font-size: 11pt;
+            width: 100%;
+        }
+        .ctl00_FormMenu_3
+        {
+        }
+        .ctl00_FormMenu_4
+        {
+            border-color: #E5E5E5;
+            border-width: 1px;
+            border-style: Solid;
+            padding: 3px 5px 3px 5px;
+        }
+        .ctl00_FormMenu_5
+        {
+        }
+        .ctl00_FormMenu_6
+        {
+            padding: 2px 5px 2px 5px;
+        }
+        .ctl00_FormMenu_7
+        {
+            background-color: #F7F6F3;
+        }
+        .ctl00_FormMenu_8
+        {
+            color: White;
+        }
+        .ctl00_FormMenu_9
+        {
+            background-color: #3062AF;
+        }
+        .ctl00_FormMenu_10
+        {
+        }
+        .ctl00_FormMenu_11
+        {
+            background-color: #5D7B9D;
+        }
+        .ctl00_FormMenu_12
+        {
+            color: White;
+        }
+        .ctl00_FormMenu_13
+        {
+            color: White;
+            background-color: #3062AF;
+        }
+        .ctl00_FormMenu_14
+        {
+            color: White;
+        }
+        .ctl00_FormMenu_15
+        {
+            color: White;
+            background-color: #7C6F57;
+        }
+    </style>
+</head>
+<body dir="ltr" style="margin: 0px; background-image: url(../images/logo.gif); background-repeat: no-repeat">
+    <div style="border: 0px solid; margin-left: 0px; margin-top: 78px;">
+    </div>
+    <form name="aspnetForm" method="post" action="" id="aspnetForm">
+    <div>
+        <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+        <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJNTc4NTg5Nzc2D2QWAmYPZBYCAgMPZBYOAgEPZBYCAgEPPCsADQEMFCsAFQVZMDowLDA6MSwwOjIsMDozLDA6NCwwOjUsMDo2LDA6NywwOjgsMDo5LDA6MTAsMDoxMSwwOjEyLDA6MTMsMDoxNCwwOjE1LDA6MTYsMDoxNywwOjE4LDA6MTkUKwACFgYeBFRleHQFCE1lc3NhZ2VzHgVWYWx1ZQUBOR4LTmF2aWdhdGVVcmwFHk1lc3NhZ2UuYXNweD9hcHBsaWNhdGlvbklEPTEyNmQUKwACFgYfAAUJQXBwbGljYW50HwEFATEfAgUgUmVxdWVzdGVyLmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFBlBvaW50cx8BBQEyHwIFHVBvaW50cy5hc3B4P2FwcGxpY2F0aW9uSUQ9MTI2ZBQrAAIWBh8ABRBZZWFycyBvZiBTZXJ2aWNlHwEFATMfAgUjU2VydmljZVllYXJzLmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFEkFubnVhbCBFdmFsdWF0aW9ucx8BBQIxMh8CBSlTZXJ2aWNlRXZhbHVhdGlvbnMuYXNweD9hcHBsaWNhdGlvbklEPTEyNmQUKwACFgYfAAUOQ2hhaXJtYW4gSW5wdXQfAQUCMTEfAgUkQ2hhaXJtYW5JbnB1dC5hc3B4P2FwcGxpY2F0aW9uSUQ9MTI2ZBQrAAIWBh8ABRNBdHRhY2htZW50cyAoRmlsZXMpHwEFATcfAgUiRmlsZXNVcGxvYWQuYXNweD9hcHBsaWNhdGlvbklEPTEyNmQUKwACFgYfAAUVRWxpZ2liaWxpdHkgQ2hlY2tsaXN0HwEFAjIwHwIFK0VsaWdpYmlsaXR5Q2hlY2tsaXN0LmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYIHwAFFExhdW5jaCBCdXN5IFNjaGVkdWxlHwEFAjI3HwIFKUxhdW5jaEJ1c3lTY2hlZHVsZS5hc3B4P2FwcGxpY2F0aW9uSUQ9MTI2HghTZWxlY3RlZGdkFCsAAhYGHwAFElBvc3QgQnVzeSBTY2hlZHVsZR8BBQIyOB8CBSdQb3N0QnVzeVNjaGVkdWxlLmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFElZpZXcgQnVzeSBTY2hlZHVsZR8BBQIyOR8CBSdWaWV3QnVzeVNjaGVkdWxlLmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFEkV4dGVybmFsIFJldmlld2Vycx8BBQIyNR8CBS1FeHRSZXZpZXdlckxpc3RQQ0NoYWlyLmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFHlN1bW1hcnkgb2YgPGJyPlJldmlld2VycyBGb3Jtcx8BBQIzMh8CBSdSZXZpZXdlcnNTdW1tYXJ5LmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFH1Byb21vdGlvbiBDb21taXR0ZWUgPGJyPlJlcG9ydCofAQUCMjIfAgUtUHJvbW90aW9uUmVwb3J0UENDaGFpci5hc3B4P2FwcGxpY2F0aW9uSUQ9MTI2ZBQrAAIWBh8ABR9Db250YWN0IDxicj5Qcm9tb3Rpb24gQ29tbWl0dGVlHwEFAjQ0HwIFMENvbnRhY3RQcm9tb3Rpb25Db21taXR0ZWUuYXNweD9hcHBsaWNhdGlvbklEPTEyNmQUKwACFgYfAAUOUHJvbW90aW9uIEZpbGUfAQUCMTQfAgUdUmVwb3J0LmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYGHwAFBkFjdGlvbh8BBQE2HwIFH0NoZWNrb3V0LmFzcHg/YXBwbGljYXRpb25JRD0xMjZkFCsAAhYEHwAFBiZuYnNwOx4KU2VsZWN0YWJsZWhkFCsAAhYGHwAFCC0gTG9nb3V0HwFlHwIFDX4vTG9nb3V0LmFzcHhkFCsAAhYGHwAFCy0gTWFpbiBNZW51HwFlHwIFC34vTWFpbi5hc3B4ZGQCAw8PFgIfAAUUTGF1bmNoIEJ1c3kgU2NoZWR1bGVkZAIFDw8WAh8CBTFMYXVuY2hCdXN5U2NoZWR1bGUuYXNweD9hcHBsaWNhdGlvbklEPTEyNiZwcmludD0xZGQCBw8PFgIfAAURU2FpZnV0IFRhcmlxIEtoYW5kZAIJDw8WAh8ABRxQcm9tb3Rpb24gQ29tbWl0dGVlIENoYWlybWFuZGQCCw8PFgIfAAUSS2hhbGVkIEhhbWVkIFNhbGFoZGQCDw9kFgQCAQ9kFgICAQ8PFgIfAAXxAjxwPkxhdW5jaGluZyBhIG5ldyBCdXN5IFdlZWsgc2NoZWR1bGU6PC9wPjxwPlNlbGVjdCBhIHdlZWsgYnkgcHJlc3NpbmcgYW55IGRhdGUgb24gdGhlIENhbGVuZGFyIGJlbG93LiBUaGUgc2VsZWN0ZWQgd2VlayB3aWxsIGJlIHNob3duIGJlbmVhdGggdGhlIGNhbGVuZGVyLiBQcmVzcyB0aGUgTGF1bmNoIFNlbGVjdGVkIEJ1c3kgV2VlayBidXR0b24gdG8gbGF1bmNoIHRoZSBidXN5IHdlZWsgc2NoZWR1bGUgdG8gZXZlcnkgUHJvbW90aW9uIENvbW1pdHRlZSBtZW1iZXIuPC9wPiA8cD5Ob3RlOiBMYXVuY2hpbmcgYSBOZXcgQnVzeSBzY2hlZHVsZSB3aWxsIGF1dG9tYXRpY2FsbHkgY2FuY2VsIGFueSBleGlzdGluZyBCdXN5IFNjaGVkdWxlPC9wPmRkAgMPZBYMZg8PFgIfAAUsWW91IGhhdmUgbm8gYWN0aXZlIEJ1c3kgU2NoZWR1bGUgbGF1bmNoZWQgMTdkZAICDw8WAh4HVmlzaWJsZWhkZAIEDzwrAAoBAA8WAh4CU0QWBwYAgFHAz43LCAYAQLvqmI7LCAYAACUVYo/LCAYAwI4/K5DLCAYAgPhp9JDLCAYAQGKUvZHLCAYAAMy+hpLLCGRkAggPDxYCHwBlZGQCCg8PFgIeB0VuYWJsZWRoZGQCDA8PFgIfBWdkFgICAQ88KwANAQAPFgQeC18hRGF0YUJvdW5kZx4LXyFJdGVtQ291bnQCBWQWAmYPZBYMZg8PFgIfBWhkZAIBD2QWAmYPZBYCAgMPDxYEHgRfIVNCAiAeC0JvcmRlcldpZHRoGwAAAAAAAAAAAQAAAGRkAgIPZBYCZg9kFgICAw8PFgQfCgIgHwsbAAAAAAAAAAABAAAAZGQCAw9kFgJmD2QWAgIDDw8WBB8KAiAfCxsAAAAAAAAAAAEAAABkZAIED2QWAmYPZBYCAgMPDxYEHwoCIB8LGwAAAAAAAAAAAQAAAGRkAgUPZBYCZg9kFgICAw8PFgQfCgIgHwsbAAAAAAAAAAABAAAAZGQYAgVJY3RsMDAkQ29udGVudFBsYWNlSG9sZGVyMSRMYXVuY2hCdXN5U2NoZWR1bGUxJENvbXBvc2VFbWFpbDEkR3JpZFZpZXdFbWFpbA88KwAKAQgCAWQFDmN0bDAwJEZvcm1NZW51Dw9kBQIyN2QDgRgJ8XgteG5Ow5TVwHdaw0upLg==" />
+    </div>
+    <div>
+    </div>
+    <table cellpadding="0" cellspacing="0" border="0" style="padding: 0px; margin: 0px;"
+        width="100%">
+        <tr>
+            <td id="ctl00_tdLeftMenu" style="width: 150px; border-right: 1px solid #3062af; background-color: #f7f7f7;
+                height: 587px;" valign="top">
+                <table id="ctl00_FormMenu" class="ctl00_FormMenu_2" cellpadding="0" cellspacing="0"
+                    border="0">
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun0">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Messages</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun1">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Applicant</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun2">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Points</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun3">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Years of Service</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun4">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Annual Evaluations</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun5">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Chairman Input</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun6">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Attachments (Files)</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun7">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Eligibility Checklist</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun8">
+                        <td>
+                            <table class="ctl00_FormMenu_4 ctl00_FormMenu_9" cellpadding="0" cellspacing="0"
+                                border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3 ctl00_FormMenu_8" href="">Launch Busy Schedule</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun9">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Post Busy Schedule</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun10">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">View Busy Schedule</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun11">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">External Reviewers</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun12">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Summary of
+                                            <br>
+                                            Reviewers Forms</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun13">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Promotion Committee Report*</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun14">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Contact Promotion Committee</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun15">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Promotion File</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun16">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">Action</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr id="ctl00_FormMenun17">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">&nbsp;</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun18">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">- Logout</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr onmouseover="Menu_HoverStatic(this)" onmouseout="Menu_Unhover(this)" onkeyup="Menu_Key(this)"
+                        id="ctl00_FormMenun19">
+                        <td>
+                            <table class="ctl00_FormMenu_4" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap; width: 100%;">
+                                        <a class="ctl00_FormMenu_1 ctl00_FormMenu_3" href="">- Main Menu</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <a id="ctl00_FormMenu_SkipLink" href=""></a>
+                <br />
+                <p style="font-size: 0.8em; font-family: Trebuchet MS; text-align: center;">
+                </p>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <br />
+                <br />
+            </td>
+            <td valign="top" style="padding-left: 3px; width: 647px; height: 587px;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 10px;
+                    border-bottom: 2px solid #3062af; padding: 3px 3px; background-color: #f7f7f7">
+                    <tr>
+                        <td>
+                            <div style="color: #000000; font-size: 16pt; font-family: Georgia, Arial; font-style: italic;
+                                font-weight: bold;">
+                                <span id="ctl00_lblPageTitle">Launch Busy Schedule</span>
+                            </div>
+                        </td>
+                        <td width="*" align="center">
+                        </td>
+                        <td align="right" style="font-size: 10pt; width: 337px;">
+                            <span id="ctl00_lblEmployee" style="color: Maroon;">Saifut Tariq Khan</span> (<em><span
+                                id="ctl00_lblRole">Promotion Committee Chairman</span></em>)<br />
+                            Application of: <em><span id="ctl00_lblApplicantEmail" style="color: Maroon;">ABC</span></em>
+                            <br />
+                        </td>
+                    </tr>
+                </table>
+                <div style="width: 100%">
+                    <fieldset style="margin-left: 30px; width: 500px; background-color: #f0f0f0; border: 1px solid #3062af;
+                        padding: 5px">
+                        <legend style="font-style: italic; font-weight: bold; background-color: #3062af;
+                            color: white">Instructions</legend><span id="ctl00_ContentPlaceHolder1_Instruction1_lblInstructions">
+                                <p>
+                                    Launching a new Busy Week schedule:</p>
+                                <p>
+                                    Select a week by pressing any date on the Calendar below. The selected week will
+                                    be shown beneath the calender. Press the Launch Selected Busy Week button to launch
+                                    the busy week schedule to every Promotion Committee member.</p>
+                                <p>
+                                    Note: Launching a New Busy schedule will automatically cancel any existing Busy
+                                    Schedule</p>
+                            </span>
+                    </fieldset>
+                    <br />
+                    &nbsp;<br />
+                    <span id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_Label4">You have no active Busy
+                        Schedule launched 17</span>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    &nbsp; &nbsp;
+                    <table id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_Calendar2" cellspacing="0"
+                        cellpadding="2" title="Calendar" border="0" style="border-width: 1px; border-style: solid;
+                        width: 814px; border-collapse: collapse;">
+                        <tr>
+                            <td colspan="8" style="background-color: #333399; border-style: Solid; height: 12pt;">
+                                <table cellspacing="0" border="0" style="color: White; font-size: 12pt; font-weight: bold;
+                                    width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="color: White; font-size: 8pt; font-weight: bold; width: 15%;">
+                                            <a href="" style="color: White" title="Go to the previous month">Mar</a>
+                                        </td>
+                                        <td align="center" style="width: 70%;">
+                                            April 2009
+                                        </td>
+                                        <td align="right" style="color: White; font-size: 8pt; font-weight: bold; width: 15%;">
+                                            <a href="" style="color: White" title="Go to the next month">May</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="color: #333333; font-size: 8pt; font-weight: bold; height: 8pt;">
+                            </td>
+
+                            <th align="center" abbr="Sunday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Sunday
+                            </th>
+                            <th align="center" abbr="Monday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Monday
+                            </th>
+                            <th align="center" abbr="Tuesday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Tuesday
+                            </th>
+                            <th align="center" abbr="Wednesday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Wednesday
+                            </th>
+                            <th align="center" abbr="Thursday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Thursday
+                            </th>
+                            <th align="center" abbr="Friday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Friday
+                            </th>
+                            <th align="center" abbr="Saturday" scope="col" style="color: #333333; font-size: 8pt;
+                                font-weight: bold; height: 8pt;">
+                                Saturday
+                            </th>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 1">Select Week</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="March 28">28</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="March 29">29</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="March 30">30</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="March 31">31</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 01">1</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 02">2</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 03">3</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 2">Select Week</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 04">4</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 05">5</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 06">6</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 07">7</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 08">8</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 09">9</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 10">10</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 3">Select Week</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 11">11</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 12">12</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 13">13</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 14">14</a>
+                            </td>
+                            <td align="center" style="background-color: Blue; width: 12%;">
+                                <a href="" style="color: Black" title="April 15">15</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 16">16</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 17">17</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 4">Select Week</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 18">18</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 19">19</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 20">20</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 21">21</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 22">22</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 23">23</a>
+                            </td>
+                            <td align="center" style="color: White; background-color: Silver; width: 12%;">
+                                <a href="" style="color: White" title="April 24">24</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 5">Select Week</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 25">25</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 26">26</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 27">27</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 28">28</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 29">29</a>
+                            </td>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="April 30">30</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 01">1</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="width: 12%;">
+                                <a href="" style="color: Black" title="Select week 6">Select Week</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 02">2</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 03">3</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 04">4</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 05">5</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 06">6</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 07">7</a>
+                            </td>
+                            <td align="center" style="color: #999999; width: 12%;">
+                                <a href="" style="color: #999999" title="May 08">8</a>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <br />
+                    <span id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_Label3" style="color: Blue;">
+                        Selected Busy Week: </span>&nbsp;&nbsp;&nbsp; <span id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_lblWeekNo"
+                            style="display: inline-block; width: 631px;"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <br />
+                    <br />
+                    <input disabled="disabled" type="submit" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ButtonLaunchBW"
+                        value="Launch Selected Busy Week" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ButtonLaunchBW"
+                        disabled="disabled" title="Click on this button to Launch the Busy Week Schedule. Emails will be sent automatically to all the members in the promotion committee."
+                        style="color: White; background-color: #3062AF; border-color: #3062AF; border-style: Ridge;
+                        font-family: Georgia; font-weight: bold; font-style: italic;" />
+                    <br />
+                    <br />
+                    <fieldset style="margin-left: 30px; width: 100%; background-color: #f0f0f0; border: 1px solid #3062af;
+                        padding: 5px; height: 100%;">
+                        <legend style="font-style: italic; font-weight: bold; background-color: #3062af;
+                            color: white">Compose Email</legend>
+                        <br />
+                        <div>
+                            <table cellspacing="0" cellpadding="4" border="0" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail"
+                                style="color: #333333; width: 100%; border-collapse: collapse;">
+                                <tr style="color: #333333; background-color: #F7F6F3;">
+                                    <td style="width: 100%;">
+                                        <b>To:</b><textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl02$TextBoxTo"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl02_TextBoxTo"
+                                            title="You can add or delete any Email Address of your choice" style="color: #000066;
+                                            background-color: Transparent; border-color: #000066; border-width: 0px; border-style: Solid;
+                                            width: 187px;">saifkhan@kfupm.edu.sa</textarea>
+                                        <br />
+                                        <br />
+                                        <b>For:</b><input disabled="disabled" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl02$TextBoxSubject"
+                                            type="text" value="Post Busy Schedule" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl02_TextBoxSubject"
+                                            title="Write Subject text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 0px; border-style: Solid; width: 187px;" />
+                                        <br />
+                                        <br />
+                                        <b>Message Contents:</b><br />
+                                        <textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl02$TextBoxBody"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl02_TextBoxBody"
+                                            title="Write Body text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 1px; border-style: Solid; height: 356px;
+                                            width: 100%;">
+Dear Dr. Saifut Tariq Khan, Promotion Committee Member,
+
+Considering the promotion case of Dr. ABC, Assistant Professor in the Department of Information &amp; Computer Sciences, please post your Busy Schedule for the week # 17 of the year 2009 (Starting Date: Sunday, April 19, 2009,     Ending Date: Wednesday, April 22, 2009)in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr.ABCthen its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+Dr. Saifut Tariq Khan
+Chairman Promotion Committee
+</textarea>
+                                    </td>
+                                </tr>
+                                <tr style="color: #284775; background-color: White;">
+                                    <td style="width: 100%;">
+                                        <b>To:</b><textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl03$TextBoxTo"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl03_TextBoxTo"
+                                            title="You can add or delete any Email Address of your choice" style="color: #000066;
+                                            background-color: Transparent; border-color: #000066; border-width: 0px; border-style: Solid;
+                                            width: 187px;">naiafsa@kfupm.edu.sa</textarea>
+                                        <br />
+                                        <br />
+                                        <b>For:</b><input disabled="disabled" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl03$TextBoxSubject"
+                                            type="text" value="Post Busy Schedule" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl03_TextBoxSubject"
+                                            title="Write Subject text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 0px; border-style: Solid; width: 187px;" />
+                                        <br />
+                                        <br />
+                                        <b>Message Contents:</b><br />
+                                        <textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl03$TextBoxBody"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl03_TextBoxBody"
+                                            title="Write Body text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 1px; border-style: Solid; height: 356px;
+                                            width: 100%;">
+Dear Dr. Naif S. Alshammri, Promotion Committee Member,
+
+Considering the promotion case of Dr. ABC, Assistant Professor in the Department of Information &amp; Computer Sciences, please post your Busy Schedule for the week # 17 of the year 2009 (Starting Date: Sunday, April 19, 2009,     Ending Date: Thursday, April 23, 2009)in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr.ABCthen its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+Dr. Saifut Tariq Khan
+Chairman Promotion Committee
+</textarea>
+                                    </td>
+                                </tr>
+                                <tr style="color: #333333; background-color: #F7F6F3;">
+                                    <td style="width: 100%;">
+                                        <b>To:</b><textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl04$TextBoxTo"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl04_TextBoxTo"
+                                            title="You can add or delete any Email Address of your choice" style="color: #000066;
+                                            background-color: Transparent; border-color: #000066; border-width: 0px; border-style: Solid;
+                                            width: 187px;">akahmer@kfupm.edu.sa</textarea>
+                                        <br />
+                                        <br />
+                                        <b>For:</b><input disabled="disabled" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl04$TextBoxSubject"
+                                            type="text" value="Post Busy Schedule" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl04_TextBoxSubject"
+                                            title="Write Subject text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 0px; border-style: Solid; width: 187px;" />
+                                        <br />
+                                        <br />
+                                        <b>Message Contents:</b><br />
+                                        <textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl04$TextBoxBody"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl04_TextBoxBody"
+                                            title="Write Body text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 1px; border-style: Solid; height: 356px;
+                                            width: 100%;">
+Dear Dr. Abdul-Karim Ahmed Amer, Promotion Committee Member,
+
+Considering the promotion case of Dr. ABC, Assistant Professor in the Department of Information &amp; Computer Sciences, please post your Busy Schedule for the week # 17 of the year 2009 (Starting Date: Sunday, April 19, 2009,     Ending Date:Thursday, April 23, 2009)in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr.ABCthen its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+Dr. Saifut Tariq Khan
+Chairman Promotion Committee
+</textarea>
+                                    </td>
+                                </tr>
+                                <tr style="color: #284775; background-color: White;">
+                                    <td style="width: 100%;">
+                                        <b>To:</b><textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl05$TextBoxTo"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl05_TextBoxTo"
+                                            title="You can add or delete any Email Address of your choice" style="color: #000066;
+                                            background-color: Transparent; border-color: #000066; border-width: 0px; border-style: Solid;
+                                            width: 187px;">esmith@kfupm.edu.sa</textarea>
+                                        <br />
+                                        <br />
+                                        <b>For:</b><input disabled="disabled" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl05$TextBoxSubject"
+                                            type="text" value="Post Busy Schedule" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl05_TextBoxSubject"
+                                            title="Write Subject text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 0px; border-style: Solid; width: 187px;" />
+                                        <br />
+                                        <br />
+                                        <b>Message Contents:</b><br />
+                                        <textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl05$TextBoxBody"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl05_TextBoxBody"
+                                            title="Write Body text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 1px; border-style: Solid; height: 356px;
+                                            width: 100%;">
+Dear Dr. Eric Smith, Promotion Committee Member,
+
+Considering the promotion case of Dr. ABC, Assistant Professor in the Department of Information &amp; Computer Sciences, please post your Busy Schedule for the week # 17 of the year 2009 (Starting Date: Sunday, April 19, 2009,     Ending Date: Thursday, April 23, 2009)in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr.ABCthen its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+Dr. Saifut Tariq Khan
+Chairman Promotion Committee
+</textarea>
+                                    </td>
+                                </tr>
+                                <tr style="color: #333333; background-color: #F7F6F3;">
+                                    <td style="width: 100%;">
+                                        <b>To:</b><textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl06$TextBoxTo"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl06_TextBoxTo"
+                                            title="You can add or delete any Email Address of your choice" style="color: #000066;
+                                            background-color: Transparent; border-color: #000066; border-width: 0px; border-style: Solid;
+                                            width: 187px;">fazalnr@kfupm.edu.sa</textarea>
+                                        <br />
+                                        <br />
+                                        <b>For:</b><input disabled="disabled" name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl06$TextBoxSubject"
+                                            type="text" value="Post Busy Schedule" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl06_TextBoxSubject"
+                                            title="Write Subject text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 0px; border-style: Solid; width: 187px;" />
+                                        <br />
+                                        <br />
+                                        <b>Message Contents:</b><br />
+                                        <textarea name="ctl00$ContentPlaceHolder1$LaunchBusySchedule1$ComposeEmail1$GridViewEmail$ctl06$TextBoxBody"
+                                            rows="2" cols="20" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl06_TextBoxBody"
+                                            title="Write Body text here" style="color: #000066; background-color: Transparent;
+                                            border-color: #000066; border-width: 1px; border-style: Solid; height: 356px;
+                                            width: 100%;">
+Dear Dr. Fazal Noor, Promotion Committee Member,
+
+Considering the promotion case of Dr. ABC, Assistant Professor in the Department of Information &amp; Computer Sciences, please post your Busy Schedule for the week # 17 of the year 2009 (Starting Date: Sunday, April 19, 2009,     Ending Date: Thursday, April 23, 2009)in order to help in arranging the meeting time. 
+
+Kindly, logon to www.kfupm.edu.sa/FacultyPromotionSystem/ and open the application of Dr.ABCthen its Active Tasks and finally go to to the Post Busy Schedule Menu for posting the Busy Schedule.
+
+Thanks 
+Dr. Saifut Tariq Khan
+Chairman Promotion Committee
+</textarea>
+                                    </td>
+                                </tr>
+                                <tr style="color: White; background-color: #5D7B9D; font-weight: bold;">
+                                    <td align="center">
+                                        <input disabled="disabled" type="submit" name="" value="Send" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl07_ButtonSendEmail"
+                                            title="Press this button to send the email" style="color: White; background-color: #3062AF;
+                                            border-color: #3062AF; border-style: Ridge; font-family: Georgia; font-weight: bold;
+                                            font-style: italic; width: 148px;" />
+                                        <input disabled="disabled" type="submit" name="" value="Cancel" id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_ComposeEmail1_GridViewEmail_ctl07_ButtonCancel"
+                                            title="Press this button to Cancel " style="color: White; background-color: #3062AF;
+                                            border-color: #3062AF; border-style: Ridge; font-family: Georgia; font-weight: bold;
+                                            font-style: italic; width: 151px;" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        &nbsp; &nbsp;
+                    </fieldset>
+                    <br />
+                    <span id="ctl00_ContentPlaceHolder1_LaunchBusySchedule1_LabelAfterLauchButton" style="color: Red;">
+                    </span>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" style="border-top: 1px solid #3062af">
+        <tr>
+            <td align="center" style="width: 100%">
+                <span style="font-size: 9pt">Faculty Promotion System
+                    <br />
+                    Copyright © 2008 King Fahd University of Petroleum & Minerals | Dhahran, 31261 |
+                    Saudi Arabia | +966 (3) 860 0000.<br />
+                </span>
+            </td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>

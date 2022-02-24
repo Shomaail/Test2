@@ -1,0 +1,11 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtPCForms/ExtPCForm.master" AutoEventWireup="true" CodeFile="Form_ExtReviewerList.aspx.cs" Inherits="ExtPCForms_Form_ExtReviewersList" Title="KFUPM Online Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ mastertype virtualpath="ExtPCForm.master" %>
+<%@ Register Src="../Controls/ExtReviewerList4PCMem.ascx" TagName="ExtReviewerList4PCMem" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <uc1:ExtReviewerList4PCMem ID="ExtReviewerList4PCMem1" runat="server" />
+</asp:Content>
+

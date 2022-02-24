@@ -1,0 +1,1337 @@
+﻿using System;
+using System.Web;
+using System.Diagnostics;
+using System.Globalization;
+using System.Data;
+using System.Collections;
+
+/// <summary>
+/// All the classes corresponding to tables and Views 
+/// as well as ENUM datatypes 
+/// </summary>
+/// 
+#region enum
+public enum PromotionSubCommFormMode { Formation = 0, AssessmentMember1 = 1, AssessmentMember2 = 2, AssessmentMember3 = 3, AssessmentMember4 = 4, AssessmentMember5 = 5, Final = 6 }
+public enum EmployeeStatus
+{
+    Active,Inactive 
+}
+public enum CommitteeTypeID
+{
+    Promotion_Subcommittee = 1
+}
+public enum MethodCallMode { PageLoad = 1, EventDriven = 2 }
+public enum ViewType
+{
+    Candidate = 0, Department = 1, College= 2, VRR = 3
+}
+public enum DepartmentID { VPPE = 58, DeanshipOfFacultyAffairs = 59, VPEA = 57 }
+ 
+public enum RoleID {
+Applicant=1,
+DepartmentChairman=2,
+DepartmentCommitteeChair=3,
+CollegeDean=4,
+VPEA=5,
+VPPE=6,
+ScientificCouncil=7,
+DeanofFacultyAffairs=8,
+ScientificCouncilSubCommittee=9,
+    Promotion_Subcommittee_Member1 = 10,
+    Promotion_Subcommittee_Member2 = 11,
+    Promotion_Subcommittee_Member3 = 12,
+    Promotion_Subcommittee_Member4 = 13,
+    Promotion_Subcommittee_Member5 = 14,
+ExternalReviewer=19,
+ExternalPromotionCommitteeMember=20,
+DepartmentCommitteeMember1=24,
+DepartmentCommitteeMember2=25,
+DepartmentCommitteeMember3=26,
+DepartmentCommitteeMember4=27,
+ScientificCouncilMember1=28,
+ScientificCouncilMember2=29,
+ScientificCouncilMember3=30,
+ScientificCouncilMember4=31,
+ScientificCouncilMember5=32,
+ScientificCouncilMember6=33,
+ScientificCouncilMember7=34,
+ScientificCouncilMember8=35,
+ScientificCouncilMember9=36,
+ScientificCouncilMember10=37,
+    ScientificCouncilMember11 = 38,
+    ScientificCouncilCoordinator =39}
+
+public enum FormID { 
+ Requester_aspx                  = 1    ,
+ Points_aspx                     = 2    ,
+ ServiceYears_aspx               = 3    ,
+ FormExtRev_aspx                 = 4    ,
+ Exclusion_aspx                  = 5    ,
+ Checkout_aspx                   = 6    ,
+ FilesUpload_aspx                = 7    ,
+ History_aspx                    = 8    ,
+ Message_aspx                    = 9    ,
+ DeptCommittee_aspx              = 10   ,
+ ChairmanInput_aspx              = 11   ,
+ ServiceEvaluations_aspx         = 12   ,
+ PromotionCommittee_aspx         = 13   ,
+ Report_aspx                     = 14   ,
+ PCCommunicate_aspx              = 18   ,
+ FormFinalExtRev_aspx            = 19   ,
+ EligibilityChecklist_aspx       = 20   ,
+ FormExtRevSel_aspx              = 21   ,
+ PromotionReportPCChair_aspx     = 22   ,
+ PromotionReportPCMem_aspx       = 23   ,
+ FinalDecision_aspx              = 24   ,
+ ExtReviewerListPCChair_aspx     = 25   ,
+ ExtReviewerListPCMem_aspx       = 26   ,
+ LaunchBusySchedule_aspx         = 27   ,
+ PostBusySchedule_aspx           = 28   ,
+ ViewBusySchedule_aspx           = 29   ,
+ ViewChairReport_aspx            = 31   ,
+ ReviewersSummary_aspx           = 32   ,
+ ViewChairReport4VRGSSR_aspx     = 33   ,
+ Form_ApplicationFiles_aspx      = 34   ,
+ Form_Evaluation_aspx          = 35   ,
+ Form_ReviewerAction_aspx        = 36   ,
+ ExtMessage_aspx                    = 37   ,
+ ExtPCMain_aspx                  = 38   ,
+ Form_BusyScheduleMember_aspx    = 39   ,
+ Form_ExtReviewerList_aspx       = 40   ,
+ Form_SummaryReviewersForm_aspx  = 41   ,
+ Form_ExtPCAction_aspx           = 42   ,
+ Form_PromotionReportPCMem_aspx  = 43   ,
+ ContactPromotionCommittee_aspx  = 44   ,
+ OldMeetings_aspx                = 45   ,
+ Reminders_aspx                  = 46   ,
+ Honorarium_aspx                 = 47   ,
+ ContactVRGSSR_aspx              = 48   ,
+ ScientificCouncil_aspx          = 49   ,
+ PCFinal4PC_aspx                 = 50   ,
+ PCFeedback_aspx                 = 51   ,
+ ApplicatioRoles_aspx            = 53   ,
+ ExtMessageAr_aspx                  = 54   ,
+ Form_EvaluationAr_aspx       = 55   ,
+ Correspondence_aspx             = 56,
+
+    ExtRevProfile_aspx = 58,
+    PublicationsEvaluation_aspx = 60,
+    ExtAction_aspx = 61
+}
+public enum TaskExtID { 
+
+Willingness_For_Being_Promotion_Committee_Chairman=2             ,
+    Willingness_For_Being_Promotion_Committee_Member = 19,
+    WillingnessLetterforExternalReviewers =3               ,
+PostBusySchedule=4                                    ,
+ExternalEvaluation=5                                  ,
+ExternalPromotionCommitteeMember=6                   ,
+MeetingReminder=9                                     ,
+AllMembersHaveSigned=10                               ,
+Welcomenotetonewdepartmentmanagers=11                 ,
+WillingnessLetterforExternalReviewersinArabic=12      ,
+Promotion_Decision_Notification_Positive_Eng	 = 13,
+Promotion_Decision_Notification_Positive_Arabic	 = 14,
+Promotion_Decision_Notification_Negative_Eng	 = 15,
+Promotion_Decision_Notification_Negative_Arabic	 = 16,
+Acceptance_Notification                          = 17,
+Welcome_Message_External_Evaluation              = 18,
+        Willingness_for_being_Promotion_Committee_Member = 19,
+    Acceptance_Notification_Promotion_Committee = 20,
+    Submit_External_Evaluation = 21,
+    Withdraw_External_Evaluation = 23
+}
+public enum ExtRevSelType { Applicant = 0, Department = 1, College = 2, SCSubCom = 3 }
+public enum PCMemberSelType {  College = 2, VRR = 3 }
+//public enum ActionID
+//{
+//Initiate_and_Forward_to_the_Chairman                        = 1  ,
+//SaveApp                                                        = 2  ,
+//Submit_to_Faculty_Affairs_and_Dept_Committee               = 4   ,
+//Return_to_the_Applicant                                     = 5  ,
+//SaveDeptChair                                                        = 6  ,
+//WithdrawDeptChair                                                    = 7  ,
+//Verify_AcceptReject_and_Return_to_the_Dept_Chairman     = 8     ,
+//SaveDeptCommChair                                                       = 9  ,
+//Return_to_the_Department_Chairman_DeptCommChair                       = 10,
+//Recommend_and_Send_to_the_College_Dean              =  12,
+//Return_to_the_Dept_Committee_Chairman               =  14,
+//Return_to_the_Applicant                             =  15,
+//Save                                                =  16,
+//Return_to_the_Dept_Chairman                         =  18,
+//Save                                                =  19,
+//Send_to_the_VRAA                                    =  21,
+//Return_to_the_Dept_Chairman                         =  22,
+//Recommend_and_Send_to_the_VRGSSR                    =  25,
+//Return_to_the_College_Dean                          =  26,
+//Forward_to_the_Promotion_Committee                  =  28,
+//Return_to_the_College_Dean                          =  29,
+//Withdraw                                            =  30,
+//Save                                                =  32,
+//Save                                                =  33,
+//Save                                                =  34,
+//Recommend_and_Send_to_the_VRGSSR                    =  35,
+//File_Incomplete_and_Return_to_the_VRGSSR            =  36,
+//Save                                                =  38,
+//Forward_to_Scientific_Council_Subcommittee          =  40,
+//Return_to_the_College_Dean                          =  42,
+//Save                                                =  48,
+//Return_to_Scientific_Council_Subcommittee           =  54,
+//Return_to_the_Faculty_Affairs                       =  62,
+//Forward_to_VRGSSR                                   =  63,
+//Bypass_SC_Subcommittee                              =  64,
+//Return_to_PromotionCommittee                        =  65,
+//Return_to_Scientific_Council_Subcommittee           =  66,
+//Return_to_the_College_Dean                          =  67,
+//Close_the_Application_Promotable                    =  68,
+//Save                                                =  69,
+//Return_to_VRGSSR_without_Promotion_Committee_Report =  70,
+//Return_to_VRGSSR                                    =  71,
+//Update_CV_and_Publications                          =  72,
+//Return_to_VRGSSR_for_PC_formation                   =  73,
+//Verify_and_Return_to_the_Dept_Chairman              =  74,
+//Verify_and_Return_to_the_Dept_Chairman              =  75,
+//Verify_and_Return_to_the_Dept_Chairman              =  76,
+//Verify_and_Return_to_the_Dept_Chairman              =  77,
+//Send_to_the_VRAA                                    =  78,
+//Forward_to_Dept_Chairman                            =  79,
+//Save                                                =  80,
+//Forward_to_Scientific_Council                       =  81,
+//Promotable                                          =  82,
+//Unpromotable                                        =  83,
+//Update_Chairman_Input                               =  84,
+//Update_Annual_Evaluation                            =  85,
+//Return_to_VRGSSR                                    =  86,
+//Return_to_VRGSSR                                    =  87,
+//Return_to_College_Dean                              =  88,
+//Return_to_the_Dept_Committee_Chairman               =  89,
+//Close_the_Application_Unpromotable                  =  90
+//}
+public enum SubTaskID
+{
+Dummy = 0 , Eligibility_EvaluationDCChair = 1, Verification_and_Preparation_of_Annual_Evaluation = 2
+}
+public enum TaskID
+{
+Dummy                                           =  0,
+Apply_for_Promotion                                  =  1,
+    Dummy1 =  2,
+    Dummy2 =  3,
+    Dummy3 =  4,
+    Dummy4 =  5,
+Update_Promotion_Request                             =  6,
+College_Approval                                     =  7,
+    VPEA_Approval                                        =  8,
+    VPPE_Initial_Approval =  9,
+    Promotion_Subcommittee_Membership1 =  14,
+    Dummy5 =  22,
+    VPPE_for_Final_Approval =  25,
+    Promotion_Subcommittee_Membership2 =  27,
+    Promotion_Subcommittee_Membership3 =  29,
+    Promotion_Subcommittee_Membership4 =  30,
+    Promotion_Subcommittee_Membership5 =  31,
+    VPPE_Archived_Promotion_Application =  32,
+    Applicant_Application_Closed =  33,
+Update_CV_and_Publications                           =  36,
+Eligibility_Evaluation_DCMem1                              =  37,
+Eligibility_Evaluation_DCMem2                              =  38,
+Eligibility_Evaluation_DCMem3                              =  39,
+Eligibility_Evaluation_DCMem4                              =  40,
+Apply_for_Promotion_ReApply                                  =  42,
+Scientific_Council_Membership1                        =  43,
+Scientific_Council_Membership2                        =  44,
+Scientific_Council_Membership3                        =  45,
+Scientific_Council_Membership4                        =  46,
+Scientific_Council_Membership5                        =  47,
+Scientific_Council_Membership6                        =  48,
+Scientific_Council_Membership7                        =  51,
+Scientific_Council_Membership8                        =  52,
+Scientific_Council_Membership9                        =  53,
+Scientific_Council_Membership10                        =  54,
+VRGSSRFinal_Decision                                 =  55,
+VRGSSRApplication_Closed                             =  56,
+ApplicantApplication_Closed                          =  112,
+Update_Chairman_Input                                =  113,
+Update_Annual_Evaluation                             =  114,
+Scientific_Council_Coordination                      =  115,
+Eligibility_EvaluationDCChairB  =  116,
+Eligibility_Evaluation_DCMem1B = 117,
+Eligibility_Evaluation_DCMem2B= 118,
+Eligibility_Evaluation_DCMem3B= 119,
+Eligibility_Evaluation_DCMem4B = 120,
+    Eligibility_EvaluationDCChairC  =  121,
+Eligibility_Evaluation_DCMem1C = 122,
+Eligibility_Evaluation_DCMem2C= 123,
+Eligibility_Evaluation_DCMem3C= 124,
+Eligibility_Evaluation_DCMem4C = 125
+}
+public enum Status { Not_saved_New_ = 0, Saved_Unsuccessfully = 1, Saved_Successfully = 2, Updated = 3, Submitted = 4 }
+public enum WillingessStatus { Not_Sent = 0, Waiting = 1, Accepted = 2, Declined = 3, Withdrawn = 4 }
+public enum SendSelPubStatus { Material_Not_Sent = 0, Material_Sent = 1 }
+public enum EvaluationStatus { Not_Submitted = 0, Saved_But_Not_Submitted = 1, Submitted = 2 , Withdrawn = 3}
+public enum AttachmentCategoryID { Original_Article = 1, Conference_Paper = 2 , Review_Article = 3, Case_Report = 4, Communication = 5,
+    Books = 6, Editorial = 7, Panorama = 8, Others = 9}
+public enum PCPosition { Chairman = 10, MemberSpecialityArea = 11, MemberRelatedArea= 12}
+public enum ExtRevStatus { Active =1,Inactive = 2   }
+#endregion
+    #region ExtRevBAL Classes
+public class Evaluation1
+{
+    public int QNo { get; set; }
+    public string Title { get; set; }
+    public string QText { get; set; }
+    public bool Visible { get; set; }
+    public bool ARBVisible { get; set; }
+
+    public string ARBTitle { get; set; }
+    public string ARBOption { get; set; }
+    public string ARBValue { get; set; }
+    public bool ACBVisible { get; set; }
+    public string ACBTitle { get; set; }
+    public string ACBOption { get; set; }
+    public string ACBValue { get; set; }
+    public bool ADDLVisible { get; set; }
+    public string ADDLTitle { get; set; }
+    public string ADDLOption { get; set; }
+    public string ADDLValue { get; set; }
+    public bool ADDLRequired { get; set; }
+    public bool ATAVisible { get; set; }
+    public string ATATitle { get; set; }
+    public string ATAAttribute { get; set; }
+    public string ATAStyle { get; set; }
+    public string ATAValue { get; set; }
+    public bool ATARequired { get; set; }
+
+    public int ApplicationID { get; set; }
+
+    public int ExternalReviewerID { get; set; }
+    public string EmployeeID { get; set; }
+    public bool AnswerOnSameLine { get; set; }
+    public string AnswerInstruction { get; set; }
+    public string QuestionWidth { get; set; }
+    public string Lang { get; set; }
+}
+public class Style
+{
+    public string text { get; set; }
+    public string value { get; set; }
+}
+public class Attribute
+{
+    public string text { get; set; }
+    public string value { get; set; }
+}
+
+
+public class Form_ExtRev1
+{
+    public int ApplicationID { get; set; }
+    public int Type { get; set; }
+    public int Serial { get; set; }
+    public int ExternalReviewerID { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public string MailingAddress { get; set; }
+    public string Email { get; set; }
+    public string Major { get; set; }
+    public string Speciality { get; set; }
+    public string PhoneAndFax { get; set; }
+    public string ActiveAreaOfResearch { get; set; }
+    public string PrevAreaOfResearch { get; set; }
+    public string Webpage { get; set; }
+    public string Comments { get; set; }
+    public int? TotalPublications { get; set; }
+    public int? NoOfJournals { get; set; }
+    public int? HIndex { get; set; }
+    public int? Citations { get; set; }
+    public string PassportNo { get; set; }
+    public string IBAN { get; set; }
+}
+public class Form_FinalExtRev1
+{
+    public string ApplicationForRank { get; set; }
+    public string ApplicantDept { get; set; }
+    public string ApplicantName { get; set; }
+
+    public int          ApplicationID           { get; set; }
+    public int          ExternalReviewerID           { get; set; }
+    public int?          Serial             { get; set; }
+    public string       WLStatus             { get; set; }
+    public DateTime?    WLDate             { get; set; }
+    public string       CommentsWithWL           { get; set; }
+    public string       MaterialSentStatus           { get; set; }
+    public DateTime?    MaterialSentDate           { get; set; }
+    public string       EvaluationStatus           { get; set; }
+    public DateTime?    EvaluationDate           { get; set; }
+    public string       CommentsWithEval           { get; set; }
+    public bool?         ShowExtRev2PC           { get; set; }
+    public bool?         ShowEval2PC           { get; set; }
+    public string       UserName           { get; set; }
+    public string       Password           { get; set; }
+    public string       Source            { get; set; }
+    public bool? PromotionRecom { get; set; }
+    public string Reasons { get; set; }
+    public int? Score { get; set; }
+
+    public string NameString { get; set; }
+    public string Name { get; set; }
+    public string NameAr { get; set; }
+    public string Rank { get; set; }
+    public string MailingAddress { get; set; }
+    public string Email { get; set; }
+    public string Major { get; set; }
+    public string Speciality { get; set; }
+    public string PhoneAndFax { get; set; }
+    public string ActiveAreaOfResearch { get; set; }
+    public string PrevAreaOfResearch { get; set; }
+    public string Webpage { get; set; }
+    public string Comments { get; set; }
+    public int? TotalPublications { get; set; }
+    public int? NoOfJournals { get; set; }
+    public int? HIndex { get; set; }
+    public int? Citations { get; set; }
+    public string PassportNo { get; set; }
+    public string IBAN { get; set; }
+}
+public class Form_FinalRefree1
+{
+    public int RefreeID { get; set; }
+    public byte Serial { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public int? TotalPublications { get; set; }
+    public int? NoOfJournals { get; set; }
+    public int? HIndex { get; set; }
+    public int? Citations { get; set; }
+    public string MailingAddress { get; set; }
+    public string Email { get; set; }
+    public string Major { get; set; }
+    public string Speciality { get; set; }
+    public string PhoneAndFax { get; set; }
+    public string ActiveAreaOfResearch { get; set; }
+    public string PrevAreaOfResearch { get; set; }
+    public string Webpage { get; set; }
+    public string Comments { get; set; }
+    public string Source { get; set; }
+}
+public class Form_Refree1
+{
+    public int ApplicationID { get; set; }
+    public int Type { get; set; }
+    public int Serial { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public string MailingAddress { get; set; }
+    public string Email { get; set; }
+    public string Major { get; set; }
+    public string Speciality { get; set; }
+    public string PhoneAndFax { get; set; }
+    public string ActiveAreaOfResearch { get; set; }
+    public string PrevAreaOfResearch { get; set; }
+    public string Webpage { get; set; }
+    public string Comments { get; set; }
+    public int? TotalPublications { get; set; }
+    public int? NoOfJournals { get; set; }
+    public int? HIndex { get; set; }
+    public int? Citations { get; set; }
+
+}
+#endregion
+#region RevFormBAL Classes
+
+
+
+#endregion
+#region Promotion Committee
+public class Form_PromotionCommitteeDTO
+{
+    public int ApplicationID { get; set; }  
+    public byte Position { get; set; }
+    public string EmployeeID { get; set; }
+    public int ExternalEmployeeID { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public string Department { get; set; }
+    public string Organization { get; set; }
+    public string Address { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
+    public string Mobile { get; set; }
+    public string Country { get; set; }
+    public string NameString { get; set; }
+    public string Major { get; set; }
+}
+public class Form_FinalPCDTO
+{
+    public int ApplicationID {get; set;}
+    public string EmployeeID { get; set; }
+    public int ExternalEmployeeID { get; set; }
+    public int Position {get; set;}    
+    public string WLStatus {get; set;}
+    public bool? DigitalSignature {get; set;}
+    public DateTime? DSDate {get; set;}
+    public string Comments { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public string Department { get; set; }
+    public string Organization { get; set; }
+    public string Address { get; set; }
+    public string Email { get; set; }
+    public string Email2 { get; set; }
+    public string Phone { get; set; }
+    public string Mobile { get; set; }
+    public string Country { get; set; }
+    public string NameString  { get; set; }
+    public string Source { get; set; }
+    public DateTime? WLDate { get; set; }
+    public string CommentsWithWL { get; set; }
+    public string Status { get; set; }
+
+}
+#endregion
+#region Views
+public class vw_NextTaskDTO
+{ 
+
+             public int?     TaskID     { get; set; }
+             public string Task { get; set; }
+             public int? ActionID { get; set; }
+             public string Action { get; set; }
+            
+             public byte?    NextPhaseID { get; set; }
+             public int?     NextTaskID { get; set; }
+             public string   NextTask   { get; set; }
+             public string   NextRole   { get; set; }
+             public string   Message    { get; set; }
+             public string   Type       { get; set; }
+             public byte?    NextRoleID { get; set; }
+             public int? SubTaskID { get; set; }
+             public string SubTask { get; set; }
+             public int? SubActionID { get; set; }
+             public string SubAction { get; set; }
+             public int? NextSubTaskID { get; set; }
+             public string NextSubTask { get; set; }
+}
+public class vw_ActiveTask1
+{
+    public int    ApplicationID { get; set; }
+    public string AppID { get; set; }
+    public string AppEmail { get; set; }
+    public string Applicant { get; set; }
+    public string EmployeeID { get; set; }
+    public string Employee { get; set; }
+    public string Email { get; set; }
+    public string Role { get; set; }
+    public int RoleID { get; set; }
+    public string Task { get; set; }
+    public int TaskID { get; set; }
+    public string AppDeptSN { get; set; }
+    public byte? Reminders { get; set; }
+    public int SubTaskID { get; set; }    
+}
+#endregion
+#region WorkflowStatic Classes
+public class NameExclusion1
+{
+    public byte RoleID { get; set; }
+    public byte ExcludedRoleID { get; set; }
+}
+public class Form1
+{
+    public byte FormID { get; set; }
+    public string Title { get; set; }
+    public string Page { get; set; }
+
+}
+public class Action_Log1
+{
+    public int Action_LogID { get; set; }
+    public string Detail { get; set; }
+    public DateTime TimeStamp { get; set; }
+}
+public class Task_Ext1
+{
+    public int TaskID { get; set; }
+    public string Title { get; set; }
+    public byte RemindAfter { get; set; }
+    public byte RemindAgainAfter { get; set; }
+    public byte RoleID { get; set; }
+}
+
+public class Task_ExtMessage1
+{
+    public int taskID { get; set; }
+    public string Subject { get; set; }
+    public string Message { get; set; }
+}
+public class Action1 {
+public int  ActionID{ get; set; }
+public int?  TaskID{ get; set; }
+public byte?  NextPhaseID{ get; set; }
+public int?  NextTaskID{ get; set; }
+public string Type{ get; set; }
+public string Title { get; set; }
+public int? RoleID { get; set; }
+public string Task { get; set; }
+public string Role { get; set; }
+public int? PhaseID { get; set; }
+public string Status { get; set; }
+public bool? RequireCompleteTask { get; set; }
+}
+public class SubAction1
+{
+    public int SubActionID { get; set; }
+    public int ActionID { get; set; }
+    public int SubTaskID { get; set; }
+    public int TaskID { get; set; }
+    public int? NextSubTaskID { get; set; }
+    public int? NextTaskID { get; set; }
+    public string Type { get; set; }
+    public string Title { get; set; }
+    public bool? RequireCompleteTask { get; set; }    
+}
+public class Task1
+{
+
+    public int TaskID { get; set; }
+    public byte PhaseID { get; set; }
+    public byte RoleID { get; set; }    
+    public string Title { get; set; }
+    public byte? RemindAfter { get; set; }
+    public byte? RemindAgainAfter { get; set; }
+    public bool? ActionRequired { get; set; }
+}
+public class TaskFormDTO
+{
+    public int TaskID { get; set; }
+    public byte FormID { get; set; }
+    public byte? Rank { get; set; }
+    public byte? Level  { get; set; }
+    public string Instruction { get; set; }
+    public bool Checkable { get; set; }
+    public int SubTaskID { get; set; }
+    public bool TaskExternal{ get; set; }    
+
+    public string  Title { get; set; }
+    public string Page { get; set; }
+    public int ApplicationID { get; set; }
+    public bool Completed { get; set; }
+    public string Message { get; set; }
+
+}
+public class Task_Dependency1
+{
+    public int TaskDependencyID { get; set; }
+    public int? ParentTaskID { get; set; }
+    public int? ParentSubTaskID { get; set; }
+    public int? ChildTaskID { get; set; }
+    public int? ChildSubTaskID { get; set; }
+}
+public class Role1
+{
+    public byte RoleID { get; set; }
+    public string Title { get; set; }
+    public byte Type { get; set; }
+}
+#endregion
+#region WorkflowDynamic Classes
+#region Application Classes
+public class Application_TaskLog1
+{
+    public int TaskLogID { get; set; }
+    public int ApplicationID { get; set; }
+    public int? TaskID { get; set; }
+    public int? ActionID { get; set; }
+    public DateTime? SentDate { get; set; }
+    public bool Completed { get; set; }
+    public byte? Reminders { get; set; }
+    public string Message { get; set; }
+    public int SubTaskID { get; set; }
+    public int? SubActionID { get; set; }
+}
+public class Application_Role1
+{
+    public int ApplicationID { get; set; }
+    public int RoleID { get; set; }
+    public string EmployeeID { get; set; }
+}
+public class Application1
+{
+    public Int32 ApplicationID { get; set; }
+    public bool ApplicationClosed { get; set; }
+    public string EmployeeID { get; set; }
+    public byte? PhaseID { get; set; }
+    public string ForRank { get; set; }
+    public string ForRankAr { get; set; }
+    public DateTime? StartDate { get; set; }
+    public bool? ExclusionList { get; set; }
+    public string Comment { get; set; }
+    public bool? HardCopy { get; set; }
+    public string SCComments { get; set; }
+    public bool RectorDecision { get; set; }
+    public bool FinalDeicision { get; set; }
+    public bool SCDecision { get; set; }
+    public string RectorComments { get; set; }
+}
+
+public class Application_Log1
+{
+    int logID { get; set; }
+    int ApplicationID { get; set; }
+    int ActionID { get; set; }
+    DateTime? ActionTime { get; set; }
+    string Message { get; set; }
+    string Comments { get; set; }
+    string Details { get; set; }
+    string Actor { get; set; }
+    int SubActionID { get; set; }
+}
+public class Application_LogExt1
+{
+    int logID { get; set; }
+    int ApplicationID { get; set; }
+    string ExtActionTitle { get; set; }
+    int ID { get; set; }
+    string Name { get; set; }
+    string Message { get; set; }
+    DateTime? ActionTime { get; set; }
+}
+
+public class ApplicationTaskForm1
+{
+    public int ApplicationID { get; set; }
+    public int TaskID { get; set; }
+    public byte FormID { get; set; }
+    public bool Completed { get; set; }
+    public string Message { get; set; }
+    public int SubTaskID { get; set; }
+}
+public class ApplicationList
+{
+    public int ApplicationID { get; set; }
+    public string Role { get; set; }
+    public string Employee { get; set; }
+    public string Name { get; set; }
+    public string Department { get; set; }
+    public string Rank { get; set; }
+    public string ToRank { get; set; }
+    public string Status { get; set; }
+    public DateTime? AppDate { get; set; }
+    public byte RoleID { get; set; }    
+}
+#endregion
+#region Form Classes 
+public partial class ExtFormInstruction1
+{
+    public byte FormID { get; set; }
+    public string Instruction { get; set; }
+    public string Type { get; set; }
+    public string Page { get; set; }
+    public string Title { get; set; }
+}
+public partial class Form_Checklist1
+{
+    public int ApplicationID { get; set; }
+    public Nullable<bool> Field1Status { get; set; }
+    public string Field1Comments { get; set; }
+    public Nullable<bool> Field2Status { get; set; }
+    public string Field2Comments { get; set; }
+    public Nullable<bool> Field3Status { get; set; }
+    public string Field3Comments { get; set; }
+    public Nullable<bool> Field4Status { get; set; }
+    public string Field4Comments { get; set; }
+    public Nullable<bool> Field5Status { get; set; }
+    public string Field5Comments { get; set; }
+    public Nullable<bool> Field6Status { get; set; }
+    public string Field6Comments { get; set; }
+    public Nullable<bool> Field7Status { get; set; }
+    public string Field7Comments { get; set; }
+    public Nullable<bool> Field8Status { get; set; }
+    public string Field8Comments { get; set; }
+    public Nullable<bool> OverallStatus { get; set; }
+    public string Remarks { get; set; }
+    public byte? Service_NumYears { get; set; }
+    public byte? Service_NumMonths { get; set; }
+    public byte? Saudi_NumYears { get; set; }
+    public byte? Saudi_NumMonths { get; set; }
+
+    public decimal? SumTotal { get; set; }
+    public decimal? SumSigle { get; set; }
+    public decimal? SumJournal { get; set; }
+
+}
+
+public class Form_DepartmentCommittee1
+{
+    public int ApplicationID { get; set; }
+    public byte Position { get; set; }
+    public string EmployeeID { get; set; }
+}
+public class Form_MaterialFlag1
+{
+    public int ApplicationID { get; set; }
+    public bool? PCMaterialReady4ExtRevFlag { get; set; }
+}
+
+public class ChairmanInput1
+{
+    public int ApplicationID { get; set; }
+    public string Teaching { get; set; }
+    public string Research { get; set; }
+    public string CommunityService { get; set; }
+    public string CommentsAndRecommendation { get; set; }
+    public string MeetingNo { get; set; }
+    public DateTime? MeetingDate { get; set; }
+}
+public class RemindersPCDTO
+{
+    public string Name { get; set; }
+    public string Department { get; set; }
+    public string WillingnessStatus { get; set; }
+    public string SendingDate { get; set; }
+    public int? Reminders { get; set; }
+    public string Message { get; set; }
+    public string Completed { get; set; }
+    public int ApplicationID { get; set; }
+    public string EmployeeID { get; set; }
+    public int ExternalReviewerID { get; set; }
+    public int ExternalEmployeeID { get; set; }
+    public int TaskID { get; set; }
+
+}
+//public class Points1
+//{
+//    ApplicationID int Unchecked
+//Type char(1)	Unchecked
+//P1a tinyint Checked
+//P1b tinyint Checked
+//P1c tinyint Checked
+//P1d tinyint Checked
+//P1e tinyint Checked
+//P1f tinyint Checked
+//P1g tinyint Checked
+//P1h tinyint Checked
+//P1i tinyint Checked
+//P2a tinyint Checked
+//P2b tinyint Checked
+//P2c tinyint Checked
+//P2d tinyint Checked
+//P2e tinyint Checked
+//P2f tinyint Checked
+//P2g tinyint Checked
+//P2h tinyint Checked
+//P2i tinyint Checked
+//P3a tinyint Checked
+//P3b tinyint Checked
+//P3c tinyint Checked
+//P3d tinyint Checked
+//P3e tinyint Checked
+//P3f tinyint Checked
+//P3g tinyint Checked
+//P3h tinyint Checked
+//P3i tinyint Checked
+//P4a tinyint Checked
+//P4b tinyint Checked
+//P4c tinyint Checked
+//P5d tinyint Checked
+//P5e tinyint Checked
+//P5f tinyint Checked
+//P5g tinyint Checked
+//P5h tinyint Checked
+//P5i tinyint Checked
+//SumTotal    decimal(18, 2)	Checked
+//SumSigle    decimal(18, 2)	Checked
+//SumJournal  decimal(18, 2)	Checked
+//        Unchecked
+//}
+
+#endregion
+#endregion
+#region HR
+#region Employee
+public class Employee1
+{
+    public string EmployeeID { get; set; }
+    public string SecondEmail { get; set; }
+    public string College { get; set; }
+    public string Email { get; set; }
+    public string EmailID { get; set; }
+    public string Title { get; set; }
+    public string Name { get; set; }
+    public string Rank { get; set; }
+    public string POBox { get; set; }
+    public string Phone { get; set; }
+    public string JoinDate { get; set; }
+    public string Status { get; set; }
+    public int? DepartmentID { get; set; }
+    public string Department { get; set; }
+    public string ParentDept { get; set; }
+    public string TitleAr { get; set; }
+    public string NameAr { get; set; }
+    public string NameString { get; set; }
+    public string NameStringAr { get; set; }
+    public string DepartmentAr { get; set; }
+
+}
+#endregion
+#region Department
+public class Department1
+{ 
+    public int DepartmentID { get; set; }
+    public string Name { get; set; }
+    public string ShortName { get; set; }
+    public int?   ParentDeptID { get; set; }
+    public string HeadEmpID { get; set; }
+    public string Phone { get; set; }
+    public string Website { get; set; }
+    public string Fax { get; set; }
+    public byte?  HeadRoleID { get; set; }
+    public string Type { get; set; }
+    public string Status { get; set; }
+    public string DeputyEmailID { get; set; }
+    public string NameString { get; set; }
+    public string HeadString { get; set; }
+    public string ParentDeptString { get; set; }
+    public string Role { get; set; }
+    public string HeadEmail { get; set; }
+
+}
+public class ScientificCouncil1
+{
+    public string EmployeeID { get; set; }
+    public byte?  RoleID { get; set; }
+}
+
+#endregion
+#endregion
+public  class EmailContent
+{
+    public string  To { get; set; }
+    public string Subject { get; set; }
+    public string Body { get; set; }
+}
+
+public struct FormStatusStruct
+{
+
+    public string task;
+    public string Task
+    {
+        get { return task; }
+    }
+    private bool status;
+    public bool Status
+    {
+        get { return status; }
+    }
+    private string message;
+
+    public string Message
+    {
+        get { return message; }
+        set { message = value; }
+    }
+
+
+    public FormStatusStruct(string t, bool s, string m)
+    {
+        task = t;
+        status = s;
+        message = m;
+    }
+}
+
+#region Dates
+////////////////////////////////////Attention///////////
+///This library has been wrote by : Anas Reslan Bahsas
+///if you are going to use it please dont remove this line .        
+///you have to add this class to a asp.net web project to work well.
+///I will be grateful to receive any commments or 
+//suggestion to anasbahsas@hotmail.com
+///////////////////////////////////////////////////////////
+
+
+
+    /// &lt;summary>
+    /// Summary description for Dates.
+    /// &lt;/summary>
+    public class Dates
+    {
+        private HttpContext cur;
+
+        private const int startGreg = 1900;
+        private const int endGreg = 2100;
+        private string[] allFormats ={"yyyy/MM/dd","yyyy/M/d",
+            "dd/MM/yyyy","d/M/yyyy",
+            "dd/M/yyyy","d/MM/yyyy","yyyy-MM-dd",
+            "yyyy-M-d","dd-MM-yyyy","d-M-yyyy",
+            "dd-M-yyyy","d-MM-yyyy","yyyy MM dd",
+            "yyyy M d","dd MM yyyy","d M yyyy",
+            "dd M yyyy","d MM yyyy"};
+        private CultureInfo arCul;
+        private CultureInfo enCul;
+        private HijriCalendar h;
+        private GregorianCalendar g;
+
+        public Dates()
+        {
+            cur = HttpContext.Current;
+
+            arCul = new CultureInfo("ar-SA");
+            enCul = new CultureInfo("en-US");
+
+            h = new HijriCalendar();
+            g = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
+
+            arCul.DateTimeFormat.Calendar = h;
+
+        }
+
+        /// &lt;summary>
+        /// Check if string is hijri date and then return true 
+        /// &lt;/summary>
+        /// &lt;PARAM name="hijri">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public bool IsHijri(string hijri)
+        {
+            if (hijri.Length <= 0)
+            {
+
+                cur.Trace.Warn("IsHijri Error: Date String is Empty");
+                return false;
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(hijri, allFormats,
+                     arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                if (tempDate.Year >= startGreg && tempDate.Year <= endGreg)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("IsHijri Error :" + hijri.ToString() + "\n" +
+                                  ex.Message);
+                return false;
+            }
+
+        }
+        /// &lt;summary>
+        /// Check if string is Gregorian date and then return true 
+        /// &lt;/summary>
+        /// &lt;PARAM name="greg">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public bool IsGreg(string greg)
+        {
+            if (greg.Length <= 0)
+            {
+
+                cur.Trace.Warn("IsGreg :Date String is Empty");
+                return false;
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(greg, allFormats,
+                    enCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                if (tempDate.Year >= startGreg && tempDate.Year <= endGreg)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("IsGreg Error :" + greg.ToString() + "\n" + ex.Message);
+                return false;
+            }
+
+        }
+
+        /// &lt;summary>
+        /// Return Formatted Hijri date string 
+        /// &lt;/summary>
+        /// &lt;PARAM name="date">&lt;/PARAM>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string FormatHijri(string date, string format)
+        {
+            if (date.Length <= 0)
+            {
+
+                cur.Trace.Warn("Format :Date String is Empty");
+                return "";
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(date,
+                   allFormats, arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString(format, arCul.DateTimeFormat);
+
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("Date :\n" + ex.Message);
+                return "";
+            }
+
+        }
+        /// &lt;summary>
+        /// Returned Formatted Gregorian date string
+        /// &lt;/summary>
+        /// &lt;PARAM name="date">&lt;/PARAM>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string FormatGreg(string date, string format)
+        {
+            if (date.Length <= 0)
+            {
+
+                cur.Trace.Warn("Format :Date String is Empty");
+                return "";
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(date, allFormats,
+                    enCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString(format, enCul.DateTimeFormat);
+
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("Date :\n" + ex.Message);
+                return "";
+            }
+
+        }
+        /// &lt;summary>
+        /// Return Today Gregorian date and return it in yyyy/MM/dd format
+        /// &lt;/summary>
+        /// &lt;returns>&lt;/returns>
+        public string GDateNow()
+        {
+            try
+            {
+                return DateTime.Now.ToString("yyyy/MM/dd", enCul.DateTimeFormat);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("GDateNow :\n" + ex.Message);
+                return "";
+            }
+        }
+        /// &lt;summary>
+        /// Return formatted today Gregorian date based on your format
+        /// &lt;/summary>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string GDateNow(string format)
+        {
+            try
+            {
+                return DateTime.Now.ToString(format, enCul.DateTimeFormat);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("GDateNow :\n" + ex.Message);
+                return "";
+            }
+        }
+
+        /// &lt;summary>
+        /// Return Today Hijri date and return it in yyyy/MM/dd format
+        /// &lt;/summary>
+        /// &lt;returns>&lt;/returns>
+        public string HDateNow()
+        {
+            try
+            {
+                return DateTime.Now.ToString("yyyy/MM/dd", arCul.DateTimeFormat);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("HDateNow :\n" + ex.Message);
+                return "";
+            }
+        }
+        /// &lt;summary>
+        /// Return formatted today hijri date based on your format
+        /// &lt;/summary>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+
+        public string HDateNow(string format)
+        {
+            try
+            {
+                return DateTime.Now.ToString(format, arCul.DateTimeFormat);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("HDateNow :\n" + ex.Message);
+                return "";
+            }
+
+        }
+
+        /// &lt;summary>
+        /// Convert Hijri Date to it's equivalent Gregorian Date
+        /// &lt;/summary>
+        /// &lt;PARAM name="hijri">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string HijriToGreg(string hijri)
+        {
+
+            if (hijri.Length <= 0)
+            {
+
+                cur.Trace.Warn("HijriToGreg :Date String is Empty");
+                return "";
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(hijri, allFormats,
+                   arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString("yyyy/MM/dd", enCul.DateTimeFormat);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("HijriToGreg :" + hijri.ToString() + "\n" + ex.Message);
+                return "";
+            }
+        }
+        /// &lt;summary>
+        /// Convert Hijri Date to it's equivalent Gregorian Date
+        /// and return it in specified format
+        /// &lt;/summary>
+        /// &lt;PARAM name="hijri">&lt;/PARAM>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string HijriToGreg(string hijri, string format)
+        {
+
+            if (hijri.Length <= 0)
+            {
+
+                cur.Trace.Warn("HijriToGreg :Date String is Empty");
+                return "";
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(hijri,
+                   allFormats, arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString(format, enCul.DateTimeFormat);
+
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("HijriToGreg :" + hijri.ToString() + "\n" + ex.Message);
+                return "";
+            }
+        }
+        /// &lt;summary>
+        /// Convert Gregoian Date to it's equivalent Hijir Date
+        /// &lt;/summary>
+        /// &lt;PARAM name="greg">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string GregToHijri(string greg)
+        {
+
+            if (greg.Length <= 0)
+            {
+
+                cur.Trace.Warn("GregToHijri :Date String is Empty");
+                return "";
+            }
+            try
+            {
+                DateTime tempDate = DateTime.ParseExact(greg, allFormats,
+                    enCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString("yyyy/MM/dd", arCul.DateTimeFormat);
+
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("GregToHijri :" + greg.ToString() + "\n" + ex.Message);
+                return "";
+            }
+        }
+        /// &lt;summary>
+        /// Convert Hijri Date to it's equivalent Gregorian Date and
+        /// return it in specified format
+        /// &lt;/summary>
+        /// &lt;PARAM name="greg">&lt;/PARAM>
+        /// &lt;PARAM name="format">&lt;/PARAM>
+        /// &lt;returns>&lt;/returns>
+        public string GregToHijri(string greg, string format)
+        {
+
+            if (greg.Length <= 0)
+            {
+
+                cur.Trace.Warn("GregToHijri :Date String is Empty");
+                return "";
+            }
+            try
+            {
+
+                DateTime tempDate = DateTime.ParseExact(greg, allFormats,
+                    enCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return tempDate.ToString(format, arCul.DateTimeFormat);
+
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("GregToHijri :" + greg.ToString() + "\n" + ex.Message);
+                return "";
+            }
+        }
+
+        /// &lt;summary>
+        /// Return Gregrian Date Time as digit stamp
+        /// &lt;/summary>
+        /// &lt;returns>&lt;/returns>
+        public string GTimeStamp()
+        {
+            return GDateNow("yyyyMMddHHmmss");
+        }
+        /// &lt;summary>
+        /// Return Hijri Date Time as digit stamp
+        /// &lt;/summary>
+        /// &lt;returns>&lt;/returns>
+        public string HTimeStamp()
+        {
+            return HDateNow("yyyyMMddHHmmss");
+        }
+
+
+        /// &lt;summary>
+        /// Compare two instaces of string date 
+        /// and return indication of thier values 
+        /// &lt;/summary>
+        /// &lt;PARAM name="d1">&lt;/PARAM>
+        /// &lt;PARAM name="d2">&lt;/PARAM>
+        /// &lt;returns>positive d1 is greater than d2,
+        /// negative d1 is smaller than d2, 0 both are equal&lt;/returns>
+        public int Compare(string d1, string d2)
+        {
+            try
+            {
+                DateTime date1 = DateTime.ParseExact(d1, allFormats,
+                    arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                DateTime date2 = DateTime.ParseExact(d2, allFormats,
+                    arCul.DateTimeFormat, DateTimeStyles.AllowWhiteSpaces);
+                return DateTime.Compare(date1, date2);
+            }
+            catch (Exception ex)
+            {
+                cur.Trace.Warn("Compare :" + "\n" + ex.Message);
+                return -1;
+            }
+
+        }
+
+
+    }
+
+#endregion
+

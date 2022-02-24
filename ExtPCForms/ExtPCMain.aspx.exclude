@@ -1,0 +1,10 @@
+<%@ Page Language="C#" MasterPageFile="~/ExtPCForms/ExtPCForm.master" AutoEventWireup="true" CodeFile="ExtPCMain.aspx.cs" Inherits="ExtMain" Title="KFUPM Online Faculty Promotion System" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <h3>Message</h3>
+        
+    <asp:TextBox ID="TextBoxMessage" runat="server" Height="148px" TextMode="MultiLine"
+        Width="831px"></asp:TextBox>
+</asp:Content>
+

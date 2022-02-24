@@ -1,0 +1,23 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/ExtForms/ExtForm.master" AutoEventWireup="true" ValidateRequest="false"
+    CodeFile="Form_ReviewerForm.aspx.cs" Inherits="ExtForms_Form_ReviewerForm" Title="KFUPM Online Faculty Promotion System"
+    MaintainScrollPositionOnPostback="true" %>
+
+<%@ Register Src="../Controls/Instruction.ascx" TagName="Instruction" TagPrefix="uc2" %>
+<%@ MasterType VirtualPath="ExtForm.master" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Src="~/Controls/ExtReviewers/ReviewerForm.ascx" TagName="ReviewerForm"
+    TagPrefix="uc1" %>
+<%@ Register Src="~/Controls/ExtReviewers/ReviewerFormAr.ascx" TagName="ReviewerFormAr"
+    TagPrefix="uc3" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <uc2:Instruction ID="Instruction1" runat="server" />
+    <br />
+    <br />
+            <asp:Label ID="lblThanks" runat="server" Style="color: #009900">
+
+        </asp:Label>
+
+    <uc1:ReviewerForm ID="ReviewerForm1" runat="server"></uc1:ReviewerForm>
+    <br />
+    <uc3:ReviewerFormAr ID="ReviewerFormAr1" runat="server" />
+</asp:Content>

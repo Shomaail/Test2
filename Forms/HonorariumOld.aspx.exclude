@@ -1,0 +1,22 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/Forms/Forms.master" AutoEventWireup="true" CodeFile="HonorariumOld.aspx.cs" Inherits="Forms_Honorarium" Title="Faculty Promotion System" %>
+
+<%@ Register src="../Controls/ComposeEmailOld.ascx" tagname="ComposeEmail" tagprefix="uc1" %>
+<%@ MasterType VirtualPath="Forms.master" %>
+<%@ Register src="../Controls/Instruction.ascx" tagname="Instruction" tagprefix="uc2" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+            <br />
+            <uc2:Instruction ID="Instruction1" runat="server" />
+    <asp:RadioButtonList ID="RadioButtonListHonorarium" runat="server" 
+        onselectedindexchanged="RadioButtonListHonorarium_SelectedIndexChanged" 
+                AutoPostBack="True">
+        <asp:ListItem Value="External Reviewers">Honorarium for External Reviewers
+        </asp:ListItem>
+        <asp:ListItem Value="Promotion Committee">Honorarium for Promotion Committee</asp:ListItem>
+    </asp:RadioButtonList>
+        
+        <br />
+    <uc1:ComposeEmail ID="ComposeEmail1" runat="server" Visible="False" OnEmailSent="ComposeEmail_OnEmailSent" OnEmailNotSent="ComposeEmail_OnEmailNotSent" />
+    <br />
+    <br /><uc10:Alert ID="Alert1" runat="server" />
+</asp:Content>
+

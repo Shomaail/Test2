@@ -1,0 +1,169 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using BL.Data;
+
+public partial class Forms_Checkout : System.Web.UI.Page
+{
+    BAL bal = new BAL();
+    public override string StyleSheetTheme
+    {
+        get
+        {
+            return Utils.IsPrintMode() ? Utils.PrinterStyleSheet : base.StyleSheetTheme;
+        }
+    }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack) return;
+
+        if (Master.CurrentFormLevel == -1)
+        {
+            Response.Redirect("Message.aspx?applicationID=" + Master.ApplicationID + "&roleID=" + Master.CurRoleID);
+            return;
+        }
+
+        Instruction1.Text = Master.CurrentFormInstruction;
+
+        ObjectDataSourceAction.SelectParameters["TaskID"].DefaultValue = Master.TaskID.ToString();
+        ObjectDataSourceAction.SelectParameters["ApplicationID"].DefaultValue = Master.ApplicationID.ToString();
+
+        BindCheckList();
+
+
+        //hide buttons when printing
+        if (Utils.IsPrintMode())
+        {
+            btnSubmit.Visible = false;
+        }
+    }
+    private void BindCheckList()
+    {
+        ArrayList list = new ArrayList();
+        IsTaskComplete = true;
+
+        foreach (TaskForm form in Master.TaskForms)
+        {
+            if (form.Checkable)
+            {
+                FormStatusStruct status = Master.CheckFormTask(form);
+                list.Add(status);
+                if (status.Status == false)
+                {
+                    IsTaskComplete = false;
+                }
+            }
+            
+        }
+        lstFormsStatus.DataSource = list;
+        lstFormsStatus.DataBind();
+    }
+
+    private bool isTaskComplete;
+
+    public bool IsTaskComplete
+    {
+        get { return (bool) ViewState["isTaskComplete"]; }
+        set { ViewState["isTaskComplete"] = value; }
+    }
+
+    protected void lstActions_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int actionID = int.Parse(lstActions.SelectedValue);
+
+        grdMessages.DataSource = WorkFlow.GetNextTasks(Master.ApplicationID, Master.TaskID, actionID);
+        grdMessages.DataBind();
+
+        btnSubmit.Enabled = IsTaskComplete;
+        if (bal.GetActionByPK(actionID)[0].Type == ActionType.Save.ToString()
+                || !bal.GetActionByPK(actionID)[0].RequireCompleteTask.Value
+                //|| (bal.GetActionByPK(actionID)[0].Type == ActionType.ForwardAliveLock.ToString() && IsTaskCompleteForForwardAlive)
+                )
+        {
+            btnSubmit.Enabled = true;
+        }
+        else if (actionID == 5 || actionID == 15 || actionID == 22 || actionID == 26 || actionID == 29 || actionID == 54 || actionID == 70)
+        {
+            btnSubmit.Enabled = true;
+        }
+        btnSubmit.Visible = true;
+    }
+
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            int applicationID = Master.ApplicationID;
+            int taskID = Master.TaskID;
+            int actionID = int.Parse(lstActions.SelectedValue);
+            string Email = "";
+            try
+            {
+                Employee emp = new Employee();
+                emp = Session["user"] as Employee;                
+                Email = emp.Email;
+            }
+            catch 
+            {
+
+            }
+
+
+        WorkflowDynamic.Application_TaskLogDataTable nextTasks = new WorkflowDynamic.Application_TaskLogDataTable();
+        WorkflowDynamic.Application_TaskLogRow task;
+
+        foreach (GridViewRow row in grdMessages.Rows)
+        {
+            task = nextTasks.NewApplication_TaskLogRow();
+
+            task.ApplicationID = applicationID;
+            task.TaskID = int.Parse(((Label)row.FindControl("lblTaskID")).Text);
+            TextBox txtMessage = (TextBox)row.FindControl("txtMessage");
+
+            if (txtMessage.Visible)
+            {
+                task.Message = txtMessage.Text;
+            }
+            else
+            {
+               // task.Message = ((Controls_DeptCommitteeMessage)row.FindControl("DeptCommitteeMessage")).GetMessage();
+            }
+
+            task.Completed = false;
+            task.Reminders = 1;
+            nextTasks.Rows.Add(task);
+        }
+        WorkFlow.ApplyAction(applicationID, taskID, actionID, nextTasks,Email);
+
+        Response.Redirect("~\\Tasks.aspx?applicationID=" + applicationID+"&roleID="+Master.RoleID,false);
+        }
+        catch (Exception exp)
+        {
+            FormsAuthentication.RedirectToLoginPage();
+
+        }
+    }
+    #region Properties
+
+
+    //private bool isTaskComplete;
+    //public bool IsTaskComplete
+    //{
+    //    get { return (bool)ViewState["isTaskComplete"]; }
+    //    set { ViewState["isTaskComplete"] = value; }
+    //}
+    private bool isTaskCompleteForForwardAlive;
+    public bool IsTaskCompleteForForwardAlive
+    {
+        get { return (bool)ViewState["isTaskCompleteForForwardAlive"]; }
+        set { ViewState["isTaskCompleteForForwardAlive"] = value; }
+    }
+    #endregion
+}

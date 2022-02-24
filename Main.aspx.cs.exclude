@@ -1,0 +1,574 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Drawing;
+using BL.Data;
+using KFUPM.CAS;
+using System.Linq;
+using System.Collections.Generic;
+
+public partial class Main : System.Web.UI.Page
+{
+    BAL bal = new BAL();
+    private enum Mode { Applicant = 1, DeptChair = 2, CollegeDean = 4, VRAA= 5, DeanFacAffairs = 8}
+    public bool Status { get; set; }
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (IsPostBack)
+        {
+            return;
+        }
+        ibtnSearch.Attributes.Add("onclick", "window.open ('Forms/SearchPop.aspx',null,'scrollbars=yes, status= no, resizable = yes, toolbar=no,location=no,height = 700, width = 900, left = 200, top= 200, screenx=10,screeny=600,menubar=no');");
+        if (Request.QueryString["spaccess"] == null && Session["user"] == null)
+        {
+            KFUPMCASAuthentication();
+        }
+       
+        if (Session["user"] != null && Session["user"].ToString() == "NonFacultyEmployee")
+        {
+            Response.Redirect("Login.aspx");
+            return;
+        }
+        //FeedBackTableAdapters.Form_FeedbackTableAdapter fbAdapter = new FeedBackTableAdapters.Form_FeedbackTableAdapter();
+        //LabelCount.Text = fbAdapter.GetData().Count.ToString();
+        //LabelCount.ForeColor = System.Drawing.Color.Red;
+
+
+
+
+        if (Session["IsDeputy"] != null)
+        {
+            lblDeputy.Visible = (bool)Session["IsDeputy"];
+        }
+        btnApply.Attributes.Add("OnClick", "return Confirm_NewApp();");
+        if (Session["refree"] != null)
+        {
+            Response.Redirect("ExtForms/ExtMain.aspx");
+            return;
+        }
+
+        if (Session["ExtPCMember"] != null)
+        {
+            Response.Redirect("ExtPCForms/ExtPCMain.aspx");
+            return;
+        }
+        if (Session["user"] != null)
+        {
+            try
+            {
+                Employee emp = new Employee();
+                emp = Session["user"] as Employee;
+
+                liAdmin.Visible = (Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"] == true);
+               // HyperLinkFB.Visible = (Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"] == true);
+               // LabelCount.Visible = (Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"] == true);
+               // HyperLinkFBUser.Visible = !((Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"] == true));
+                liExtRev.Visible = (Session["IsAdmin"] != null) && ((bool)Session["IsAdmin"] == true)
+                   || isMemberOfSCSubComm(emp.Email);               
+                lblEmpID.Text = emp.EmployeeID;
+                lblName.Text = emp.Name;
+                if (Session["ExtPCMember"] == null)
+                {
+                    lblEmail.Text = emp.Email;
+                }
+                else
+                {
+                    lblEmail.Text = emp.Email;
+                }
+                lblRank.Text = emp.Rank;
+                string nextRank = PromotionApplication.GetNextRank(emp);
+                if (nextRank != "")
+                {
+                    lblNextRank.Text = nextRank;
+                }
+                else
+                {
+                    pnlApply.Visible = false;
+                }
+
+                //check if the applicant has additional active applications
+                WorkflowDynamicTableAdapters.ApplicationTableAdapter applicationAdapter = new WorkflowDynamicTableAdapters.ApplicationTableAdapter();
+                int count = (int)applicationAdapter.GetActiveApplicationsByEmployee(emp.EmployeeID);
+                if (count > 0)
+                {
+                    pnlApply.Visible = false;
+                }
+
+                //hide if Deputy member
+                bool isDeputy = (bool)Session["IsDeputy"];
+                if (isDeputy)
+                {
+                    pnlApply.Visible = false;
+                }
+
+                ObjectDataSourceClosedApps.SelectParameters["EmployeeID"].DefaultValue = emp.EmployeeID;
+                ObjectDataSource1.SelectParameters["EmployeeID"].DefaultValue = emp.EmployeeID;
+                SqlDataSource1.SelectParameters["EmployeeID"].DefaultValue = emp.EmployeeID;
+                if(bal.GetDepartments(RecordStatus.Active.ToString())
+                    .Where(d=>
+                    (d.Type == DepartmentType.Department.ToString()|| d.Type == DepartmentType.College.ToString()) 
+                    && d.HeadEmpID == emp.EmployeeID).Count()>0
+                    && (bool)Session["IsDeputy"] == false)
+                //PromAdminTableAdapters.DepartmentManagersTableAdapter deptMngrAdapter = new PromAdminTableAdapters.DepartmentManagersTableAdapter();
+                //if (deptMngrAdapter.GetDataByEmployee(user.EmployeeID).Count > 0 && (bool)Session["IsDeputy"] == false
+                //    && deptMngrAdapter.GetDataByEmployee(user.EmployeeID)[0].RoleID != 9)
+                {
+                    PanelDeputyDetail.Visible = true;
+                }
+                else
+                {
+                    PanelDeputyDetail.Visible = false;
+                }
+                List<Application> la = bal.GetApplication()
+                    .Where(a => a.ApplicationClosed && a.Application_Role.Where(ar=>ar.EmployeeID == emp.EmployeeID).Count() > 0).ToList();
+                if(la.Count > 0)
+                {
+                    PanelCosedApplications.Visible = true;
+                }
+                //PromotionTableAdapters.ApplicationsListTableAdapter applicationLstAdapter = new PromotionTableAdapters.ApplicationsListTableAdapter();
+                //Promotion.ApplicationsListDataTable appLstDT = applicationLstAdapter.GetClosedAppsByEmployee(user.EmployeeID);
+
+                //if (appLstDT.Count > 0)
+                //{
+                //    PanelCosedApplications.Visible = true;
+                //}
+                if (emp.Status != null && emp.Status == "InActive")
+                {
+
+                    Emailer.Send("facpromote@kfupm.edu.sa", "InActive User Login", @"The following user tried to login into the system while his record is INACTIVE
+User: " + emp.Name + " (" + emp.EmployeeID + ") email: "+ emp.Email, "Auto Mailer", null);
+                    ApplicatonsGrid.Enabled = false;
+                    GridViewClosedApps.Enabled = false;
+                    labelProgrammaticPopup0.Text = "The userdata for the user " + emp.Name + " is not found in the ERP Database. Please contact ITC or call the System Administrator at 7545. An Email is also sent to the Administrator.";
+                    this.programmaticModalPopup0.Show();
+                }
+     
+            }
+            catch (Exception exp)
+            {
+                
+                Session.Clear();
+                throw (exp);
+            }
+
+        }
+        else
+        {
+            FormsAuthentication.SignOut();
+            Response.Cookies.Remove("langCookie");
+            Session["IsAdmin"] = false;
+
+            Session.Clear();
+            Response.Redirect("https://login.kfupm.edu.sa:8447/cas-web/logout?url=http://facultypromotion.kfupm.edu.sa/Login.aspx");
+         //   Response.Redirect("https://login.kfupm.edu.sa:8447/cas-web/logout");
+            //FormsAuthentication.RedirectToLoginPage();
+        }
+    }
+    private bool isMemberOfSCSubComm(string userID)
+    {
+        PromAdminTableAdapters.DepartmentManagersTableAdapter adapterDeptMan = new PromAdminTableAdapters.DepartmentManagersTableAdapter();
+        WorkflowStaticTableAdapters.RoleTableAdapter adapterRole = new WorkflowStaticTableAdapters.RoleTableAdapter();
+        HRTableAdapters.EmployeeTableAdapter adapterEmp = new HRTableAdapters.EmployeeTableAdapter();
+        foreach (PromAdmin.DepartmentManagersRow row in adapterDeptMan.GetDataByDepartment("Scientific Council Sub Committee", adapterRole.GetDataByTitle("Scientific Council Sub Committee")[0].RoleID))
+        {
+            if (row.EmployeeID == adapterEmp.GetDataByUserID(userID)[0].EmployeeID)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+    protected void btnApply_Click(object sender, EventArgs e)
+    {
+        //try
+        //{
+            if (Session["user"] != null)
+            {
+            Employee emp = new Employee();
+            emp = Session["user"] as Employee;
+                /* create new application */
+                PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();
+                WorkflowDynamicTableAdapters.Application_RoleTableAdapter aRAdapter = new WorkflowDynamicTableAdapters.Application_RoleTableAdapter();
+                int applicationID = bal.InsertApplication(emp.EmployeeID,PromotionApplication.GetNextRank(emp));
+            // int applicationID = int.Parse(adapter.InsertNewApplication(emp.EmployeeID, PromotionApplication.GetNextRank(emp)).ToString());                
+                Session["ApplicationID"] = applicationID;
+            string welcomeMessage = bal.GetActionMessageByPK(0, (int)TaskIDs.Apply_for_Promotion)[0].Message;
+                      bal.InsertApplicationRoles(applicationID);
+            welcomeMessage = welcomeMessage.Replace("@@Applicant@@", emp.NameString)
+              .Replace("@@TopAuthority@@", bal.GetEmployeeByPK((bal.GetApplicationRole(applicationID).Where(a => a.RoleID == (byte)RoleID.TopAuthority).ToList()[0].EmployeeID))[0].NameString)
+              .Replace("@@TopAuthority_Title@@", ConfigurationManager.AppSettings["TopAuthority_Title"]);
+
+
+            bal.InsertAppTskLg(applicationID, (int)TaskIDs.Apply_for_Promotion, null, DateTime.Now, false, 0, welcomeMessage);
+
+            // aRAdapter.InsertApplicationRoles(applicationID);
+            // ArrangeDuplicateRoles(applicationID);
+
+            //adapter.UpdateActiveTasks(applicationID);
+
+
+            //Promotion.ActiveTasksDataTable tasks = taskAdapter.GetNextActiveTasks(applicationID);
+            //            WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter taskAdapter = new WorkflowDynamicTableAdapters.Application_TaskLogTableAdapter();
+            //                /*
+            //                 *The insert method has 5 parameters 
+            //                 * 
+            //                 */
+
+            //                DateTime dt = new DateTime(2007, 12, 2);
+            //                taskAdapter.Insert(applicationID, 1, null, dt, false, 1,
+            //                    @"
+            //Dear colleague,
+
+            //The promotion application for faculty members is available electronically and the processes can be completed through this website. More information on the promotion procedures and regulations can be obtained from the relevant links in this website. 
+
+            //Once you have completed the requirements you can submit the form by forwarding it to the department chairman. Your can know the status of your application from the Application Tracking icon at any stage.
+
+            //WE WISH YOU THE BEST
+            //Dr. Nasser Al-Aqeeli
+            //Vice Rector for Research");
+
+
+            /*
+             * 
+             * Inserting a dummy row in the eligibility checklist form
+             * */
+
+            bal.InsertApplicationChecklist(applicationID, "", "", "", "", "", "", "", ""
+                , false, false, false, false, false, false, false, false);
+                //ApplicationCheckListTableAdapters.ApplicationChecklistTableAdapter appChkLstAdapter = new ApplicationCheckListTableAdapters.ApplicationChecklistTableAdapter();
+                //appChkLstAdapter.Insert(applicationID, false, "", false, "", false, "", false, "", false, "", false, "", false, "", false, "", false, "");
+                /* redirect to fill the app */
+                Response.Redirect("Forms\\Message.aspx?applicationID=" + applicationID + "&roleID=" + (byte)RoleID.Applicant);
+            //return;
+        }
+
+        //}lblNextRank
+        //catch (Exception exc)
+        //{
+        //    Response.Write(exc.Message);
+        //   Response.Redirect("~/ErrorPage.aspx");
+        //   return;  
+        //}
+    }
+    private void ArrangeDuplicateRoles(int appID)
+    {
+        PromotionTableAdapters.ApplicationTableAdapter adapter = new PromotionTableAdapters.ApplicationTableAdapter();
+        PromotionTableAdapters.Application_RoleTableAdapter appRoleAdapter = new PromotionTableAdapters.Application_RoleTableAdapter();
+        string applicantsEmpID = adapter.GetApplication(appID)[0].EmployeeID;
+        foreach (Promotion.Application_RoleRow row in appRoleAdapter.GetDataByAppID(appID))
+            if ((row.EmployeeID == applicantsEmpID) && ((Mode) row.RoleID != Mode.Applicant))
+                {
+                    switch ((Mode) row.RoleID)
+                            {
+                                case Mode.DeptChair:
+                                    appRoleAdapter.Update(appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.CollegeDean)[0].EmployeeID, appID, (byte)Mode.DeptChair, row.EmployeeID);
+                                    break;
+                                case Mode.CollegeDean: 
+                                    appRoleAdapter.Update(appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.VRAA)[0].EmployeeID, appID, (byte)Mode.CollegeDean, row.EmployeeID); 
+                                    break;
+                                case Mode.DeanFacAffairs: 
+                                    appRoleAdapter.Update(appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.VRAA)[0].EmployeeID, appID, (byte)Mode.DeanFacAffairs, row.EmployeeID); 
+                                    break ;
+                            }
+                    if (appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.CollegeDean)[0].EmployeeID == appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.DeptChair)[0].EmployeeID)
+                    {
+                        appRoleAdapter.Update(appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.VRAA)[0].EmployeeID, appID, (byte)Mode.DeptChair, row.EmployeeID);
+                        appRoleAdapter.Update(appRoleAdapter.GetDataByAppIDRoleID(appID, (byte)Mode.VRAA)[0].EmployeeID, appID, (byte)Mode.CollegeDean, row.EmployeeID); 
+                    }
+                }
+        
+    }
+    protected void ApplicatonsGrid_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Session["RoleID"] = "";
+    }
+    public bool CheckTask(string employeeID, int roleID, int appID)
+    {
+        Employee emp = new Employee();
+        if (Session["user"] != null)
+        {
+            
+            emp = Session["user"] as Employee;
+
+            PromotionTableAdapters.ApplicationsListTableAdapter adapter = new PromotionTableAdapters.ApplicationsListTableAdapter();
+            Promotion.ApplicationsListRow application = adapter.GetDataByApplication(appID, emp.EmployeeID)[0];
+
+            if (employeeID == emp.EmployeeID && roleID == application.RoleID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool GetStatus()
+    {
+        Status = false;
+        int appID = int.Parse(Eval("ApplicationID").ToString());
+        byte roleID = byte.Parse(Eval("RoleID").ToString());
+        Employee emp = new Employee();
+        ExternalEmployee eEmp = new ExternalEmployee();
+        if (!(bool)Session["ExtEmp"])
+        {
+            emp = Session["user"] as Employee;
+            foreach (Application_TaskLog aptl in bal.GetAppTaskLog(appID).Where(aptl => !aptl.Completed && !aptl.Application.ApplicationClosed).GroupBy(atl => atl.TaskID)
+                .Select(group => group.First()))
+            {
+                if (aptl.Task.Role.Application_Role
+                    .Where(ar => ar.ApplicationID == appID)
+                    .Select(ar => ar.Employee).First().EmployeeID == emp.EmployeeID && aptl.Task.RoleID == roleID)
+                {
+                    Status = true;
+                    break;
+
+                }
+            }
+            //List<vw_ActiveTask1> lat = bal.GetActiveTask(roleID, appID);
+            //foreach (vw_ActiveTask1 activeTask in lat)
+            //{
+            //    if (activeTask.EmployeeID == emp.EmployeeID && roleID == activeTask.RoleID)
+            //    {
+            //        Status = true;
+            //        break;
+            //    }
+
+            //}
+        }
+        //else
+        //{
+        //    eEmp = Session["user"] as ExternalEmployee;
+        //    foreach (Application_TaskLog aptl in bal.GetAppTaskLog(appID).Where(aptl => !aptl.Completed && !aptl.Application.ApplicationClosed).GroupBy(atl => atl.TaskID)
+        //            .Select(group => group.First()))
+        //    {
+        //        if (aptl.Task.Role.Application_Role
+        //            .Where(ar => ar.ApplicationID == appID)
+        //            .Select(ar => ar.ExternalEmployee).First().ExternalEmployeeID == eEmp.ExternalEmployeeID && aptl.Task.RoleID == roleID)
+        //        {
+        //            Status = true;
+        //            break;
+
+        //        }
+        //    }
+        //}
+
+        return Status;
+    }
+    //public bool GetStatus()
+    //{
+    //    Status = false;
+    //    int appID = Int32.Parse(Eval("ApplicationID").ToString());
+    //    byte roleID = Byte.Parse(Eval("RoleID").ToString());
+    //    Employee emp = new Employee();
+    //    emp = Session["user"] as Employee;
+    //    PromotionTableAdapters.ActiveTasksTableAdapter activeTskAdapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+    //    Promotion.ActiveTasksDataTable table = activeTskAdapter.GetDataByApplication(roleID, appID);
+    //    foreach (Promotion.ActiveTasksRow rowAT in table)
+    //    {
+    //        if (rowAT.EmployeeID == emp.EmployeeID && roleID == rowAT.RoleID)
+    //        {
+    //            Status = true; 
+    //            break; 
+    //        }
+
+    //    }
+    //    return Status;
+    //}
+    //public string GetURL()
+    //{
+    //    int appID = Int32.Parse(Eval("ApplicationID").ToString());
+    //    byte roleID = Byte.Parse(Eval("RoleID").ToString());
+    //    if (Request.QueryString["spaccess"] == null)
+    //    {
+    //        return "Tasks.aspx?applicationID=" + appID + "&roleID=ae54sdafaas5313qw" + roleID + "f98poj64lsks98336hujm9811336fsdf";
+    //    }
+    //    else
+    //    {
+    //        return "Tasks.aspx?applicationID=" + appID + "&roleID=ae54sdafaas5313qw" + roleID + "f98poj64lsks98336hujm9811336fsdf&spaccess=1";
+    //    }
+    //}
+    public string GetURL()
+    {
+        int appID = Int32.Parse(Eval("ApplicationID").ToString());
+        string roleID = Eval("RoleID").ToString();
+        if (Request.QueryString["spaccess"] == null)
+        {
+            return "Tasks.aspx?applicationID=" + appID + "&roleID=" + Server.UrlEncode(Cryptography.Encrypt(roleID ));
+        }
+        else
+        {
+            return "Tasks.aspx?applicationID=" + appID + "&roleID=" + Server.UrlEncode(Cryptography.Encrypt(roleID)) + "&spaccess=1";
+        }
+    }
+
+    protected void ApplicatonsGrid_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+
+        // searching through the rows
+        //int rowNumber = ApplicatonsGrid.PageIndex * ApplicatonsGrid.PageSize + e.Row.RowIndex;
+        //if (e.Row.RowType == DataControlRowType.DataRow)
+        //{
+            //string empID = "";
+            //PromotionTableAdapters.ActiveTasksTableAdapter activeTskAdapter = new PromotionTableAdapters.ActiveTasksTableAdapter();
+            //PromotionTableAdapters.ApplicationList2TableAdapter applicationLstAdapter = new PromotionTableAdapters.ApplicationList2TableAdapter();
+            //PromotionTableAdapters.ApplicationTableAdapter appAdapter = new PromotionTableAdapters.ApplicationTableAdapter();
+
+            
+
+            //               PromotionTableAdapters.ApplicationsListTableAdapter adapter = new PromotionTableAdapters.ApplicationsListTableAdapter();
+            //Promotion.ApplicationList2Row application = applicationLstAdapter.GetDataForMain(user.EmployeeID)[rowNumber];
+            
+
+            ////Promotion.ActiveTasksDataTable table = activeTskAdapter.GetDataByApplication(applicationLstAdapter.GetDataByEmployee(user.EmployeeID)[0].RoleID
+            ////            , applicationLstAdapter.GetDataByEmployee(user.EmployeeID)[rowNumber].ApplicationID) as Promotion.ActiveTasksDataTable;
+
+            ////if (table.Count > 0)
+            ////{
+            ////foreach (Promotion.ActiveTasksRow rowAT in table)
+            ////{
+
+            //    //if (appAdapter.GetApplication(applicationLstAdapter.GetDataByEmployee(user.EmployeeID)[rowNumber].ApplicationID)[0].ApplicationClosed)
+            //    //{
+            //    //    e.Row.Visible = false;
+            //    //    PanelCosedApplications.Visible = true;
+            //    //}
+            //if (application.ATEmployeeID == user.EmployeeID && application.ATRoleID == application.RoleID)
+            //{
+            
+                //e.Row.Font.Bold = true;
+                //e.Row.BackColor = Color.FromName("#FAFDDD");
+            
+            //    return;
+            //}
+            //}
+
+            //}
+            //else
+            //    empID = table[0].EmployeeID;
+
+            //bool isnew = CheckTask(empID, application.RoleID, application.ApplicationID);
+            //if (isnew)
+            //{
+            //    e.Row.Font.Bold = true;
+
+            //    e.Row.BackColor = Color.FromName("#FAFDDD");
+            //}
+        //}
+    }
+    protected void LinkButton1_Click(object sender, EventArgs e)
+    {
+        
+    }
+    protected void GridViewClosedApps_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Session["RoleID"] = "";
+    }
+    
+    
+    public void KFUPMCASAuthentication()
+    {
+        CASAuthentication clsCAS = new CASAuthentication(Request);
+        KFUPMuser myUser = new KFUPMuser();
+        //if (clsCAS.LogoutHappened)
+        //{
+        //    Session["user"] = null;
+        //    Response.Redirect(clsCAS.getCasURL());
+        //    return;
+        //}
+
+        try
+        {
+            if (clsCAS.doAuthenticate())
+            {
+                if (Session["user"] != null) // Page refresh issue
+                {
+                    return;
+                }
+                myUser = clsCAS.getKFUPMUser();
+                //HRTableAdapters.EmployeeTableAdapter adapter = new HRTableAdapters.EmployeeTableAdapter();
+                //HR.EmployeeDataTable allEmptable = adapter.GetDataByUserID(myUser.getUID());
+                //HR.EmployeeDataTable deputyTable = adapter.GetDataByDeputyUserID(myUser.getUID());
+                List<Employee> le = bal.GetEmployeeByEmail(myUser.getUID()+ConfigurationManager.AppSettings["OrganizationEmail1"]);
+                List<Employee> leDeputy = bal.GetEmployeeByDeputyEmail(myUser.getUID() + ConfigurationManager.AppSettings["OrganizationEmail1"]);
+                if (bal.GetWorkflowAttribute().Where(wa => wa.Attribute == GlobalAttribute.Password.ToString()).Count() == 0)
+                {
+                    Task_ExtMessages tem = bal.GetExtTaskMessage().Where(a => a.Task_Ext.Title == TaskExtID.Check_System_Notification.ToString()).ToList()[0];
+                    Emailer.Send(ConfigurationManager.AppSettings["TechnicalAdminEmail"], tem.Subject, tem.Message, "AutoEmailer", null);
+                    return;
+                }
+                string pwd = bal.GetWorkflowAttribute().Where(wa => wa.Attribute == GlobalAttribute.Password.ToString()).ToList()[0].Value;
+
+                if (leDeputy.Count > 0)
+                {
+                    Session["user"] = leDeputy[0];
+                    Session["IsDeputy"] = true;
+                    Session["IsAdmin"] = IsAdmin(myUser.getUID() + ConfigurationManager.AppSettings["OrganizationEmail1"]);
+                    Session["ExtEmp"] = false;
+                }
+                else
+                {
+                    if (le.Count > 0)
+                    {
+                        Session["user"] = le[0];
+                        
+                    }
+                    else
+                    {
+                        Session["user"] = "NonFacultyEmployee";
+                    }
+                    Session["ExtEmp"] = false;
+                    Session["IsDeputy"] = false;
+                    Session["IsAdmin"] = IsAdmin(myUser.getUID());
+                }
+
+            }
+
+            else
+            {
+                Session["user"] = null;
+                Response.Redirect(clsCAS.getCasURL());
+            }
+        }
+        catch (Exception)
+        {
+
+            return;
+        }
+    }
+  
+    private bool IsAdmin(string email)
+    {
+        foreach (Admin a in bal.GetAdmin())
+        {
+            if (a.Employee.Email.ToLower() == email.ToLower()
+                //|| a.Employee.Department1.DeputyEmail == user.ToLower() 
+                //|| a.Employee.Department1.Deputy2Email == user.ToLower()
+                )
+            {
+                return true;
+            }
+            foreach (Department d in bal.GetDepartmentByEmp(a.EmployeeID))
+            {
+                if (d.DeputyEmail != null && d.DeputyEmail.ToLower() == email.ToLower()
+                    || d.Deputy2Email != null && d.Deputy2Email.ToLower() == email.ToLower())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    protected void hideModalPopupViaServer0_Click(object sender, EventArgs e)
+    {
+        this.programmaticModalPopup0.Hide();
+    }
+}
