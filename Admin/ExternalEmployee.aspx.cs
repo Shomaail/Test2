@@ -50,7 +50,7 @@ using BL.Data;
                 int extEmpID = int.Parse(e.CommandArgument.ToString());
                 if (bal.GetExternalEmployee().Count() == 1)
                 {
-                    labelProgrammaticPopup0.Text = "There has to be atleast one external employee. You cannot delete this External Employee";
+                    labelProgrammaticPopup0.Text = "There has to be atleast one external employee. You cannot delete this External Employee.";
                     programmaticModalPopup0.Show();
                     return;
                 }
